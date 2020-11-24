@@ -1,10 +1,5 @@
 # Dcat-admin 媒体管理拓展
 
-## 环境
- - PHP >= 7.2.5
- - Laravel 5.5.0 ~ 8.*
- - Fileinfo PHP Extension
-
 
 ## 预览
 
@@ -13,6 +8,12 @@
 
 ### 弹出选择框
 ![form-model](https://user-images.githubusercontent.com/24578855/100129077-06569900-2ebc-11eb-85ed-5320ba568b7b.jpg)
+
+
+## 环境
+ - PHP >= 7.2.5
+ - Laravel 5.5.0 ~ 8.*
+ - Fileinfo PHP Extension
 
 
 ## 安装
