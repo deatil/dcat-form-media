@@ -45,7 +45,7 @@ $form->photo('photo','图片')->limit(1)->remove(true)->help('单图，可删除
 ```
 $form->photo('photo','图片')->limit(1)->remove(false)->help('单图，不可删除');
 
-$form->photo('photo','图片')->limit(1)->help('单图，可删除');
+$form->photo('photo','图片')->limit(1)->help('单图，不可删除');
 ```
 
 #### 多图 数据库结构 json
