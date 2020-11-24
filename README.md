@@ -6,6 +6,15 @@
  - Fileinfo PHP Extension
 
 
+## 预览
+
+### 表单
+![form](https://user-images.githubusercontent.com/24578855/100129072-03f43f00-2ebc-11eb-8fec-b2e0d03e26bb.jpg)
+
+### 弹出选择框
+![form-model](https://user-images.githubusercontent.com/24578855/100129077-06569900-2ebc-11eb-85ed-5320ba568b7b.jpg)
+
+
 ## 安装
 
 ### composer 安装
