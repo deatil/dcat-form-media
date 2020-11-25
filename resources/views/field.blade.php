@@ -21,9 +21,10 @@
                     data-title="{{$label}}" 
                     data-name="{{$name}}"  
                     data-vaule="{{ old($column, $value)?(is_array(old($column, $value))?json_encode(old($column, $value)):old($column, $value)):'' }}"  
-                    data-limit="{{$limit}}" 
-                    data-rootpath="{{$rootpath}}" 
-                    data-remove="{{$remove}}" 
+                    data-path="{{ $path }}" 
+                    data-limit="{{ $limit }}" 
+                    data-rootpath="{{ $rootpath }}" 
+                    data-remove="{{ $remove }}" 
                     data-token="{{ csrf_token() }}">
                     <i class="fa fa-folder-open"></i>&nbsp;  
                     <span class="hidden-xs">浏览</span>

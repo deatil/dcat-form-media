@@ -1,12 +1,14 @@
 ;(function () {
 
-    function LakeFormMedia(name,limit,rootpath,remove,type){
+    function LakeFormMedia(path,name,limit,rootpath,remove,type,nametype){
         this.warp = $(name)
+        this.path = path;
         this.name = name;
         this.limit = limit;
         this.remove = remove;
         this.rootpath = rootpath;
         this.type = type;
+        this.nametype = nametype;
         this.lake_form_media_crr_path = '/';
     }
 
@@ -45,13 +47,14 @@
             var recipient = button.data('whatever') // Extract info from data-* attributes
             var title = button.data('title') //标题
             var name = button.data('name') //标题
+            var path = button.data('path') //目录
             var limit = button.data('limit') //标题
             var remove = button.data('remove') //标题
             var rootpath = button.data('rootpath') //标题
             var modal = $(this)
             modal.find('.modal-title').text('请选择' + title)
             
-            _this.getdata();
+            _this.getdata(path);
         })
 
         // 点击文件
@@ -103,8 +106,9 @@
            for (var i = 0; i < files.length; i++) {
                form.append("files[]", files[i]);
            }
-           form.append("dir",_this.lake_form_media_crr_path);
-           form.append("_token",Dcat.token);
+           form.append("path", _this.lake_form_media_crr_path);
+           form.append("nametype", _this.nametype);
+           form.append("_token", Dcat.token);
            $.ajax({
                 type: 'post', // 提交方式 get/post
                 url: '/admin/lake-form-media/upload', // 需要提交的 url
@@ -359,50 +363,59 @@
         var _this = this;
         $.ajax({
             method: 'GET',
-            url: "/admin/lake-form-media/getfiledata?path="+path,
+            url: "/admin/lake-form-media/get-files?path="+path,
             datatype:'json',
             async: true,
-            success: function (data) {
+            success: function (res) {
+                var list = res['data']['list'];
+                var nav = res['data']['nav'];
+                
                 $('#lake_form_media_body_table_'+_this.name).html('');
-                for (i in data['list'])
-                {
-                    if(data['list'][i]['isDir']){
-                        var htmltemp = '';
-                        htmltemp += '<div class="col-xs-4 col-md-3">';
-                        htmltemp +=     '<div class="thumbnail  lake_form_media_file_op'+name+'" data-path="/'+data['list'][i]['name']+'">';
-                        htmltemp +=         data['list'][i]['preview'];
-                        htmltemp +=         '<div class="file-info">';
-                        htmltemp +=             '<a href="javascript:;" class="file-name" title="'+data['list'][i]['name']+'">'+data['list'][i]['namesmall']+'</a>';
-                        htmltemp +=         '</div>';
-                        htmltemp +=     '</div>';
-                        htmltemp += '</div>';
-                        $('#lake_form_media_body_table_'+_this.name).append(htmltemp);
-                    }else{
-                        var htmltemp = '';
-                        htmltemp += '<div class="col-xs-4 col-md-3">';
-                        
-                        if(data['list'][i]['type'] == 'image'){
-                            htmltemp +=     '<div class="thumbnail lake-field-preview-item lake_form_media_img_op'+name+'" data-url="'+data['list'][i]['name']+'">';
-                        }else if(data['list'][i]['type'] == 'video'){
-                            htmltemp +=     '<div class="thumbnail lake-field-preview-item lake_form_media_video_op'+name+'" data-url="'+data['list'][i]['name']+'">';
+                if (JSON.stringify(list) != '[]') {
+                    for (var i in list) {
+                        if (list[i]['isDir']) {
+                            var htmltemp = '';
+                            htmltemp += '<div class="col-xs-4 col-md-3">';
+                            htmltemp +=     '<div class="thumbnail  lake_form_media_file_op'+name+'" data-path="/'+list[i]['name']+'">';
+                            htmltemp +=         list[i]['preview'];
+                            htmltemp +=         '<div class="file-info">';
+                            htmltemp +=             '<a href="javascript:;" class="file-name" title="'+list[i]['name']+'">'+list[i]['namesmall']+'</a>';
+                            htmltemp +=         '</div>';
+                            htmltemp +=     '</div>';
+                            htmltemp += '</div>';
+                            $('#lake_form_media_body_table_'+_this.name).append(htmltemp);
                         }else{
-                            htmltemp +=    '<div class="thumbnail " data-url="'+data['list'][i]['name']+'">';
-                        }
-                        htmltemp +=         data['list'][i]['preview'];
-                        htmltemp +=         '<div class="file-info">';
-                        htmltemp +=             '<a href="javascript:;" class="file-name" title="'+data['list'][i]['name']+'">'+data['list'][i]['namesmall']+'</a>';
-                        htmltemp +=         '</div>';
-                        htmltemp +=     '</div>';
-                        htmltemp += '</div>';
+                            var htmltemp = '';
+                            htmltemp += '<div class="col-xs-4 col-md-3">';
+                            
+                            if(list[i]['type'] == 'image'){
+                                htmltemp +=     '<div class="thumbnail lake-field-preview-item lake_form_media_img_op'+name+'" data-url="'+list[i]['name']+'">';
+                            }else if(list[i]['type'] == 'video'){
+                                htmltemp +=     '<div class="thumbnail lake-field-preview-item lake_form_media_video_op'+name+'" data-url="'+list[i]['name']+'">';
+                            }else{
+                                htmltemp +=    '<div class="thumbnail " data-url="'+list[i]['name']+'">';
+                            }
+                            htmltemp +=         list[i]['preview'];
+                            htmltemp +=         '<div class="file-info">';
+                            htmltemp +=             '<a href="javascript:;" class="file-name" title="'+list[i]['name']+'">'+list[i]['namesmall']+'</a>';
+                            htmltemp +=         '</div>';
+                            htmltemp +=     '</div>';
+                            htmltemp += '</div>';
 
-                        $('#lake_form_media_body_table_'+_this.name).append(htmltemp);
+                            $('#lake_form_media_body_table_'+_this.name).append(htmltemp);
+                        }
                     }
+                    
+                } else {
+                    var htmltemp = '<div class="col-12"><div class="lake_form_media_empty">空</div></div>';
+                    $('#lake_form_media_body_table_'+_this.name).append(htmltemp);
                 }
+                
                 $('#lake_form_media_nav_ol_'+_this.name).html('<li class="breadcrumb-item lake_form_media_nav_li'+name+'" data-path="/""><a href="javascript:;"><i class="fa fa-th-large"></i> </a></li>');
                 _this.lake_form_media_crr_path = '/';
-                for (var i = 0; i < data['nav'].length; i++) {
-                    $('#lake_form_media_nav_ol_'+_this.name).append('<li class="breadcrumb-item"><a class="lake_form_media_nav_li'+name+'" href="javascript:;" data-path="'+data['nav'][i]['url']+'"> '+data['nav'][i]['name']+'</a></li>');
-                    _this.lake_form_media_crr_path = data['nav'][i]['url'];
+                for (var i = 0; i < nav.length; i++) {
+                    $('#lake_form_media_nav_ol_'+_this.name).append('<li class="breadcrumb-item"><a class="lake_form_media_nav_li'+name+'" href="javascript:;" data-path="'+nav[i]['url']+'"> '+nav[i]['name']+'</a></li>');
+                    _this.lake_form_media_crr_path = nav[i]['url'];
                 }
                 
                 

@@ -11,11 +11,15 @@ use Illuminate\Support\Facades\Storage;
  */
 class MediaManager
 {
-
     /**
      * @var string
      */
     protected $path = '/';
+
+    /**
+     * @var string
+     */
+    protected $nametype = 'uniqid';
 
     /**
      * @var \Illuminate\Filesystem\FilesystemAdapter
@@ -42,10 +46,8 @@ class MediaManager
      *
      * @param string $path
      */
-    public function __construct($path = '/')
+    public function __construct()
     {
-        $this->path = $path;
-
         $this->initStorage();
     }
 
@@ -54,6 +56,15 @@ class MediaManager
         $disk = config('admin.upload.disk');
 
         $this->storage = Storage::disk($disk);
+    }
+    
+    /**
+     * 设置目录
+     */
+    public function setPath($path = '/')
+    {
+        $this->path = $path;
+        return $this;
     }
 
     public function ls()
@@ -127,15 +138,41 @@ class MediaManager
     public function upload($files = [])
     {
         foreach ($files as $file) {
-            $this->storage->putFileAs($this->path, $file, $this->generateUniqueName($file));
+            $this->storage->putFileAs($this->path, $file, $this->getPutFileName($file));
         }
 
         return true;
     }
     
+    public function setNametype($type = 'uniqid')
+    {
+        $this->nametype = $type;
+        return $this;
+    }
+    
+    public function getPutFileName($file)
+    {
+        if ($this->nametype == 'datetime') {
+            return $this->generateDatetimeName($file);
+        } else {
+            return $this->generateUniqueName($file);
+        }
+    }
+    
+    /**
+     * uniqid文件名
+     */
     public function generateUniqueName($file)
     {
         return md5(uniqid().microtime()).'.'.$file->getClientOriginalExtension();
+    }
+    
+    /**
+     * 时间文件名
+     */
+    public function generateDatetimeName($file)
+    {
+        return date('YmdHis').mt_rand(10000, 99999).'.'.$file->getClientOriginalExtension();
     }
     
     public function newFolder($name)
@@ -193,7 +230,7 @@ class MediaManager
                 'namesmall' => $this->path == '/'?$dir:str_replace($this->path.'/','', '/'.$dir),
                 'preview'   => str_replace('__path__', $dir, $preview),
                 'isDir'     => true,
-                'size'      => '',
+                'size'      => '-',
                 'url'       => $this->storage->url($dir),
                 'time'      => $this->getFileChangeTime($dir),
             ];

@@ -11,17 +11,19 @@ class FormMedia extends Controller
     /**
      * 获取文件
      */
-    public function getfiledata()
+    public function getList()
     {
-        $path = request()->input('path','name');
-        $manager = new MediaManager($path);
+        $path = request()->input('path', '/');
+        
+        $manager = (new MediaManager())
+            ->setPath($path);
 
         $data = [
             'list' => $manager->ls(), //数据
             'nav' => $manager->navigation()  // 导航
         ];
         
-        return $data;
+        return $this->renderJson('获取成功', 200, $data);
     }
 
     /**
@@ -30,16 +32,23 @@ class FormMedia extends Controller
     public function upload()
     {
         $files = request()->file('files');
-        $dir = request()->get('dir', '/');
-        $manager = new MediaManager($dir);
+        $path = request()->get('path', '/');
+        
+        $nametype = request()->get('nametype', 'uniqid');
+        
+        $manager = (new MediaManager())
+            ->setPath($path)
+            ->setNametype($nametype);
+        
         try {
             if ($manager->upload($files)) {
-                return ['code' => 200,'msg' => '上传成功'];
+                return $this->renderJson('上传成功', 200);
             }
         } catch (\Exception $e) {
-            return ['code' => -1,'msg' => '上传失败'];
+            return $this->renderJson('上传失败', -1);
         }
-        return ['code' => -1,'msg' => '上传失败'];
+        
+        return $this->renderJson('上传失败', -1);
     }
 
     /**
@@ -54,13 +63,25 @@ class FormMedia extends Controller
 
         try {
             if ($manager->newFolder($name)) {
-                return ['code' => 200, 'msg' => '创建成功'];
+                return $this->renderJson('创建成功', 200);
             }
         } catch (\Exception $e) {
-            return ['code' => -1, 'msg' => '创建失败'];
+            return $this->renderJson('创建失败', -1);
         }
         
-        return ['code' => -1, 'msg' => '创建失败'];
+        return $this->renderJson('创建失败', -1);
+    }
+    
+    /**
+     * 输出json
+     */
+    protected function renderJson($msg, $code = 200, $data = [])
+    {
+        return response()->json([
+            'code' => $code, 
+            'msg' => $msg,
+            'data' => $data,
+        ]);
     }
 }
 
