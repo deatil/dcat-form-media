@@ -4,10 +4,10 @@
 ## 预览
 
 ### 表单
-![form](https://user-images.githubusercontent.com/24578855/100129072-03f43f00-2ebc-11eb-8fec-b2e0d03e26bb.jpg)
+![form](https://user-images.githubusercontent.com/24578855/100266414-beec0d80-2f8c-11eb-9a5c-37f450e3be22.jpg)
 
 ### 弹出选择框
-![form-modal](https://user-images.githubusercontent.com/24578855/100129077-06569900-2ebc-11eb-85ed-5320ba568b7b.jpg)
+![form-modal](https://user-images.githubusercontent.com/24578855/100266422-c14e6780-2f8c-11eb-8a14-c8c1855eedb6.jpg)
 
 
 ## 环境
@@ -64,6 +64,7 @@ $form->photo('photo','图片')
 ```
 $form->photos('photo', '图片')
     ->path('pic') 
+    ->pageSize(16)
     ->nametype('uniqid') 
     ->limit(9)
     ->remove(true);  //可删除
@@ -83,8 +84,9 @@ $form->video('video','视频')
 ```
 path(string)    ： 快速定位目录，默认为根目录
 nametype(string)： 文件重命名方式 uniqid|datetime，默认 uniqid
+pageSize(string)： 弹出层列表每页显示数量
 limit(int)      ： 图片限制条数
-remove(boolean) :  是否有删除按钮   
+remove(boolean) :  是否有删除按钮
 
 photo 、 photos 、 video  的 参数默认值不一样
 

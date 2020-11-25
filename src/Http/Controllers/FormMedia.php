@@ -17,9 +17,21 @@ class FormMedia extends Controller
         
         $manager = (new MediaManager())
             ->setPath($path);
+        
+        $files = $manager->ls();
+        $currentPage = request()->input('page', 1);
+        $perPage = request()->input('pageSize', 12);
+        $list = collect($files)
+            ->slice(($currentPage - 1) * $perPage, $perPage)
+            ->values();
+            
+        $totalPage = count(collect($files)->chunk($perPage));
 
         $data = [
-            'list' => $manager->ls(), //数据
+            'list' => $list, // 数据
+            'total_page' => $totalPage, // 数量
+            'current_page' => $currentPage, // 当前页码
+            'per_page' => $perPage, // 每页数量
             'nav' => $manager->navigation()  // 导航
         ];
         

@@ -37,7 +37,7 @@
 </div>
 
 <!-- 弹窗 -->
-<div class="modal fade" id="LakeFormMediaModel{{$name}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+<div class="modal fade lake-form-media-{{$name}}" id="LakeFormMediaModel{{$name}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content"  style="width: 100%">
           <div class="modal-header">
@@ -59,10 +59,11 @@
                 </div>
             </div>
 
-          <div class="modal-body pre-scrollable" >
-            <!-- 页面导航 -->
-            <ol class="breadcrumb" style="margin-bottom: 10px;" id="lake_form_media_nav_ol_{{$name}}">
-            </ol>
+            <div class="modal-body pre-scrollable" >
+                <!-- 页面导航 -->
+                <ol class="breadcrumb" style="margin-bottom: 10px;" id="lake_form_media_nav_ol_{{$name}}">
+                </ol>
+                
                 <!-- 图片 -->
                 <div class="row" id='lake_form_media_body_table_{{$name}}'>
                     <!-- js 加载 -->
@@ -72,6 +73,12 @@
             <div class="modal-footer" id="lake_form_media_image_submit">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" class="btn btn-primary" id='lake_form_media_submit{{$name}}'>确定</button>
+            </div>
+            
+            <!-- 分页 -->
+            <div class="lake-form-media-modal-page">
+                <button type="button" class="btn btn-primary hidden lake-form-media-modal-prev-page">上一页</button>
+                <button type="button" class="btn btn-primary hidden lake-form-media-modal-next-page">下一页</button>
             </div>
         </div>
     </div>

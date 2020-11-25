@@ -1,15 +1,18 @@
 ;(function () {
 
-    function LakeFormMedia(path,name,limit,rootpath,remove,type,nametype){
-        this.warp = $(name)
-        this.path = path;
-        this.name = name;
-        this.limit = limit;
-        this.remove = remove;
-        this.rootpath = rootpath;
-        this.type = type;
-        this.nametype = nametype;
-        this.lake_form_media_crr_path = '/';
+    function LakeFormMedia(options = []) {
+        this.warp = $(options.name)
+        this.path = options.path;
+        this.name = options.name;
+        this.limit = options.limit;
+        this.remove = options.remove;
+        this.rootpath = options.rootpath;
+        this.type = options.type;
+        this.nametype = options.nametype;
+        this.page_size = options.page_size;
+        this.current_page = 1;
+        this.total_page = 0;
+        this.media_crr_path = '/';
     }
 
     //初始化
@@ -21,19 +24,47 @@
         var _this = this;
         var value = $('input[name='+name+']').val();
         var value_arr = [];
-        if(value){
-            if(limit == 1){
-                if(value != '[]' && value != ''){
+        if (value) {
+            if (limit == 1) {
+                if (value != '[]' && value != '') {
                     value_arr.push(value)
                 }
-            }else{
-                value_arr=this.isJSON(value);
+            } else {
+                value_arr = this.isJSON(value);
             }
-            _this.changeImg(value_arr);
-        }else{
+            _this.previewImg(value_arr);
+            
+            if (limit > 1) {
+                // 拖拽排序
+                $(".lake_form_media_img_show_row_"+name).dragsort({
+                    itemSelector: 'div.lake-form-media-preview-item',
+                    dragSelector: ".js-dragsort",
+                    dragEnd: function () {
+                        _this.refreshPreview();
+                    },
+                    placeHolderTemplate: $('<div class="lake-form-media-preview-item" />'),
+                    scrollSpeed: 15
+                });
+            }
+        } else {
             $('.lake_form_media_img_show_'+name).hide();
         }
         
+    }
+    
+    // 刷新预览
+    LakeFormMedia.prototype.refreshPreview = function() {
+        var url_list = [];
+        $(".lake_form_media_img_show_row_"+this.name).find('.lake-form-media-preview-item').each(function(i, cont) {
+            url_list.push($(cont).data('src'));
+        });
+        
+        var inputString = JSON.stringify( url_list );
+        if (inputString == '[]' || inputString  == '[""]') {
+            inputString = '';
+        }
+        
+        $('input[name='+this.name+']').val(inputString);
     }
 
     // 初始化
@@ -54,19 +85,42 @@
             var modal = $(this)
             modal.find('.modal-title').text('请选择' + title)
             
+            _this.current_page = 1;
             _this.getdata(path);
         })
 
         // 点击文件
         $("body").delegate(".thumbnail.lake_form_media_file_op"+_this.name,"click",function(){
             var path = $(this).data('path');
+             _this.current_page = 1;
             _this.getdata(path)
         });
 
         // 点击nav
         $("body").delegate(".lake_form_media_nav_li"+_this.name,"click",function(){
             var path = $(this).data('path');
+             _this.current_page = 1;
             _this.getdata(path)
+        });
+
+        // 分页-上一页
+        $('.lake-form-media-'+_this.name).delegate('.lake-form-media-modal-prev-page', "click", function() {
+            if (_this.current_page > 1) {
+                _this.current_page -= 1;
+            } else {
+                _this.current_page = 1;
+            }
+            _this.getdata(_this.path)
+        });
+
+        // 分页-下一页
+        $('.lake-form-media-'+_this.name).delegate('.lake-form-media-modal-next-page', "click", function() {
+            if (_this.current_page < _this.total_page) {
+                _this.current_page += 1;
+            } else {
+                _this.current_page = _this.total_page;
+            }
+            _this.getdata(_this.path)
         });
 
         // 新建文件夹
@@ -76,20 +130,20 @@
             
             var form = new FormData();
             form.append("name",dir);
-            form.append("dir",_this.lake_form_media_crr_path);
+            form.append("dir",_this.media_crr_path);
             form.append("_token",Dcat.token);
             $.ajax({
-                type: 'post', // 提交方式 get/post
-                url: '/admin/lake-form-media/new-folder', // 需要提交的 url
+                type: 'post',
+                url: '/admin/lake-form-media/new-folder',
                 data: form,
                 processData: false,
                 contentType : false,
                 success: function(data){
-                    if(data['code'] == 200){
+                    if (data['code'] == 200) {
                         toastr.success(data['msg']);
                         obj.val('');
-                        _this.getdata(_this.lake_form_media_crr_path)  //获取数据
-                    }else{
+                        _this.getdata(_this.media_crr_path)
+                    } else {
                         toastr.error(data['msg']);
                     }
                 },
@@ -106,7 +160,7 @@
            for (var i = 0; i < files.length; i++) {
                form.append("files[]", files[i]);
            }
-           form.append("path", _this.lake_form_media_crr_path);
+           form.append("path", _this.media_crr_path);
            form.append("nametype", _this.nametype);
            form.append("_token", Dcat.token);
            $.ajax({
@@ -118,7 +172,7 @@
                 success: function(data){
                     if(data['code'] == 200){
                         toastr.success(data['msg']);
-                        _this.getdata(_this.lake_form_media_crr_path)  //获取数据
+                        _this.getdata(_this.media_crr_path)  //获取数据
                     }else{
                         toastr.error(data['msg']);
                     }
@@ -145,7 +199,7 @@
             if(url_list_str){
                 if(limit == 1){
                     //去掉预览
-                    _this.changeImg([])
+                    _this.previewImg([])
                 }else{
                     url_list = _this.isJSON( url_list_str );
                 }
@@ -158,15 +212,15 @@
                 select_true_list = $('.lake_form_media_video_op'+name+'.lake_form_media_select_true');
             }
             for (var i = 0; i < select_true_list.length; i++) {
-                url_list.push(select_true_list[i].dataset.url);
+                url_list.push($(select_true_list[i]).data('url'));
             }
 
-            url_list = _this.unique1(url_list);
+            url_list = _this.unique(url_list);
 
-            if(limit == 1){
+            if (limit == 1) {
                 $('input[name='+name+']').val(url_list[0]);
                 $('input[name='+name+']').attr("value",url_list[0]);
-            }else{
+            } else {
                 url_list_json = JSON.stringify( url_list );
                 if(url_list_json == '[]'){
                     $('#LakeFormMediaModel'+_this.name).modal('hide');
@@ -176,7 +230,7 @@
                 $('input[name='+name+']').attr("value",url_list_json);
             }
             
-            _this.changeImg(url_list)
+            _this.previewImg(url_list)
             $('#LakeFormMediaModel'+_this.name).modal('hide');
         });
 
@@ -224,7 +278,7 @@
 
                     }else{
                         if(select_num >= limit){
-                            _this.lake_form_media_tip('选择图片不能超过 '+limit+' 张');
+                            _this.tip('选择图片不能超过 '+limit+' 张');
                             return 1;
                         }
                     }
@@ -265,10 +319,10 @@
                         tag = true;
                     }
                 }
-                if(tag){
+                if (tag) {
                     //取消选中
                     $(this).removeClass('lake_form_media_select_true');
-                }else{
+                } else {
                     //选中
                     if(limit == 1){
                         //取消之前选中的
@@ -276,7 +330,7 @@
 
                     }else{
                         if(select_num >= limit){
-                            _this.lake_form_media_tip('选择的视频不能超过 '+limit+' 个');
+                            _this.tip('选择的视频不能超过 '+limit+' 个');
                             return 1;
                         }
                     }
@@ -307,49 +361,24 @@
                 url_list = _this.isJSON( url_list_str );
             }
 
-            if(op == 'delete'){
+            if (op == 'delete') {
                 //删除
                 for (var i = 0; i < url_list.length ; i++) {
-                    if(url_list[i] != itemurl){
+                    if (url_list[i] != itemurl) {
                         new_url_list.push(url_list[i]);
                     }
                 }
-            }else if(op == 'left'){
-                //移动
-                var key = 0;
-                for (var i = 0; i < url_list.length ; i++) {
-                    if(url_list[i] == itemurl){
-                       key = i;
-                       break;
-                    }
-                }
-                new_url_list = url_list;
-                var temp = new_url_list[key-1];
-                new_url_list[key-1] = new_url_list[key];
-                new_url_list[key] = temp;
-            }else if(op == 'right'){
-                //移动
-                var key = 0;
-                for (var i = 0; i < url_list.length ; i++) {
-                    if(url_list[i] == itemurl){
-                       key = i;
-                       break;
-                    }
-                }
-                new_url_list = url_list;
-                var temp = new_url_list[key+1];
-                new_url_list[key+1] = new_url_list[key];
-                new_url_list[key] = temp;
-            }else{
+            } else {
                 return 0;
             }
 
-            var inputs = JSON.stringify( new_url_list );
-            if(inputs == '[]' || inputs  == '[""]'){
-                inputs = '';
+            var inputString = JSON.stringify( new_url_list );
+            if (inputString == '[]' || inputString  == '[""]') {
+                inputString = '';
             }
-            $('input[name='+name+']').val(inputs);
-            _this.changeImg(new_url_list)
+            
+            $('input[name='+name+']').val(inputString);
+            _this.previewImg(new_url_list)
             return 1;
         });
     }
@@ -360,10 +389,15 @@
         var limit = this.limit;
         var remove = this.remove;
         var rootpath = this.rootpath;
+        var current_page = this.current_page;
+        var page_size = this.page_size;
+        
+        this.path = path;
+        
         var _this = this;
         $.ajax({
             method: 'GET',
-            url: "/admin/lake-form-media/get-files?path="+path,
+            url: "/admin/lake-form-media/get-files?path="+path+"&page="+current_page+"&pageSize=" + page_size,
             datatype:'json',
             async: true,
             success: function (res) {
@@ -412,12 +446,11 @@
                 }
                 
                 $('#lake_form_media_nav_ol_'+_this.name).html('<li class="breadcrumb-item lake_form_media_nav_li'+name+'" data-path="/""><a href="javascript:;"><i class="fa fa-th-large"></i> </a></li>');
-                _this.lake_form_media_crr_path = '/';
+                _this.media_crr_path = '/';
                 for (var i = 0; i < nav.length; i++) {
                     $('#lake_form_media_nav_ol_'+_this.name).append('<li class="breadcrumb-item"><a class="lake_form_media_nav_li'+name+'" href="javascript:;" data-path="'+nav[i]['url']+'"> '+nav[i]['name']+'</a></li>');
-                    _this.lake_form_media_crr_path = nav[i]['url'];
+                    _this.media_crr_path = nav[i]['url'];
                 }
-                
                 
                 var url_list_str = $('input[name='+_this.name+']').val();
                 var url_list = [];
@@ -430,6 +463,30 @@
                             .addClass('lake_form_media_select_true');
                     }
                 }
+                
+                var total_page = parseInt(res['data']['total_page']);
+                var current_page = parseInt(res['data']['current_page']);
+                var per_page = parseInt(res['data']['per_page']);
+                
+                _this.total_page = total_page;
+                _this.current_page = current_page;
+                
+                if (total_page > 1) {
+                    if (current_page > 1) {
+                        $('.lake-form-media-'+_this.name).find('.lake-form-media-modal-prev-page').removeClass('hidden');
+                    } else {
+                        $('.lake-form-media-'+_this.name).find('.lake-form-media-modal-prev-page').addClass('hidden');
+                    }
+                    
+                    if (current_page < total_page) {
+                        $('.lake-form-media-'+_this.name).find('.lake-form-media-modal-next-page').removeClass('hidden');
+                    } else {
+                        $('.lake-form-media-'+_this.name).find('.lake-form-media-modal-next-page').addClass('hidden');
+                    }
+                } else {
+                    $('.lake-form-media-'+_this.name).find('.lake-form-media-modal-prev-page').addClass('hidden');
+                    $('.lake-form-media-'+_this.name).find('.lake-form-media-modal-next-page').addClass('hidden');
+                }
 
             },
             cache: false,
@@ -439,12 +496,12 @@
     }
 
     // 弹窗
-    LakeFormMedia.prototype.lake_form_media_tip = function(title = '提示'){
+    LakeFormMedia.prototype.tip = function(title = '提示'){
         layer.alert(title);
     }
 
     // 数组去重
-    LakeFormMedia.prototype.unique1 = function (arr){
+    LakeFormMedia.prototype.unique = function (arr){
       var hash=[];
       for (var i = 0; i < arr.length; i++) {
          if(hash.indexOf(arr[i])==-1){
@@ -455,35 +512,44 @@
     }
 
     // 改变预览
-    LakeFormMedia.prototype.changeImg = function(url_list){
+    LakeFormMedia.prototype.previewImg = function(url_list){
         var name = this.name;
         var limit = this.limit;
         var remove = this.remove;
         var rootpath = this.rootpath;
         var _this = this;
+        
         $(".lake_form_media_img_show_row_"+name).html('');
-        if(url_list.length > 0){
+        if (url_list.length > 0) {
             $('.lake_form_media_img_show_'+name).show();
-        }else{
+        } else {
             $('.lake_form_media_img_show_'+name).hide();
         }
+        
         for (var i = 0; i < url_list.length; i++) {
-            var html = '';
-           if(_this.type == 'img'){
-                html += '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-3"><div class="thumbnail lake_form_media_row_col"><img width="100%" max-height="160px" src="'+rootpath+url_list[i]+'" alt="'+rootpath+url_list[i]+'"/><div class="caption">';
-            }else if(_this.type == 'video'){
-                html += '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-3"><div class="thumbnail lake_form_media_row_col"><video width="100%" max-height="160px" src="'+rootpath+url_list[i]+'" alt="'+rootpath+url_list[i]+'"/><div class="caption">';
+            var src = rootpath+url_list[i];
+            var html = '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-3 lake-form-media-preview-item" data-src="'+url_list[i]+'">';
+                html += '<div class="thumbnail lake_form_media_row_col">';
+            
+            if (_this.type == 'img') {
+                html += '<img width="100%" max-height="160px" src="'+src+'" alt="'+src+'"/>';
+            } else if (_this.type == 'video') {
+                html += '<video width="100%" max-height="160px" src="'+src+'" alt="'+src+'"/>';
             }
-            if(remove){
-                html += '<a type="button" class="btn btn-default file-delete-multiple lake_form_media_img_show_'+name+'_item" data-url="'+url_list[i]+'" data-op="delete" title="删除"><i class="fa fa-trash-o"></i></a>';
+            
+            html += '<div class="caption">';
+            if (remove) {
+                html += '<a type="button" class="btn btn-default file-delete-multiple lake_form_media_img_show_'+name+'_item" data-url="'+url_list[i]+'" data-op="delete" title="删除"><i class="fa fa-times"></i></a>';
             }
-            if(i != 0){
-                html += '<a type="button" class="btn btn-default file-delete-multiple lake_form_media_img_show_'+name+'_item" data-url="'+url_list[i]+'" data-op="left" title="左"><i class="fa fa-arrow-left"></i></a>';
+            if (limit > 1) {
+                html += '<a href="javascript:;" type="button" class="btn btn-default js-dragsort" title="拖动"><i class="fa fa-arrows"></i></a>';
             }
-            if(i != url_list.length -1){
-                html += '<a type="button" class="btn btn-default file-delete-multiple lake_form_media_img_show_'+name+'_item" data-url="'+url_list[i]+'" data-op="right" title="右"><i class="fa fa-arrow-right"></i></a>';
-            }
-            $(".lake_form_media_img_show_row_"+name).append(html+'</div></div></div>');
+            html += '</div>';
+            
+            html += '</div>';
+            html += '</div>';
+            
+            $(".lake_form_media_img_show_row_"+name).append(html+'');
         }
     }
 

@@ -80,6 +80,7 @@ div.lake_form_media_img_show .caption .btn {
 }
 div.lake_form_media_row_col{
     overflow: hidden;
+    padding: 2px 0;
 }
 
 .lake_form_media_empty {
@@ -88,4 +89,13 @@ div.lake_form_media_row_col{
     color: #bfc2cc;
     background: #f7f5f5;
     border-radius: .5rem;
+}
+
+.lake-form-media-modal-page {
+    position: absolute;
+    bottom: 1rem;
+    margin-left: 1rem;
+}
+.lake-form-media-modal-page .btn {
+    margin-right: .25rem;
 }

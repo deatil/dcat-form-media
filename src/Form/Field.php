@@ -21,6 +21,7 @@ class Field extends BaseField
     ];
 
     protected static $js = [
+        '@extension/lake/form-media/jquery.dragsort.js',
         '@extension/lake/form-media/field.js'
     ];
 
@@ -30,6 +31,7 @@ class Field extends BaseField
     protected $type = 'img';
     
     protected $nametype = 'uniqid';
+    protected $pageSize = 12;
 
     /**
      * 设置限制数量.
@@ -89,6 +91,20 @@ class Field extends BaseField
     }
 
     /**
+     * 设置每页数量
+     *
+     * @param int $pageSize
+     *
+     * @return $this
+     */
+    public function pageSize($pageSize = 12)
+    {
+        $this->pageSize = $pageSize;
+
+        return $this;
+    }
+
+    /**
      * 呈现
      *
      * @return $this
@@ -110,13 +126,23 @@ class Field extends BaseField
         $name = $this->column;
         $limit = $this->limit;
         $nametype = $this->nametype;
+        $pageSize = $this->pageSize;
         $rootpath = $storage->url('');
         $remove = ($this->remove == true) ? 1 : 0;
 
         // 初始化
         $this->script = "
             if (! window.LakeFormMedia{$name}) {
-                window.LakeFormMedia{$name} = new LakeFormMedia('{$path}', '{$name}', {$limit}, '{$rootpath}', {$remove}, '{$this->type}', '{$nametype}');
+                window.LakeFormMedia{$name} = new LakeFormMedia({
+                    path: '{$path}', 
+                    name: '{$name}', 
+                    limit: {$limit}, 
+                    rootpath: '{$rootpath}', 
+                    remove: {$remove}, 
+                    type: '{$this->type}', 
+                    nametype: '{$nametype}',
+                    page_size: '{$pageSize}'
+                });
                 LakeFormMedia{$name}.Run();
             }
             LakeFormMedia{$name}.init();
