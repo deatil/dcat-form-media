@@ -1,4 +1,4 @@
-# Dcat-admin 媒体管理拓展
+# Dcat-admin 表单媒体拓展
 
 
 ## 预览
@@ -12,7 +12,7 @@
 
 ## 环境
  - PHP >= 7.2.5
- - Laravel 5.5.0 ~ 8.*
+ - Laravel ^8.0
  - Fileinfo PHP Extension
 
 

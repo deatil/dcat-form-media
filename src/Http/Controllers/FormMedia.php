@@ -15,12 +15,13 @@ class FormMedia extends Controller
     {
         $path = request()->input('path', '/');
         
+        $currentPage = request()->input('page', 1);
+        $perPage = request()->input('pageSize', 120);
+        
         $manager = (new MediaManager())
             ->setPath($path);
         
         $files = $manager->ls();
-        $currentPage = request()->input('page', 1);
-        $perPage = request()->input('pageSize', 12);
         $list = collect($files)
             ->slice(($currentPage - 1) * $perPage, $perPage)
             ->values();
@@ -39,7 +40,7 @@ class FormMedia extends Controller
     }
 
     /**
-     * 上传图片
+     * 上传
      */
     public function upload()
     {

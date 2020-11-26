@@ -51,25 +51,11 @@
         }
         
     }
-    
-    // 刷新预览
-    LakeFormMedia.prototype.refreshPreview = function() {
-        var url_list = [];
-        $(".lake_form_media_img_show_row_"+this.name).find('.lake-form-media-preview-item').each(function(i, cont) {
-            url_list.push($(cont).data('src'));
-        });
-        
-        var inputString = JSON.stringify( url_list );
-        if (inputString == '[]' || inputString  == '[""]') {
-            inputString = '';
-        }
-        
-        $('input[name='+this.name+']').val(inputString);
-    }
 
     // 初始化
-    LakeFormMedia.prototype.Run = function(){
-
+    LakeFormMedia.prototype.listen = function(){
+        this.init();
+        
         var _this = this;
 
         // 弹出图片选择器
@@ -381,6 +367,21 @@
             _this.previewImg(new_url_list)
             return 1;
         });
+    }
+    
+    // 刷新预览
+    LakeFormMedia.prototype.refreshPreview = function() {
+        var url_list = [];
+        $(".lake_form_media_img_show_row_"+this.name).find('.lake-form-media-preview-item').each(function(i, cont) {
+            url_list.push($(cont).data('src'));
+        });
+        
+        var inputString = JSON.stringify( url_list );
+        if (inputString == '[]' || inputString  == '[""]') {
+            inputString = '';
+        }
+        
+        $('input[name='+this.name+']').val(inputString);
     }
 
     // 获取图片数据

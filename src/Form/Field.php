@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Storage;
 
 use Dcat\Admin\Form\Field as BaseField;
 
+use Lake\FormMedia\MediaManager;
+
 /**
  * 表单字段
  *
@@ -31,7 +33,7 @@ class Field extends BaseField
     protected $type = 'img';
     
     protected $nametype = 'uniqid';
-    protected $pageSize = 12;
+    protected $pageSize = 120;
 
     /**
      * 设置限制数量.
@@ -97,7 +99,7 @@ class Field extends BaseField
      *
      * @return $this
      */
-    public function pageSize($pageSize = 12)
+    public function pageSize($pageSize = 120)
     {
         $this->pageSize = $pageSize;
 
@@ -110,25 +112,22 @@ class Field extends BaseField
      * @return $this
      */
     public function render()
-    {   
-        $disk = config('admin.upload.disk');
-
-        $storage = Storage::disk($disk);
-
-        $this->addVariables([
-            'path' => $this->path,
-            'limit' => $this->limit,
-            'rootpath' => $storage->url(''),
-            'remove' => $this->remove,
-        ]);
-
+    {
         $path = $this->path;
         $name = $this->column;
         $limit = $this->limit;
         $nametype = $this->nametype;
         $pageSize = $this->pageSize;
-        $rootpath = $storage->url('');
+        $rootpath = (new MediaManager())->buildUrl('');
         $remove = ($this->remove == true) ? 1 : 0;
+
+        $this->addVariables([
+            'path' => $this->path,
+            'limit' => $this->limit,
+            'pageSize' => $pageSize,
+            'rootpath' => $rootpath,
+            'remove' => $this->remove,
+        ]);
 
         // 初始化
         $this->script = "
@@ -143,9 +142,8 @@ class Field extends BaseField
                     nametype: '{$nametype}',
                     page_size: '{$pageSize}'
                 });
-                LakeFormMedia{$name}.Run();
+                LakeFormMedia{$name}.listen();
             }
-            LakeFormMedia{$name}.init();
             ";
         
         return parent::render();

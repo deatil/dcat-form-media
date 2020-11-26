@@ -198,6 +198,14 @@ class MediaManager
             'path' => $this->path,
         ];
     }
+    
+    /**
+     * 生成url
+     */
+    public function buildUrl($url = '')
+    {
+        return $this->storage->url($url);
+    }
 
     public function formatFiles($files = [])
     {
