@@ -12,8 +12,7 @@
 
 ## 环境
  - PHP >= 7.2.5
- - Laravel ^8.0
- - Fileinfo PHP Extension
+ - Dcat-admin ^2.0
 
 
 ## 安装
@@ -85,7 +84,7 @@ $form->video('video','视频')
 path(string)    ： 快速定位目录，默认为根目录
 nametype(string)： 文件重命名方式 uniqid|datetime，默认 uniqid
 pageSize(string)： 弹出层列表每页显示数量
-limit(int)      ： 图片限制条数
+limit(int)      ： 限制条数
 remove(boolean) :  是否有删除按钮
 
 photo 、 photos 、 video  的 参数默认值不一样
