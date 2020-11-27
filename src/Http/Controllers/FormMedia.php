@@ -15,8 +15,8 @@ class FormMedia extends Controller
     {
         $path = request()->input('path', '/');
         
-        $currentPage = request()->input('page', 1);
-        $perPage = request()->input('pageSize', 120);
+        $currentPage = (int) request()->input('page', 1);
+        $perPage = (int) request()->input('pageSize', 120);
         
         $manager = (new MediaManager())
             ->setPath($path);
@@ -72,7 +72,8 @@ class FormMedia extends Controller
         $dir = request()->input('dir');
         $name = request()->input('name');
 
-        $manager = new MediaManager($dir);
+        $manager = (new MediaManager())
+            ->setPath($dir);
 
         try {
             if ($manager->newFolder($name)) {

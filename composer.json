@@ -25,7 +25,10 @@
     "autoload": {
         "psr-4": {
             "Lake\\FormMedia\\": "src/"
-        }
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
     },
     "extra": {
         "laravel": {

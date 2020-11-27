@@ -61,29 +61,25 @@
 .lake-field-preview-item {
     border: 1px solid #fff;
 }
-div.lake_form_media_select_true {
+.lake-form-media-selected {
     border: 1px solid #0081ff;
 }
-div.lake_form_media_img_op {
-    width: 120px;
-    height: 160px;
-}
-div.lake_form_media_img_show{
+.lake-form-media-img-show{
     border-radius: 5px;
     border: 1px solid #ddd;
     padding: 8px;
     width: 100%;
     margin-bottom: 5px;
 }
-div.lake_form_media_img_show .caption .btn {
+.lake-form-media-img-show .caption .btn {
     padding: .54rem 1.1rem!important;
 }
-div.lake_form_media_row_col{
+.lake-form-media-row-col {
     overflow: hidden;
     padding: 2px 0;
 }
 
-.lake_form_media_empty {
+.lake-form-media-empty {
     text-align: center;
     padding: 35px 0;
     color: #bfc2cc;

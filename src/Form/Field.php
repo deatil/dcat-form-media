@@ -114,38 +114,29 @@ class Field extends BaseField
     public function render()
     {
         $path = $this->path;
-        $name = $this->column;
         $limit = $this->limit;
+        $type = $this->type;
         $nametype = $this->nametype;
         $pageSize = $this->pageSize;
         $rootpath = (new MediaManager())->buildUrl('');
         $remove = ($this->remove == true) ? 1 : 0;
 
         $this->addVariables([
-            'path' => $this->path,
-            'limit' => $this->limit,
-            'pageSize' => $pageSize,
-            'rootpath' => $rootpath,
-            'remove' => $this->remove,
+            'options' => [
+                'path' => $path,
+                'limit' => $limit,
+                'type' => $type,
+                'nametype' => $nametype,
+                'pageSize' => $pageSize,
+                'rootpath' => $rootpath,
+                'remove' => $remove,
+                
+                'get_files_url' => route('admin.lake-form-media.get-files'),
+                'upload_url' => route('admin.lake-form-media.upload'),
+                'new_folder_url' => route('admin.lake-form-media.new-folder'),
+            ],
         ]);
 
-        // 初始化
-        $this->script = "
-            if (! window.LakeFormMedia{$name}) {
-                window.LakeFormMedia{$name} = new LakeFormMedia({
-                    path: '{$path}', 
-                    name: '{$name}', 
-                    limit: {$limit}, 
-                    rootpath: '{$rootpath}', 
-                    remove: {$remove}, 
-                    type: '{$this->type}', 
-                    nametype: '{$nametype}',
-                    page_size: '{$pageSize}'
-                });
-                LakeFormMedia{$name}.listen();
-            }
-            ";
-        
         return parent::render();
     }
 
