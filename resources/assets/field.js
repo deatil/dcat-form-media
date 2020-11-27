@@ -5,15 +5,15 @@
             
             $('.lake-form-media-btn-file').each(function(i, cont) {
                 var name = $(cont).data('name');
-                var options = $(cont).data('options');
                 var value = $(cont).data('value');
-                
-                options = $.extend({}, options);
-                
-                var limit = options.limit;
                 
                 var mediaCont = $('.lake-form-media-'+name);
                 var mediaModalCont = $('.lake-form-media-modal-'+name);
+                
+                var options = mediaCont.data('options');
+                options = $.extend({}, options);
+                
+                var limit = options.limit;
                 
                 var value_arr = [];
                 if (value) {
@@ -71,7 +71,10 @@
                 
                 var title = modal.data('title')
                 var name = modal.data('name')
-                var options = modal.data('options')
+                
+                var mediaCont = $('.lake-form-media-'+name);
+                var options = mediaCont.data('options');
+                options = $.extend({}, options);
                 
                 var path = options.path
                 
@@ -216,7 +219,7 @@
             });
 
             // 上传图片
-            $('body').delegate('.lake-form-media-upload', 'change', function() {
+            $('body').on('change', '.lake-form-media-upload', function() {
                 var name = $(this).data('name');
                 
                 var mediaCont = $('.lake-form-media-'+name);

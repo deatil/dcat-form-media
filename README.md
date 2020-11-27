@@ -6,6 +6,9 @@
 ### 表单
 ![form](https://user-images.githubusercontent.com/24578855/100266414-beec0d80-2f8c-11eb-9a5c-37f450e3be22.jpg)
 
+### 动态表单
+![form-array](https://user-images.githubusercontent.com/24578855/100456207-f24caa80-30fa-11eb-86a3-a8e3d2102655.jpg)
+
 ### 弹出选择框
 ![form-modal](https://user-images.githubusercontent.com/24578855/100266422-c14e6780-2f8c-11eb-8a14-c8c1855eedb6.jpg)
 

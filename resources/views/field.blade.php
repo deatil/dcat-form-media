@@ -26,7 +26,6 @@
                     data-title="{{ $label }}" 
                     data-name="{{ str_replace(['[', ']'], ['-', ''], $name) }}"  
                     data-value="{{ old($column, $value)?(is_array(old($column, $value))?json_encode(old($column, $value)):old($column, $value)):'' }}"  
-                    data-options="{{ json_encode($options) }}" 
                     data-token="{{ csrf_token() }}">
                     <i class="fa fa-folder-open"></i>&nbsp;  
                     <span class="hidden-xs">浏览</span>
