@@ -4,11 +4,12 @@
             var thiz = this;
             
             $('.lake-form-media-btn-file').each(function(i, cont) {
-                var name = $(cont).data('name');
+                var mediaCont = $(cont).parents('.lake-form-media');
                 var value = $(cont).data('value');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var name = mediaCont.data('name');
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 
                 var options = mediaCont.data('options');
                 options = $.extend({}, options);
@@ -49,10 +50,11 @@
 
             // 删除
             $('body').on("click", ".lake-form-media-img-show-item-delete", function(){
-                var name = $(this).data('name');
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
                 var itemurl = $(this).data('url');
                 
-                var mediaCont = $('.lake-form-media-'+name);
                 var mediaShowCont = mediaCont.find('.lake-form-media-img-show');
                 
                 mediaCont.find('.lake-form-media-preview-item[data-src="' + itemurl + '"]').remove();
@@ -70,15 +72,16 @@
                 var modal = $(this)
                 
                 var title = modal.data('title')
-                var name = modal.data('name')
                 
-                var mediaCont = $('.lake-form-media-'+name);
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
                 var options = mediaCont.data('options');
                 options = $.extend({}, options);
                 
                 var path = options.path
                 
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 mediaModalPageCont.data('current-page', 1);
                 
@@ -91,12 +94,13 @@
             })
             
             // 点击文件夹
-            $('body').on('click', ".lake-form-media-file-op", function() {
-                var name = $(this).data('name');
+            $('body').on('click', ".lake-form-media-dir-op", function() {
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
                 var path = $(this).data('path');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 mediaModalPageCont.data('current-page', 1);
                 
@@ -110,11 +114,12 @@
             
             // 点击nav
             $('body').on("click", ".lake-form-media-nav-li", function(){
-                var name = $(this).data('name');
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
                 var path = $(this).data('path');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 mediaModalPageCont.data('current-page', 1);
                 
@@ -128,10 +133,10 @@
             
             // 分页-上一页
             $('body').on("click", '.lake-form-media-modal-prev-page', function() {
-                var name = $(this).data('name');
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 var currentPage = mediaModalPageCont.data('current-page');
                 
@@ -153,10 +158,10 @@
             
             // 分页-下一页
             $('body').on("click", '.lake-form-media-modal-next-page', function() {
-                var name = $(this).data('name');
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 var currentPage = mediaModalPageCont.data('current-page');
                 var totalPage = mediaModalPageCont.data('total-page');
@@ -180,10 +185,10 @@
 
             // 新建文件夹
             $('body').on('click', ".lake-form-media-dir-button", function(res){
-                var name = $(this).data('name');
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 var currentPath = mediaModalNavOlCont.data('current-path');
@@ -199,7 +204,7 @@
                 form.append("_token", Dcat.token);
                 $.ajax({
                     type: 'post',
-                    url: '/admin/lake-form-media/new-folder',
+                    url: options.new_folder_url,
                     data: form,
                     processData: false,
                     contentType : false,
@@ -220,10 +225,10 @@
 
             // 上传图片
             $('body').on('change', '.lake-form-media-upload', function() {
-                var name = $(this).data('name');
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 
                 var currentPath = mediaModalNavOlCont.data('current-path');
@@ -240,7 +245,7 @@
                 form.append("_token", Dcat.token);
                 $.ajax({
                     type: 'post', 
-                    url: '/admin/lake-form-media/upload',
+                    url: options.upload_url,
                     data: form,
                     processData: false,
                     contentType : false,
@@ -260,16 +265,16 @@
             
             // 提交按钮
             $('body').on('click', '.lake-form-media-submit', function(res){
-                var name = $(this).data('name');
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 
                 var currentPath = mediaModalNavOlCont.data('current-path');
                 var options = mediaCont.data('options');
                 
-                var inputCont = $('.lake-form-media-input-' + name);
+                var inputCont = mediaCont.find('.lake-form-media-input');
                 
                 var limit = options.limit;
                 var rootpath = options.rootpath;
@@ -325,16 +330,16 @@
             
             // 点击图片
             $('body').on("click", ".lake-form-media-img-op", function(){
-                var name = $(this).data('name');
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 
                 var currentPath = mediaModalNavOlCont.data('current-path');
                 var options = mediaCont.data('options');
                 
-                var inputCont = $('.lake-form-media-input-' + name);
+                var inputCont = mediaCont.find('.lake-form-media-input');
                 
                 var type = options.type;
                 
@@ -385,16 +390,16 @@
             
             // 点击视频
             $('body').on("click", ".lake-form-media-video-op", function(){
-                var name = $(this).data('name');
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
                 
-                var mediaCont = $('.lake-form-media-'+name);
-                var mediaModalCont = $('.lake-form-media-modal-'+name);
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 
                 var currentPath = mediaModalNavOlCont.data('current-path');
                 var options = mediaCont.data('options');
                 
-                var inputCont = $('.lake-form-media-input-' + name);
+                var inputCont = mediaCont.find('.lake-form-media-input');
                 
                 var type = options.type;
                 
@@ -406,7 +411,7 @@
                     return false;
                 }
 
-                //现有多少个
+                // 现有多少个
                 var now_num_val = inputCont.val();
                 if (now_num_val == '[]') {
                     now_num_val = '';
@@ -444,17 +449,19 @@
         },
         
         getdata: function(name, path = '/', options = []) {
+            var mediaCont = $('.lake-form-media-' + name);
+            
             var limit = options.limit;
             var remove = options.remove;
             var rootpath = options.rootpath;
             var pageSize = options.pageSize;
             
-            var mediaModalCont = $('.lake-form-media-modal-'+name);
+            var mediaModalCont = mediaCont.find('.lake-form-media-modal');
             var mediaModalTableCont = mediaModalCont.find('.lake-form-media-body-table');
             var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
             var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
             
-            var inputCont = $('.lake-form-media-input-' + name);
+            var inputCont = mediaCont.find('.lake-form-media-input');
             
             var currentPath = mediaModalNavOlCont.data('current-path');
             var currentPage = mediaModalPageCont.data('current-page');
@@ -463,7 +470,10 @@
             var thiz = this;
             
             $.ajax({
-                url: "/admin/lake-form-media/get-files?path="+path+"&page="+currentPage+"&pageSize="+pageSize,
+                url: options.get_files_url 
+                    + "?path="+path
+                    + "&page="+currentPage
+                    + "&pageSize="+pageSize,
                 method: 'GET',
                 datatype:'json',
                 async: true,
@@ -477,10 +487,10 @@
                             if (list[i]['isDir']) {
                                 var htmltemp = '';
                                 htmltemp += '<div class="col-xs-4 col-md-3">';
-                                htmltemp +=     '<div class="thumbnail lake-form-media-file-op" data-name="'+name+'" data-path="/'+list[i]['name']+'">';
+                                htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-dir-op" data-path="/'+list[i]['name']+'" title="'+list[i]['name']+'">';
                                 htmltemp +=         list[i]['preview'];
                                 htmltemp +=         '<div class="file-info">';
-                                htmltemp +=             '<a href="javascript:;" class="file-name" title="'+list[i]['name']+'">'+list[i]['namesmall']+'</a>';
+                                htmltemp +=             '<a href="javascript:;" class="file-name">'+list[i]['namesmall']+'</a>';
                                 htmltemp +=         '</div>';
                                 htmltemp +=     '</div>';
                                 htmltemp += '</div>';
@@ -490,15 +500,15 @@
                                 htmltemp += '<div class="col-xs-4 col-md-3">';
                                 
                                 if(list[i]['type'] == 'image'){
-                                    htmltemp +=     '<div class="thumbnail lake-field-preview-item lake-form-media-img-op" data-name="'+name+'" data-url="'+list[i]['name']+'">';
+                                    htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-img-op" data-url="'+list[i]['name']+'" title="'+list[i]['name']+'">';
                                 }else if(list[i]['type'] == 'video'){
-                                    htmltemp +=     '<div class="thumbnail lake-field-preview-item lake-form-media-video-op" data-name="'+name+'" data-url="'+list[i]['name']+'">';
+                                    htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-video-op" data-url="'+list[i]['name']+'" title="'+list[i]['name']+'">';
                                 }else{
-                                    htmltemp +=    '<div class="thumbnail " data-url="'+list[i]['name']+'">';
+                                    htmltemp +=    '<div class="thumbnail lake-form-media-field-item" data-url="'+list[i]['name']+'" title="'+list[i]['name']+'">';
                                 }
                                 htmltemp +=         list[i]['preview'];
                                 htmltemp +=         '<div class="file-info">';
-                                htmltemp +=             '<a href="javascript:;" class="file-name" title="'+list[i]['name']+'">'+list[i]['namesmall']+'</a>';
+                                htmltemp +=             '<a href="javascript:;" class="file-name">'+list[i]['namesmall']+'</a>';
                                 htmltemp +=         '</div>';
                                 htmltemp +=     '</div>';
                                 htmltemp += '</div>';
@@ -512,10 +522,10 @@
                         mediaModalTableCont.append(htmltemp);
                     }
                     
-                    mediaModalNavOlCont.html('<li class="breadcrumb-item lake-form-media-nav-li" data-name="'+name+'" data-path="/""><a href="javascript:;"><i class="fa fa-th-large"></i> </a></li>');
+                    mediaModalNavOlCont.html('<li class="breadcrumb-item lake-form-media-nav-li" data-path="/""><a href="javascript:;"><i class="fa fa-th-large"></i> </a></li>');
                     mediaModalNavOlCont.data('current-path', '/');
                     for (var i = 0; i < nav.length; i++) {
-                        mediaModalNavOlCont.append('<li class="breadcrumb-item"><a class="lake-form-media-nav-li" data-name="'+name+'" href="javascript:;" data-path="'+nav[i]['url']+'"> '+nav[i]['name']+'</a></li>');
+                        mediaModalNavOlCont.append('<li class="breadcrumb-item"><a class="lake-form-media-nav-li" href="javascript:;" data-path="'+nav[i]['url']+'"> '+nav[i]['name']+'</a></li>');
                         mediaModalNavOlCont.data('current-path', nav[i]['url']);
                     }
                     
@@ -565,7 +575,7 @@
         
         refreshPreview: function(name) {
             var mediaCont = $('.lake-form-media-'+name);
-            var inputCont = $('.lake-form-media-input-' + name);
+            var inputCont = mediaCont.find('.lake-form-media-input');
             
             var url_list = [];
             mediaCont.find('.lake-form-media-preview-item')
@@ -602,15 +612,17 @@
                 var html = '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-3 lake-form-media-preview-item" data-src="'+urlList[i]+'">';
                     html += '<div class="thumbnail lake-form-media-row-col">';
                 
+                html += '<div class="lake-form-media-row-img">';
                 if (options.type == 'img') {
-                    html += '<img width="100%" max-height="160px" src="'+src+'" alt="'+src+'"/>';
+                    html += '<img width="100%" src="'+src+'" alt="'+src+'"/>';
                 } else if (options.type == 'video') {
-                    html += '<video width="100%" max-height="160px" src="'+src+'" alt="'+src+'"/>';
+                    html += '<video width="100%" src="'+src+'" alt="'+src+'"/>';
                 }
+                html += '</div>';
                 
                 html += '<div class="caption">';
                 if (remove) {
-                    html += '<a type="button" class="btn btn-default file-delete-multiple lake-form-media-img-show-item-delete" data-name="'+name+'" data-url="'+urlList[i]+'" title="删除"><i class="fa fa-times"></i></a>';
+                    html += '<a type="button" class="btn btn-default file-delete-multiple lake-form-media-img-show-item-delete" data-url="'+urlList[i]+'" title="删除"><i class="fa fa-times"></i></a>';
                 }
                 if (limit > 1) {
                     html += '<a href="javascript:;" type="button" class="btn btn-default js-dragsort" title="拖动"><i class="fa fa-arrows"></i></a>';

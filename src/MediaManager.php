@@ -213,7 +213,7 @@ class MediaManager
             return [
                 'icon'      => '',
                 'name'      => $file,
-                'namesmall' => $this->path == '/'?$file:str_replace($this->path.'/','', '/'.$file),
+                'namesmall' => pathinfo($file, PATHINFO_BASENAME),
                 'preview'   => $this->getFilePreview($file),
                 'isDir'     => false,
                 'size'      => $this->getFilesize($file),
@@ -235,7 +235,7 @@ class MediaManager
             return [
                 'icon'      => '',
                 'name'      => $dir,
-                'namesmall' => $this->path == '/'?$dir:str_replace($this->path.'/','', '/'.$dir),
+                'namesmall' => basename($dir),
                 'preview'   => str_replace('__path__', $dir, $preview),
                 'isDir'     => true,
                 'size'      => '-',

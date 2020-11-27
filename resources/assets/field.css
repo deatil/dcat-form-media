@@ -1,4 +1,31 @@
-.files>li {
+.lake-form-media .lake-form-media-img-show {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 8px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+.lake-form-media .lake-form-media-row-col {
+    overflow: hidden;
+    padding: 5px 0;
+    position: relative;
+}
+.lake-form-media .lake-form-media-row-col .lake-form-media-row-img {
+    height: 110px;
+    text-align: center;
+    font-size: 65px;
+    overflow: hidden;
+}
+.lake-form-media .lake-form-media-row-col .lake-form-media-row-img > img {
+    vertical-align: middle;
+}
+.lake-form-media .lake-form-media-row-col .caption {
+}
+.lake-form-media .lake-form-media-row-col .caption .btn {
+    padding: .54rem 1.1rem!important;
+}
+
+.lake-form-media-modal .lake-form-media-body-table .files>li {
     float: left;
     width: 150px;
     border: 1px solid #eee;
@@ -6,28 +33,25 @@
     margin-right: 10px;
     position: relative;
 }
-
-.files>li>.file-select {
+.lake-form-media-modal .lake-form-media-body-table .files>li>.file-select {
     position: absolute;
     top: -4px;
     left: -1px;
 }
-
-.file-icon {
+.lake-form-media-modal .lake-form-media-body-table .file-icon {
     text-align: center;
     font-size: 65px;
     color: #666;
     display: block;
     height: 110px;
+    overflow: hidden;
 }
-
-.file-info {
+.lake-form-media-modal .lake-form-media-body-table .file-info {
     text-align: center;
     padding: 10px;
     background: #f4f4f4;
 }
-
-.file-name {
+.lake-form-media-modal .lake-form-media-body-table .file-name {
     font-weight: bold;
     color: #666;
     display: block;
@@ -35,63 +59,47 @@
     white-space: nowrap !important;
     text-overflow: ellipsis !important;
 }
-
-.file-size {
+.lake-form-media-modal .lake-form-media-body-table .file-size {
     color: #999;
     font-size: 12px;
     display: block;
 }
-
-.files {
+.lake-form-media-modal .lake-form-media-body-table .files {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-
-.file-icon.has-img {
+.lake-form-media-modal .lake-form-media-body-table .file-icon.has-img {
     padding: 0;
 }
-
-.file-icon.has-img>img {
+.lake-form-media-modal .lake-form-media-body-table .file-icon.has-img>img {
     max-width: 100%;
     height: auto;
     max-height: 92px;
 }
-
-.lake-field-preview-item {
+.lake-form-media-modal .thumbnail {
     border: 1px solid #fff;
+    margin: 3px 0;
 }
-.lake-form-media-selected {
-    border: 1px solid #0081ff;
+.lake-form-media-modal .thumbnail:hover {
+    cursor: pointer;
+    border: 1px solid #ededed;
 }
-.lake-form-media-img-show{
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    padding: 8px;
-    width: 100%;
-    margin-bottom: 5px;
+.lake-form-media-modal .thumbnail.lake-form-media-selected {
+    border: 1px solid #4c60a3;
 }
-.lake-form-media-img-show .caption .btn {
-    padding: .54rem 1.1rem!important;
-}
-.lake-form-media-row-col {
-    overflow: hidden;
-    padding: 2px 0;
-}
-
-.lake-form-media-empty {
+.lake-form-media-modal .lake-form-media-empty {
     text-align: center;
     padding: 35px 0;
     color: #bfc2cc;
     background: #f7f5f5;
     border-radius: .5rem;
 }
-
-.lake-form-media-modal-page {
+.lake-form-media-modal .lake-form-media-modal-page {
     position: absolute;
     bottom: 1rem;
     margin-left: 1rem;
 }
-.lake-form-media-modal-page .btn {
+.lake-form-media-modal .lake-form-media-modal-page .btn {
     margin-right: .25rem;
 }
