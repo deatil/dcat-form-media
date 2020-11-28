@@ -47,6 +47,9 @@ $(function () {
                     return ;
                 }
                 
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
                 showRowCont.dragsort({
                     itemSelector: 'div.lake-form-media-preview-item',
                     dragSelector: ".js-dragsort",
