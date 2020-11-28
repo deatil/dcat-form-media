@@ -219,7 +219,7 @@ class MediaManager
                 'size'      => $this->getFilesize($file),
                 'url'       => $this->storage->url($file),
                 'time'      => $this->getFileChangeTime($file),
-                'type' => $this->detectFileType($file)
+                'type'      => $this->detectFileType($file)
             ];
         }, $files);
 
@@ -241,6 +241,7 @@ class MediaManager
                 'size'      => '-',
                 'url'       => $this->storage->url($dir),
                 'time'      => $this->getFileChangeTime($dir),
+                'type'      => 'dir',
             ];
         }, $dirs);
 

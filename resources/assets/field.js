@@ -330,14 +330,8 @@ $(function () {
                     }
                 }
                 
-                var select_true_list = null;
-                if (type == 'img') {
-                    select_true_list = mediaModalCont
-                        .find('.lake-form-media-img-op.lake-form-media-selected');
-                } else if(type == 'video') {
-                    select_true_list = mediaModalCont
-                        .find('.lake-form-media-video-op.lake-form-media-selected');
-                }
+                select_true_list = mediaModalCont
+                    .find('.lake-form-media-selected[data-type="'+type+'"]');
                 for (var i = 0; i < select_true_list.length; i++) {
                     urlList.push($(select_true_list[i]).data('url'));
                 }
@@ -350,6 +344,11 @@ $(function () {
                 } else {
                     // 提交限制数量
                     var newUrlList = [];
+                    
+                    if (urlList.length < limit) {
+                        limit = urlList.length;
+                    }
+                    
                     for (var i = 0; i < limit; i++) {
                         newUrlList.push(urlList[i]);
                     }
@@ -368,8 +367,10 @@ $(function () {
                 $('#LakeFormMediaModel'+name).modal('hide');
             });
             
-            // 点击图片
-            $('body').on("click", ".lake-form-media-img-op", function(){
+            // 点击图片 / 点击视频
+            $('body').on("click", ".lake-form-media-field-item-op", function(){
+                var itemType = $(this).data('type');
+                
                 var mediaCont = $(this).parents('.lake-form-media');
                 var name = mediaCont.data('name');
                 
@@ -384,7 +385,7 @@ $(function () {
                 var type = options.type;
                 var limit = options.limit;
                 
-                if (type != 'img') {
+                if (type != itemType) {
                     return false;
                 }
 
@@ -403,7 +404,8 @@ $(function () {
                 }
                 
                 var noNeedSelectArr = [];
-                var imgItem = mediaModalCont.find('.lake-form-media-img-op');
+                var imgItem = mediaModalCont
+                    .find('.lake-form-media-field-item[data-type="'+itemType+'"]');
                 for (var i = 0; i < imgItem.length; i++) {
                     var itemUrl = $(imgItem[i]).data('url');
                     if ($.inArray(itemUrl, nowNumArr) != -1) {
@@ -423,7 +425,9 @@ $(function () {
                     // 选中
                     if (limit == 1) {
                         // 取消之前选中的
-                        mediaModalCont.find('.lake-form-media-selected').removeClass('lake-form-media-selected')
+                        mediaModalCont
+                            .find('.lake-form-media-selected')
+                            .removeClass('lake-form-media-selected')
                     } else {
                         if (selectNum >= limit) {
                             toastr.error('选择图片不能超过 '+limit+' 张');
@@ -434,73 +438,6 @@ $(function () {
                     $(this).addClass('lake-form-media-selected');
                 }
                 
-                return 1;
-            });
-            
-            // 点击视频
-            $('body').on("click", ".lake-form-media-video-op", function(){
-                var mediaCont = $(this).parents('.lake-form-media');
-                var name = mediaCont.data('name');
-                
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                
-                var currentPath = mediaModalNavOlCont.data('current-path');
-                var options = mediaCont.data('options');
-                
-                var inputCont = mediaCont.find('.lake-form-media-input');
-                
-                var type = options.type;
-                var limit = options.limit;
-                
-                if (type != 'video') {
-                    return false;
-                }
-
-                // 现有多少个
-                var nowNumVal = inputCont.val();
-                if (nowNumVal == '[]') {
-                    nowNumVal = '';
-                }
-                var nowNumArr = [];
-                if (nowNumVal) {
-                    if (limit == 1) {
-                        nowNumArr.push(nowNumVal)
-                    } else {
-                        nowNumArr = thiz.isJSON( nowNumVal );
-                    }
-                }
-                
-                var noNeedSelectArr = [];
-                var imgItem = mediaModalCont.find('.lake-form-media-video-op');
-                for (var i = 0; i < imgItem.length; i++) {
-                    var itemUrl = $(imgItem[i]).data('url');
-                    if ($.inArray(itemUrl, nowNumArr) != -1) {
-                        noNeedSelectArr.push(itemUrl);
-                    }
-                }
-                var selectedItem = mediaModalCont.find('.lake-form-media-selected');
-                
-                var selectNum = nowNumArr.length - noNeedSelectArr.length + selectedItem.length;
-
-                var tag = $(this).hasClass('lake-form-media-selected');
-
-                if (tag) {
-                    // 取消选中
-                    $(this).removeClass('lake-form-media-selected');
-                } else {
-                    // 选中
-                    if (limit == 1) {
-                        // 取消之前选中的
-                        mediaModalCont.find('.lake-form-media-selected').removeClass('lake-form-media-selected')
-                    }else{
-                        if (selectNum >= limit){
-                            toastr.error('选择的视频不能超过 '+limit+' 条');
-                            return 1;
-                        }
-                    }
-                    $(this).addClass('lake-form-media-selected');
-                }
                 return 1;
             });
         },
@@ -544,7 +481,7 @@ $(function () {
                             if (list[i]['isDir']) {
                                 var htmltemp = '';
                                 htmltemp += '<div class="col-xs-4 col-md-3">';
-                                htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-dir-op" data-path="/'+list[i]['name']+'" title="'+list[i]['name']+'">';
+                                htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-dir-op" data-type="'+list[i]['type']+'" data-path="/'+list[i]['name']+'" title="'+list[i]['name']+'">';
                                 htmltemp +=         list[i]['preview'];
                                 htmltemp +=         '<div class="file-info">';
                                 htmltemp +=             '<a href="javascript:;" class="file-name">'+list[i]['namesmall']+'</a>';
@@ -556,13 +493,7 @@ $(function () {
                                 var htmltemp = '';
                                 htmltemp += '<div class="col-xs-4 col-md-3">';
                                 
-                                if(list[i]['type'] == 'image'){
-                                    htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-img-op" data-url="'+list[i]['name']+'" title="'+list[i]['name']+'">';
-                                }else if(list[i]['type'] == 'video'){
-                                    htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-video-op" data-url="'+list[i]['name']+'" title="'+list[i]['name']+'">';
-                                }else{
-                                    htmltemp +=    '<div class="thumbnail lake-form-media-field-item" data-url="'+list[i]['name']+'" title="'+list[i]['name']+'">';
-                                }
+                                htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-field-item-op" data-type="'+list[i]['type']+'" data-url="'+list[i]['name']+'" title="'+list[i]['name']+'">';
                                 htmltemp +=         list[i]['preview'];
                                 htmltemp +=         '<div class="file-info">';
                                 htmltemp +=             '<a href="javascript:;" class="file-name">'+list[i]['namesmall']+'</a>';
@@ -672,7 +603,7 @@ $(function () {
                     html += '<div class="thumbnail lake-form-media-row-col">';
                 
                 html += '<div class="lake-form-media-row-img">';
-                if (options.type == 'img') {
+                if (options.type == 'image') {
                     html += '<img width="100%" src="'+src+'" alt="'+src+'"/>';
                 } else if (options.type == 'video') {
                     html += '<video width="100%" src="'+src+'" alt="'+src+'"/>';

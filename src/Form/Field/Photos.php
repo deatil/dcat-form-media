@@ -14,5 +14,5 @@ class Photos extends Field
 {
     protected $limit = 9;
     protected $remove = true;
-    protected $type = 'img';
+    protected $type = 'image';
 }
