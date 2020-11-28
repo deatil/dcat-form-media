@@ -40,7 +40,6 @@ composer require lake/form-media
 ```
 $form->photo('photo','图片')
     ->nametype('datetime')
-    ->limit(1)
     ->remove(true)
     ->help('单图，可删除');
 ```
@@ -51,13 +50,11 @@ $form->photo('photo','图片')
 $form->photo('photo','图片')
     ->path('pic') 
     ->nametype('uniqid') 
-    ->limit(1)
     ->remove(false)
     ->help('单图，不可删除');
 
 $form->photo('photo','图片')
     ->nametype('uniqid') 
-    ->limit(1)
     ->help('单图，不可删除');
 ```
 
@@ -78,7 +75,6 @@ $form->photos('photo', '图片')
 $form->video('video','视频')
     ->path('video') 
     ->nametype('uniqid') 
-    ->limit(9)
     ->remove(true);  //可删除
 ```
 
