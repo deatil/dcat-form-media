@@ -1,6 +1,9 @@
-// jQuery List DragSort v0.5.2
+// jQuery List DragSort v0.5.5
 // Website: http://dragsort.codeplex.com/
 // License: http://dragsort.codeplex.com/license
+
+// update deatil
+// date 20201128
 
 !(function(a){
     if ("function" == typeof define&&define.amd) {

@@ -1,11 +1,17 @@
-;(function () {
+/**
+ * LakeFormMedia-field.js v1.0.5
+ *
+ * @create 2020-11-28
+ * @author deatil
+ */
+$(function () {
     var LakeFormMedia = {
         init: function() {
             var thiz = this;
             
-            $('.lake-form-media-btn-file').each(function(i, cont) {
+            $('.lake-form-media-input').each(function(i, cont) {
                 var mediaCont = $(cont).parents('.lake-form-media');
-                var value = $(cont).data('value');
+                var value = $(cont).val();
                 
                 var name = mediaCont.data('name');
                 
@@ -16,30 +22,16 @@
                 
                 var limit = options.limit;
                 
-                var value_arr = [];
+                var valueArr = [];
                 if (value) {
                     if (limit > 1) {
-                        value_arr = value;
+                        valueArr = thiz.isJSON(value);
                     } else {
                         if (value != '[]' && value != '') {
-                            value_arr.push(value)
+                            valueArr.push(value)
                         }
                     }
-                    thiz.previewImg(name, value_arr, options);
-                    
-                    if (limit > 1) {
-                        // 拖拽排序
-                        mediaCont
-                            .find(".lake-form-media-img-show-row").dragsort({
-                                itemSelector: 'div.lake-form-media-preview-item',
-                                dragSelector: ".js-dragsort",
-                                dragEnd: function () {
-                                    thiz.refreshPreview(name);
-                                },
-                                placeHolderTemplate: $('<div class="lake-form-media-preview-item" />'),
-                                scrollSpeed: 15
-                            });
-                    }
+                    thiz.refreshPreview(name, valueArr, options);
                 } else {
                     mediaModalCont
                         .find('.lake-form-media-img-show')
@@ -47,7 +39,26 @@
                 }
                 
             });
-
+            
+            // 拖拽排序
+            $('body').on('mouseenter', '.js-dragsort', function() {
+                var showRowCont = $(this).parents(".lake-form-media-img-show-row");
+                if (showRowCont.hasClass('bind-dragsort')) {
+                    return ;
+                }
+                
+                showRowCont.dragsort({
+                    itemSelector: 'div.lake-form-media-preview-item',
+                    dragSelector: ".js-dragsort",
+                    dragEnd: function () {
+                        thiz.refreshInputString(name);
+                    },
+                    placeHolderTemplate: $('<div class="lake-form-media-preview-item" />'),
+                    scrollSpeed: 15
+                });
+                showRowCont.addClass('bind-dragsort')
+            });
+            
             // 删除
             $('body').on("click", ".lake-form-media-img-show-item-delete", function(){
                 var mediaCont = $(this).parents('.lake-form-media');
@@ -58,7 +69,7 @@
                 var mediaShowCont = mediaCont.find('.lake-form-media-img-show');
                 
                 mediaCont.find('.lake-form-media-preview-item[data-src="' + itemurl + '"]').remove();
-                thiz.refreshPreview(name);
+                thiz.refreshInputString(name);
                 
                 if (mediaShowCont.find('.lake-form-media-preview-item').length < 1) {
                     mediaShowCont.hide();
@@ -182,7 +193,28 @@
                 
                 thiz.getdata(name, path, options)
             });
-
+            
+            // 页码提示
+            $('.lake-form-media-modal-prev-page,.lake-form-media-modal-next-page').on('mouseover', function () {
+                var pageCont = $(this).parents('.lake-form-media-modal-page');
+                
+                var currentPage = pageCont.data('current-page');
+                var totalPage = pageCont.data('total-page');
+                var pageSize = pageCont.data('page-size');
+                var title = '第'+currentPage+'页 / 共'+totalPage+'页，每页'+pageSize+'条';
+                var idx = layer.tips(title, this, {
+                  tips: [1, '#586cb1'],
+                  time: 0,
+                  maxWidth: 210,
+                });
+                
+                $(this).attr('layer-idx', idx);
+            }).on('mouseleave', function () {
+                layer.close($(this).attr('layer-idx'));
+                
+                $(this).attr('layer-idx', '');
+            });
+            
             // 新建文件夹
             $('body').on('click', ".lake-form-media-dir-button", function(res){
                 var mediaCont = $(this).parents('.lake-form-media');
@@ -250,10 +282,10 @@
                     processData: false,
                     contentType : false,
                     success: function(data){
-                        if(data['code'] == 200){
+                        if (data['code'] == 200) {
                             toastr.success(data['msg']);
                             thiz.getdata(name, currentPath, options)
-                        }else{
+                        } else {
                             toastr.error(data['msg']);
                         }
                     },
@@ -277,54 +309,59 @@
                 var inputCont = mediaCont.find('.lake-form-media-input');
                 
                 var limit = options.limit;
-                var rootpath = options.rootpath;
-                var remove = options.remove
                 var type = options.type
                 
                 // 提交按钮
-                var url_list = [];
-                var url_list_str = inputCont.val();
-                if (url_list_str == '[]') {
-                    url_list_str = '';
+                var urlList = [];
+                var urlListStr = inputCont.val();
+                if (urlListStr == '[]') {
+                    urlListStr = '';
                 }
                 
-                if (url_list_str) {
+                if (urlListStr) {
                     if (limit == 1) {
-                        //去掉预览
-                        thiz.previewImg(name, [], options)
+                        // 去掉预览
+                        thiz.refreshPreview(name, [], options)
                     } else {
-                        url_list = thiz.isJSON( url_list_str );
+                        urlList = thiz.isJSON( urlListStr );
                     }
                 }
                 
                 var select_true_list = null;
-                if(type == 'img'){
+                if (type == 'img') {
                     select_true_list = mediaModalCont
                         .find('.lake-form-media-img-op.lake-form-media-selected');
-                }else if(type == 'video'){
+                } else if(type == 'video') {
                     select_true_list = mediaModalCont
                         .find('.lake-form-media-video-op.lake-form-media-selected');
                 }
                 for (var i = 0; i < select_true_list.length; i++) {
-                    url_list.push($(select_true_list[i]).data('url'));
+                    urlList.push($(select_true_list[i]).data('url'));
                 }
                 
-                url_list = thiz.unique(url_list);
+                urlList = thiz.unique(urlList);
                 
                 if (limit == 1) {
-                    inputCont.val(url_list[0]);
-                    inputCont.attr("value", url_list[0]);
+                    inputCont.val(urlList[0]);
+                    inputCont.attr("value", urlList[0]);
                 } else {
-                    url_list_json = JSON.stringify( url_list );
-                    if(url_list_json == '[]'){
+                    // 提交限制数量
+                    var newUrlList = [];
+                    for (var i = 0; i < limit; i++) {
+                        newUrlList.push(urlList[i]);
+                    }
+                    urlList = newUrlList;
+                    
+                    urlList_json = JSON.stringify( urlList );
+                    if(urlList_json == '[]'){
                         $('#LakeFormMediaModel'+name).modal('hide');
                         return null;
                     }
-                    inputCont.val(url_list_json);
-                    inputCont.attr("value", url_list_json);
+                    inputCont.val(urlList_json);
+                    inputCont.attr("value", urlList_json);
                 }
                 
-                thiz.previewImg(name, url_list, options)
+                thiz.refreshPreview(name, urlList, options)
                 $('#LakeFormMediaModel'+name).modal('hide');
             });
             
@@ -342,46 +379,55 @@
                 var inputCont = mediaCont.find('.lake-form-media-input');
                 
                 var type = options.type;
-                
                 var limit = options.limit;
-                var rootpath = options.rootpath;
-                var remove = options.remove
                 
                 if (type != 'img') {
                     return false;
                 }
 
                 // 现有多少张
-                var now_num_val = inputCont.val();
-                if (now_num_val == '[]') {
-                    now_num_val = '';
+                var nowNumVal = inputCont.val();
+                if (nowNumVal == '[]') {
+                    nowNumVal = '';
                 }
-                var now_num_arr = [];
-                if (now_num_val) {
-                    if(limit == 1){
-                        now_num_arr.push(now_num_val)
-                    }else{
-                        now_num_arr = thiz.isJSON( now_num_val );
+                var nowNumArr = [];
+                if (nowNumVal) {
+                    if (limit == 1) {
+                        nowNumArr.push(nowNumVal)
+                    } else {
+                        nowNumArr = thiz.isJSON( nowNumVal );
                     }
                 }
-                var select_num = now_num_arr.length;
+                
+                var noNeedSelectArr = [];
+                var imgItem = mediaModalCont.find('.lake-form-media-img-op');
+                for (var i = 0; i < imgItem.length; i++) {
+                    var itemUrl = $(imgItem[i]).data('url');
+                    if ($.inArray(itemUrl, nowNumArr) != -1) {
+                        noNeedSelectArr.push(itemUrl);
+                    }
+                }
+                var selectedItem = mediaModalCont.find('.lake-form-media-selected');
+                
+                var selectNum = nowNumArr.length - noNeedSelectArr.length + selectedItem.length;
                 
                 var tag = $(this).hasClass('lake-form-media-selected');
 
                 if (tag) {
-                    //取消选中
+                    // 取消选中
                     $(this).removeClass('lake-form-media-selected');
                 } else {
-                    //选中
+                    // 选中
                     if (limit == 1) {
-                        //取消之前选中的
+                        // 取消之前选中的
                         mediaModalCont.find('.lake-form-media-selected').removeClass('lake-form-media-selected')
                     } else {
-                        if (select_num >= limit) {
-                            thiz.tip('选择图片不能超过 '+limit+' 张');
+                        if (selectNum >= limit) {
+                            toastr.error('选择图片不能超过 '+limit+' 张');
                             return 1;
                         }
                     }
+                    
                     $(this).addClass('lake-form-media-selected');
                 }
                 
@@ -402,43 +448,51 @@
                 var inputCont = mediaCont.find('.lake-form-media-input');
                 
                 var type = options.type;
-                
                 var limit = options.limit;
-                var rootpath = options.rootpath;
-                var remove = options.remove
                 
                 if (type != 'video') {
                     return false;
                 }
 
                 // 现有多少个
-                var now_num_val = inputCont.val();
-                if (now_num_val == '[]') {
-                    now_num_val = '';
+                var nowNumVal = inputCont.val();
+                if (nowNumVal == '[]') {
+                    nowNumVal = '';
                 }
-                var now_num_arr = [];
-                if (now_num_val) {
-                    if(limit == 1){
-                        now_num_arr.push(now_num_val)
-                    }else{
-                        now_num_arr = thiz.isJSON( now_num_val );
+                var nowNumArr = [];
+                if (nowNumVal) {
+                    if (limit == 1) {
+                        nowNumArr.push(nowNumVal)
+                    } else {
+                        nowNumArr = thiz.isJSON( nowNumVal );
                     }
                 }
-                var select_num = now_num_arr.length;
+                
+                var noNeedSelectArr = [];
+                var imgItem = mediaModalCont.find('.lake-form-media-video-op');
+                for (var i = 0; i < imgItem.length; i++) {
+                    var itemUrl = $(imgItem[i]).data('url');
+                    if ($.inArray(itemUrl, nowNumArr) != -1) {
+                        noNeedSelectArr.push(itemUrl);
+                    }
+                }
+                var selectedItem = mediaModalCont.find('.lake-form-media-selected');
+                
+                var selectNum = nowNumArr.length - noNeedSelectArr.length + selectedItem.length;
 
                 var tag = $(this).hasClass('lake-form-media-selected');
 
                 if (tag) {
-                    //取消选中
+                    // 取消选中
                     $(this).removeClass('lake-form-media-selected');
                 } else {
-                    //选中
+                    // 选中
                     if (limit == 1) {
-                        //取消之前选中的
+                        // 取消之前选中的
                         mediaModalCont.find('.lake-form-media-selected').removeClass('lake-form-media-selected')
                     }else{
-                        if (select_num >= limit){
-                            thiz.tip('选择的视频不能超过 '+limit+' 条');
+                        if (selectNum >= limit){
+                            toastr.error('选择的视频不能超过 '+limit+' 条');
                             return 1;
                         }
                     }
@@ -529,34 +583,34 @@
                         mediaModalNavOlCont.data('current-path', nav[i]['url']);
                     }
                     
-                    var url_list_str = inputCont.val();
-                    var url_list = [];
+                    var urlListStr = inputCont.val();
+                    var urlList = [];
                     if (limit == 1) {
-                        mediaModalTableCont.find('[data-url="'+url_list_str+'"]')
+                        mediaModalTableCont.find('[data-url="'+urlListStr+'"]')
                             .addClass('lake-form-media-selected');
                     } else {
-                        url_list = thiz.isJSON( url_list_str );
-                        for (var index in url_list) {
-                            mediaModalTableCont.find('[data-url="'+url_list[index]+'"]')
+                        urlList = thiz.isJSON( urlListStr );
+                        for (var index in urlList) {
+                            mediaModalTableCont.find('[data-url="'+urlList[index]+'"]')
                                 .addClass('lake-form-media-selected');
                         }
                     }
                     
-                    var total_page = parseInt(res['data']['total_page']);
-                    var current_page = parseInt(res['data']['current_page']);
-                    var per_page = parseInt(res['data']['per_page']);
+                    var totalPage = parseInt(res['data']['total_page']);
+                    var currentPage = parseInt(res['data']['current_page']);
+                    var perPage = parseInt(res['data']['per_page']);
                     
-                    mediaModalPageCont.data('current-page', current_page);
-                    mediaModalPageCont.data('total-page', total_page);
+                    mediaModalPageCont.data('current-page', currentPage);
+                    mediaModalPageCont.data('total-page', totalPage);
                     
-                    if (total_page > 1) {
-                        if (current_page > 1) {
+                    if (totalPage > 1) {
+                        if (currentPage > 1) {
                             mediaModalPageCont.find('.lake-form-media-modal-prev-page').removeClass('hidden');
                         } else {
                             mediaModalPageCont.find('.lake-form-media-modal-prev-page').addClass('hidden');
                         }
                         
-                        if (current_page < total_page) {
+                        if (currentPage < totalPage) {
                             mediaModalPageCont.find('.lake-form-media-modal-next-page').removeClass('hidden');
                         } else {
                             mediaModalPageCont.find('.lake-form-media-modal-next-page').addClass('hidden');
@@ -573,17 +627,18 @@
             });
         },
         
-        refreshPreview: function(name) {
+        // 刷新表单数据
+        refreshInputString: function(name) {
             var mediaCont = $('.lake-form-media-'+name);
             var inputCont = mediaCont.find('.lake-form-media-input');
             
-            var url_list = [];
+            var urlList = [];
             mediaCont.find('.lake-form-media-preview-item')
                 .each(function(i, cont) {
-                    url_list.push($(cont).data('src'));
+                    urlList.push($(cont).data('src'));
                 });
             
-            var inputString = JSON.stringify( url_list );
+            var inputString = JSON.stringify( urlList );
             if (inputString == '[]' || inputString  == '[""]') {
                 inputString = '';
             }
@@ -591,7 +646,8 @@
             inputCont.val(inputString);
         },
         
-        previewImg: function(name, urlList, options = []) {
+        // 刷新/显示 预览
+        refreshPreview: function(name, urlList, options = []) {
             var limit = options.limit;
             var remove = options.remove;
             var rootpath = options.rootpath;
@@ -636,12 +692,8 @@
             }
         },
         
-        tip: function(title = '提示'){
-            layer.alert(title);
-        },
-    
         unique: function (arr){
-            var hash=[];
+            var hash = [];
             for (var i = 0; i < arr.length; i++) {
                 if(hash.indexOf(arr[i])==-1){
                     hash.push(arr[i]);
@@ -665,4 +717,4 @@
     }
     
     LakeFormMedia.init();
-})();
+});
