@@ -19,6 +19,15 @@
 .lake-form-media .lake-form-media-row-col .lake-form-media-row-img > img {
     vertical-align: middle;
 }
+.lake-form-media .lake-form-media-row-col .lake-form-media-row-img .lake-form-media-preview-fa {
+    vertical-align: middle;
+    border: 1px solid #f9f7f7;
+    display: block;
+    width: 100%;
+    height: 100%;
+    font-size: 65px;
+    padding-top: 20px;
+}
 .lake-form-media .lake-form-media-row-col .caption {
 }
 .lake-form-media .lake-form-media-row-col .caption .btn {

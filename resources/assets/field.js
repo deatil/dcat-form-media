@@ -298,7 +298,7 @@ $(function () {
                 });
             });
             
-            // 提交按钮
+            // 提交
             $('body').on('click', '.lake-form-media-submit', function(res){
                 var mediaCont = $(this).parents('.lake-form-media');
                 var name = mediaCont.data('name');
@@ -314,7 +314,7 @@ $(function () {
                 var limit = options.limit;
                 var type = options.type
                 
-                // 提交按钮
+                // 列表
                 var urlList = [];
                 var urlListStr = inputCont.val();
                 if (urlListStr == '[]') {
@@ -330,8 +330,14 @@ $(function () {
                     }
                 }
                 
-                select_true_list = mediaModalCont
-                    .find('.lake-form-media-selected[data-type="'+type+'"]');
+                if (type == 'blend') {
+                    select_true_list = mediaModalCont
+                        .find('.lake-form-media-selected');
+                } else {
+                    select_true_list = mediaModalCont
+                        .find('.lake-form-media-selected[data-type="'+type+'"]');
+                }
+                
                 for (var i = 0; i < select_true_list.length; i++) {
                     urlList.push($(select_true_list[i]).data('url'));
                 }
@@ -367,7 +373,7 @@ $(function () {
                 $('#LakeFormMediaModel'+name).modal('hide');
             });
             
-            // 点击图片 / 点击视频
+            // 选中点击
             $('body').on("click", ".lake-form-media-field-item-op", function(){
                 var itemType = $(this).data('type');
                 
@@ -385,8 +391,10 @@ $(function () {
                 var type = options.type;
                 var limit = options.limit;
                 
-                if (type != itemType) {
-                    return false;
+                if (type != 'blend') {
+                    if (type != itemType) {
+                        return false;
+                    }
                 }
 
                 // 现有多少张
@@ -429,7 +437,7 @@ $(function () {
                             .find('.lake-form-media-selected')
                             .removeClass('lake-form-media-selected')
                     } else {
-                        if (selectNum >= limit) {
+                        if (selectNum > limit) {
                             toastr.error('选择图片不能超过 '+limit+' 张');
                             return 1;
                         }
@@ -598,21 +606,17 @@ $(function () {
             }
             
             for (var i = 0; i < urlList.length; i++) {
-                var src = rootpath+urlList[i];
+                var src = rootpath + urlList[i];
                 var html = '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-3 lake-form-media-preview-item" data-src="'+urlList[i]+'">';
                     html += '<div class="thumbnail lake-form-media-row-col">';
                 
                 html += '<div class="lake-form-media-row-img">';
-                if (options.type == 'image') {
-                    html += '<img width="100%" src="'+src+'" alt="'+src+'"/>';
-                } else if (options.type == 'video') {
-                    html += '<video width="100%" src="'+src+'" alt="'+src+'"/>';
-                }
+                html += this.getFileDisplay(src);
                 html += '</div>';
                 
                 html += '<div class="caption">';
                 if (remove) {
-                    html += '<a type="button" class="btn btn-default file-delete-multiple lake-form-media-img-show-item-delete" data-url="'+urlList[i]+'" title="删除"><i class="fa fa-times"></i></a>';
+                    html += '<a type="button" class="btn btn-default file-delete-multiple lake-form-media-img-show-item-delete" data-url="'+urlList[i]+'" title="移除"><i class="fa fa-times"></i></a>';
                 }
                 if (limit > 1) {
                     html += '<a href="javascript:;" type="button" class="btn btn-default js-dragsort" title="拖动"><i class="fa fa-arrows"></i></a>';
@@ -646,6 +650,89 @@ $(function () {
                 }
             }
             return [];  
+        },
+        
+        getFileDisplay: function (src) {
+            try {
+                var srcArr = src.split('.');
+                var suffix = srcArr[srcArr.length - 1];
+            } catch(err) {
+                var suffix = '';
+            }
+            
+            if (suffix) {
+                var type = this.getFileType(suffix.toLocaleLowerCase());
+            } else {
+                var type = '';
+            }
+            
+            var html = '';
+            if (type === 'image') {
+                html += '<img width="100%" src="' + src + '" alt="'+src+'"/>';
+            } else if (type === 'video') {
+                html += '<video width="100%" height="100%" src="' + src + '"></video>';
+            } else if (type === 'audio') {
+                html += '<i class="fa fa-file-audio-o fa-fw lake-form-media-preview-fa"></i>';
+            } else if (type === 'word') {
+                html += '<i class="fa fa-file-word-o fa-fw lake-form-media-preview-fa"></i>';
+            } else if (type === 'code') {
+                html += '<i class="fa fa-file-code-o fa-fw lake-form-media-preview-fa"></i>';
+            } else if (type === 'zip') {
+                html += '<i class="fa fa-file-zip-o fa-fw lake-form-media-preview-fa"></i>';
+            } else if (type === 'text') {
+                html += '<i class="fa fa-file-text-o fa-fw lake-form-media-preview-fa"></i>';
+            } else {
+                html += '<i class="fa fa-file fa-fw lake-form-media-preview-fa"></i>';
+            }
+            
+            return html;
+        },
+        
+        getFileType: function (suffix) {
+            // 匹配图片
+            var image = [
+                'bmp', 'cgm', 'djv', 'djvu', 'gif', 'ico', 'ief', 'jp2', 'jpe', 'jpeg', 'jpg', 'mac', 'pbm', 'pct', 'pgm', 'pic', 'pict',
+                'png', 'pnm', 'pnt', 'pntg', 'ppm', 'qti', 'qtif', 'ras', 'rgb', 'svg', 'tif', 'tiff', 'wbmp', 'xbm', 'xpm', 'xwd'
+            ];
+
+            // 匹配音频
+            var audio = ['mp3', 'wav', 'flac', '3pg', 'aa', 'aac', 'ape', 'au', 'm4a', 'mpc', 'ogg'];
+
+            // 匹配视频
+            var video = ['mp4', 'rmvb', 'flv', 'mkv', 'avi', 'wmv', 'rm', 'asf', 'mpeg'];
+
+            // 匹配文稿
+            var word = [
+                'doc', 'dot', 'docx', 'dotx', 'docm', 'dotm', 'xls', 'xlt', 'xla', 'xlsx', 'xltx', 'xlsm', 'xltm', 'xlam', 'xlsb',
+                'pdf', 'ppt', 'pot', 'pps', 'ppa', 'pptx', 'potx', 'ppsx', 'ppam', 'pptm', 'potm', 'ppsm'
+            ];
+
+            // 匹配代码
+            var code = ['php', 'js', 'java', 'python', 'ruby', 'go', 'c', 'cpp', 'sql', 'm', 'h', 'json', 'html', 'aspx'];
+
+            // 匹配压缩包
+            var zip = ['zip', 'tar', 'gz', 'rar', 'rpm'];
+
+            // 匹配文本
+            var text = ['txt', 'pac', 'log', 'md'];
+            
+            var list = {
+                'image': image,
+                'audio': audio,
+                'video': video,
+                'word': word,
+                'code': code,
+                'zip': zip,
+                'text': text,
+            }
+            
+            for (var key in list) {
+                if (list[key].indexOf(suffix) != -1) {
+                    return key;
+                }
+            };
+            
+            return false;
         },
 
     }

@@ -30,13 +30,14 @@ class MediaManager
      * @var array
      */
     protected $fileTypes = [
-        'image' => 'png|jpg|jpeg|tmp|gif',
-        'word'  => 'doc|docx',
-        'ppt'   => 'ppt|pptx',
+        'image' => 'png|jpg|jpeg|ico|gif|bmp|svg|wbmp',
+        'xls'   => 'xls|xlt|xla|xlsx|xltx|xlsm|xltm|xlam|xlsb',
+        'word'  => 'doc|docx|dot|dotx|docm|dotm',
+        'ppt'   => 'ppt|pptx|pptm',
         'pdf'   => 'pdf',
         'code'  => 'php|js|java|python|ruby|go|c|cpp|sql|m|h|json|html|aspx',
         'zip'   => 'zip|tar\.gz|rar|rpm',
-        'txt'   => 'txt|pac|log|md',
+        'text'  => 'txt|pac|log|md',
         'audio' => 'mp3|wav|flac|3pg|aa|aac|ape|au|m4a|mpc|ogg',
         'video' => 'mkv|rmvb|flv|mp4|avi|wmv|rm|asf|mpeg',
     ];
@@ -96,6 +97,9 @@ class MediaManager
             ->applyPathPrefix($path);
     }
 
+    /**
+     * 下载
+     */
     public function download()
     {
         $fullPath = $this->getFullPath($this->path);
@@ -207,6 +211,9 @@ class MediaManager
         return $this->storage->url($url);
     }
 
+    /**
+     * 格式化文件
+     */
     public function formatFiles($files = [])
     {
         $files = array_map(function ($file) {
@@ -226,10 +233,12 @@ class MediaManager
         return collect($files);
     }
 
+    /**
+     * 格式化文件夹
+     */
     public function formatDirectories($dirs = [])
     {
-        $preview = "<a href=\"javascript:;\"><span class=\"file-icon text-aqua\"><i class=\"fa fa-folder\"></i></span></a>";
-        // $preview = "<a href=\"$url\"><span class=\"file-icon text-aqua\"><i class=\"fa fa-folder\"></i></span></a>";
+        $preview = '<a href="javascript:;"><span class="file-icon text-aqua"><i class="fa fa-folder"></i></span></a>';
 
         $dirs = array_map(function ($dir) use ($preview) {
             return [
@@ -276,28 +285,30 @@ class MediaManager
             case 'image':
                 $url = $this->storage->url($file);
                 if ($url) {
-                    $preview = '<span class="file-icon has-img"><img src="'.$url.'" alt="Attachment"></span>';
+                    $preview = '<span class="file-icon has-img"><img src="'.$url.'" alt="'.$url.'"></span>';
                 } else {
                     $preview = '<span class="file-icon"><i class="fa fa-file-image-o"></i></span>';
                 }
                 break;
 
             case 'video':
-                // if ($this->storage->getDriver()->getConfig()->has('url')) {
-                //     $url = $this->storage->url($file);
-                //     $preview = "<span class=\"file-icon has-video\"><video width='30%' src=\"$url\" alt=\"Attachment\"></span>";
-                // } else {
-                //    $preview = '<span class="file-icon"><i class="fa fa-file-video-o"></i></span>';
-                // }
+                /**
+                if ($this->storage->getDriver()->getConfig()->has('url')) {
+                    $url = $this->storage->url($file);
+                    $preview = "<span class=\"file-icon has-video\"><video width='30%' src=\"$url\" alt=\"Attachment\"></span>";
+                } else {
+                    $preview = '<span class="file-icon"><i class="fa fa-file-video-o"></i></span>';
+                }
+                */
+                $preview = '<span class="file-icon"><i class="fa fa-file-video-o"></i></span>';
+                break;
+
+            case 'audio':
                 $preview = '<span class="file-icon"><i class="fa fa-file-video-o"></i></span>';
                 break;
 
             case 'pdf':
                 $preview = '<span class="file-icon"><i class="fa fa-file-pdf-o"></i></span>';
-                break;
-
-            case 'zip':
-                $preview = '<span class="file-icon"><i class="fa fa-file-zip-o"></i></span>';
                 break;
 
             case 'word':
@@ -312,12 +323,16 @@ class MediaManager
                 $preview = '<span class="file-icon"><i class="fa fa-file-excel-o"></i></span>';
                 break;
 
-            case 'txt':
+            case 'text':
                 $preview = '<span class="file-icon"><i class="fa fa-file-text-o"></i></span>';
                 break;
 
             case 'code':
                 $preview = '<span class="file-icon"><i class="fa fa-code"></i></span>';
+                break;
+
+            case 'zip':
+                $preview = '<span class="file-icon"><i class="fa fa-file-zip-o"></i></span>';
                 break;
 
             default:

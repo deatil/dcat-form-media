@@ -47,7 +47,6 @@
                 </button>
               </div>
               <div class="mailbox-controls with-border" style="margin-left: 10px;">
-                    <!-- /.btn-group -->
                     <label class="btn btn-primary">
                         <i class="fa fa-upload"></i>&nbsp;&nbsp;上传
                         <input type="file"  class="hidden file-upload lake-form-media-upload" multiple="" />

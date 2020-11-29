@@ -26,14 +26,89 @@ class Field extends BaseField
         '@extension/lake/form-media/jquery.dragsort.js',
         '@extension/lake/form-media/field.js'
     ];
+    
+    protected $uploadUrl = '';
+    protected $listUrl = '';
+    protected $newFolderUrl = '';
+    protected $type = 'image';
 
     protected $path = '';
     protected $limit = 1;
     protected $remove = false;
-    protected $type = 'img';
     
     protected $nametype = 'uniqid';
     protected $pageSize = 120;
+
+    /**
+     * 设置上传链接
+     *
+     * @param string $uploadUrl
+     *
+     * @return $this
+     */
+    public function uploadUrl($uploadUrl = null)
+    {
+        $this->uploadUrl = $uploadUrl;
+
+        return $this;
+    }
+
+    /**
+     * 设置数据列表链接
+     *
+     * @param string $listUrl
+     *
+     * @return $this
+     */
+    public function listUrl($listUrl = null)
+    {
+        $this->listUrl = $listUrl;
+
+        return $this;
+    }
+
+    /**
+     * 设置新建文件夹链接
+     *
+     * @param string $newFolderUrl
+     *
+     * @return $this
+     */
+    public function newFolderUrl($newFolderUrl = null)
+    {
+        $this->newFolderUrl = $newFolderUrl;
+
+        return $this;
+    }
+
+    /**
+     * 设置类型
+     *
+     * 类型包括：blend、image、xls、word、ppt、pdf、code、zip、text、audio、video
+     * 其中 blend 为全部类型
+     *
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function type($type = 'image')
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * 设置当前可用目录
+     *
+     * @param string $path
+     *
+     * @return $this
+     */
+    public function path($path = ''){
+        $this->path = $path;
+        return $this;
+    }
 
     /**
      * 设置限制数量.
@@ -58,18 +133,6 @@ class Field extends BaseField
      */
     public function remove($remove = false){
         $this->remove = $remove;
-        return $this;
-    }
-
-    /**
-     * 设置当前可用目录
-     *
-     * @param string $path
-     *
-     * @return $this
-     */
-    public function path($path = ''){
-        $this->path = $path;
         return $this;
     }
 
@@ -106,11 +169,6 @@ class Field extends BaseField
         return $this;
     }
 
-    /**
-     * 呈现
-     *
-     * @return $this
-     */
     public function render()
     {
         $path = $this->path;
@@ -120,6 +178,18 @@ class Field extends BaseField
         $pageSize = $this->pageSize;
         $rootpath = (new MediaManager())->buildUrl('');
         $remove = ($this->remove == true) ? 1 : 0;
+        
+        if (empty($this->uploadUrl)) {
+            $this->uploadUrl = route('admin.lake-form-media.upload');
+        }
+        
+        if (empty($this->listUrl)) {
+            $this->listUrl = route('admin.lake-form-media.get-files');
+        }
+        
+        if (empty($this->newFolderUrl)) {
+            $this->newFolderUrl = route('admin.lake-form-media.new-folder');
+        }
 
         $this->addVariables([
             'options' => [
@@ -131,9 +201,9 @@ class Field extends BaseField
                 'rootpath' => $rootpath,
                 'remove' => $remove,
                 
-                'get_files_url' => route('admin.lake-form-media.get-files'),
-                'upload_url' => route('admin.lake-form-media.upload'),
-                'new_folder_url' => route('admin.lake-form-media.new-folder'),
+                'get_files_url' => $this->listUrl,
+                'upload_url' => $this->uploadUrl,
+                'new_folder_url' => $this->newFolderUrl,
             ],
         ]);
 
