@@ -148,6 +148,22 @@ class MediaManager
         return true;
     }
     
+    /**
+     * 检测文件上传类型
+     */
+    public function checkType($files = [], $type = null)
+    {
+        foreach ($files as $file) {
+            $fileExtension = $file->getClientOriginalExtension();
+            $fileType = $this->detectFileType('file.'.$fileExtension);
+            if ($fileType != $type) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
     public function setNametype($type = 'uniqid')
     {
         $this->nametype = $type;

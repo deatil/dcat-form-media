@@ -276,6 +276,7 @@ $(function () {
                 }
                
                 form.append("path", currentPath);
+                form.append("type", options.type);
                 form.append("nametype", options.nametype);
                 form.append("_token", Dcat.token);
                 $.ajax({
@@ -489,7 +490,7 @@ $(function () {
                             if (list[i]['isDir']) {
                                 var htmltemp = '';
                                 htmltemp += '<div class="col-xs-4 col-md-3">';
-                                htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-dir-op" data-type="'+list[i]['type']+'" data-path="/'+list[i]['name']+'" title="'+list[i]['name']+'">';
+                                htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-dir-op" data-type="'+list[i]['type']+'" data-path="/'+list[i]['name']+'" title="'+list[i]['name']+'（'+list[i]['time']+'）">';
                                 htmltemp +=         list[i]['preview'];
                                 htmltemp +=         '<div class="file-info">';
                                 htmltemp +=             '<a href="javascript:;" class="file-name">'+list[i]['namesmall']+'</a>';
@@ -501,7 +502,7 @@ $(function () {
                                 var htmltemp = '';
                                 htmltemp += '<div class="col-xs-4 col-md-3">';
                                 
-                                htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-field-item-op" data-type="'+list[i]['type']+'" data-url="'+list[i]['name']+'" title="'+list[i]['name']+'">';
+                                htmltemp +=     '<div class="thumbnail lake-form-media-field-item lake-form-media-field-item-op" data-type="'+list[i]['type']+'" data-url="'+list[i]['name']+'" title="'+list[i]['name']+'（'+list[i]['time']+'）">';
                                 htmltemp +=         list[i]['preview'];
                                 htmltemp +=         '<div class="file-info">';
                                 htmltemp +=             '<a href="javascript:;" class="file-name">'+list[i]['namesmall']+'</a>';

@@ -47,11 +47,18 @@ class FormMedia extends Controller
         $files = request()->file('files');
         $path = request()->get('path', '/');
         
+        $type = request()->get('type');
         $nametype = request()->get('nametype', 'uniqid');
         
         $manager = (new MediaManager())
             ->setPath($path)
             ->setNametype($nametype);
+        
+        if ($type != 'blend') {
+            if (! $manager->checkType($files, $type)) {
+                return $this->renderJson('上传文件格式不被允许', -1);
+            }
+        }
         
         try {
             if ($manager->upload($files)) {

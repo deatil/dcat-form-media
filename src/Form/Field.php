@@ -30,7 +30,7 @@ class Field extends BaseField
     protected $uploadUrl = '';
     protected $listUrl = '';
     protected $newFolderUrl = '';
-    protected $type = 'image';
+    protected $type = '';
 
     protected $path = '';
     protected $limit = 1;
