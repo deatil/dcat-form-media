@@ -37,7 +37,7 @@ class ServiceProvider extends BaseServiceProvider
             Form::extend('photos', Field\Photos::class);
             Form::extend('video', Field\Video::class);
             Form::extend('audio', Field\Audio::class);
-            Form::extend('file', Field\File::class);
+            Form::extend('files', Field\File::class);
         });
     }
     
