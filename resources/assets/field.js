@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.5
+ * LakeFormMedia-field.js v1.0.7
  *
  * @create 2020-11-28
  * @author deatil
@@ -93,7 +93,9 @@ $(function () {
                 var options = mediaCont.data('options');
                 options = $.extend({}, options);
                 
-                var path = options.path
+                var path = options.path;
+                var uploadUrl = options.upload_url;
+                var createFolderUrl = options.create_folder_url;
                 
                 var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
@@ -101,6 +103,16 @@ $(function () {
                 
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 mediaModalNavOlCont.data('current-path', path);
+                
+                if (uploadUrl.length <= 0) {
+                    mediaModalCont.find('.lake-form-media-upload-label').addClass('hidden');
+                }
+                if (createFolderUrl.length <= 0) {
+                    mediaModalCont.find('.lake-form-media-create-folder-label').addClass('hidden');
+                }
+                if (uploadUrl.length <= 0 && createFolderUrl.length <= 0) {
+                    mediaModalCont.find('.lake-form-media-actions-label').addClass('hidden');
+                }
                 
                 mediaModalCont.find('.modal-title').text('请选择' + title)
                 
@@ -239,7 +251,7 @@ $(function () {
                 form.append("_token", Dcat.token);
                 $.ajax({
                     type: 'post',
-                    url: options.new_folder_url,
+                    url: options.create_folder_url,
                     data: form,
                     processData: false,
                     contentType : false,

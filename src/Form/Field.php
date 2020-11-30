@@ -29,8 +29,11 @@ class Field extends BaseField
     
     protected $uploadUrl = '';
     protected $listUrl = '';
-    protected $newFolderUrl = '';
+    protected $createFolderUrl = '';
     protected $type = '';
+    
+    protected $disableUpload = false;
+    protected $disableCreateFolder = false;
 
     protected $path = '';
     protected $limit = 1;
@@ -70,13 +73,37 @@ class Field extends BaseField
     /**
      * 设置新建文件夹链接
      *
-     * @param string $newFolderUrl
+     * @param string $createFolderUrl
      *
      * @return $this
      */
-    public function newFolderUrl($newFolderUrl = null)
+    public function createFolderUrl($createFolderUrl = null)
     {
-        $this->newFolderUrl = $newFolderUrl;
+        $this->createFolderUrl = $createFolderUrl;
+
+        return $this;
+    }
+
+    /**
+     * 禁止上传
+     *
+     * @return $this
+     */
+    public function disableUpload()
+    {
+        $this->disableUpload = true;
+
+        return $this;
+    }
+
+    /**
+     * 禁止创建文件夹
+     *
+     * @return $this
+     */
+    public function disableCreateFolder()
+    {
+        $this->disableCreateFolder = true;
 
         return $this;
     }
@@ -105,8 +132,10 @@ class Field extends BaseField
      *
      * @return $this
      */
-    public function path($path = ''){
+    public function path($path = '')
+    {
         $this->path = $path;
+        
         return $this;
     }
 
@@ -131,8 +160,10 @@ class Field extends BaseField
      *
      * @return $this
      */
-    public function remove($remove = false){
+    public function remove($remove = false)
+    {
         $this->remove = $remove;
+        
         return $this;
     }
 
@@ -187,8 +218,15 @@ class Field extends BaseField
             $this->listUrl = route('admin.lake-form-media.get-files');
         }
         
-        if (empty($this->newFolderUrl)) {
-            $this->newFolderUrl = route('admin.lake-form-media.new-folder');
+        if (empty($this->createFolderUrl)) {
+            $this->createFolderUrl = route('admin.lake-form-media.create-folder');
+        }
+        
+        if ($this->disableUpload) {
+            $this->uploadUrl = '';
+        }
+        if ($this->disableCreateFolder) {
+            $this->createFolderUrl = '';
         }
 
         $this->addVariables([
@@ -203,7 +241,7 @@ class Field extends BaseField
                 
                 'get_files_url' => $this->listUrl,
                 'upload_url' => $this->uploadUrl,
-                'new_folder_url' => $this->newFolderUrl,
+                'create_folder_url' => $this->createFolderUrl,
             ],
         ]);
 

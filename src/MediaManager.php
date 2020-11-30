@@ -195,7 +195,7 @@ class MediaManager
         return date('YmdHis').mt_rand(10000, 99999).'.'.$file->getClientOriginalExtension();
     }
     
-    public function newFolder($name)
+    public function createFolder($name)
     {
         $path = rtrim($this->path, '/').'/'.trim($name, '/');
 

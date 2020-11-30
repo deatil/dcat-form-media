@@ -46,13 +46,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="mailbox-controls with-border" style="margin-left: 10px;">
-                    <label class="btn btn-primary">
+              <div class="mailbox-controls with-border lake-form-media-actions-label" style="margin-left: 10px;">
+                    <label class="btn btn-primary lake-form-media-upload-label">
                         <i class="fa fa-upload"></i>&nbsp;&nbsp;上传
                         <input type="file"  class="hidden file-upload lake-form-media-upload" multiple="" />
                     </label>
 
-                    <div class="input-group pull-right goto-url" style="width: 250px;">
+                    <div class="input-group pull-right lake-form-media-create-folder-label" style="width: 250px;">
                         <input type="text" class="form-control lake-form-media-dir-input" value="">
                         <div class="input-group-btn input-group-append">
                             <button type="button" class="btn btn-primary lake-form-media-dir-button">

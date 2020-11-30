@@ -9,9 +9,9 @@ use Lake\FormMedia\MediaManager;
 class FormMedia extends Controller
 {
     /**
-     * 获取文件
+     * 获取文件列表
      */
-    public function getList()
+    public function getFiles()
     {
         $path = request()->input('path', '/');
         
@@ -74,7 +74,7 @@ class FormMedia extends Controller
     /**
      * 新建文件夹
      */
-    public function newFolder()
+    public function createFolder()
     {
         $dir = request()->input('dir');
         $name = request()->input('name');
@@ -83,7 +83,7 @@ class FormMedia extends Controller
             ->setPath($dir);
 
         try {
-            if ($manager->newFolder($name)) {
+            if ($manager->createFolder($name)) {
                 return $this->renderJson('创建成功', 200);
             }
         } catch (\Exception $e) {
