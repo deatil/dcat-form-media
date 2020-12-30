@@ -3,6 +3,7 @@
 namespace Lake\FormMedia;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -224,6 +225,10 @@ class MediaManager
      */
     public function buildUrl($url = '')
     {
+        if (URL::isValidUrl($url)) {
+            return $url;
+        }
+        
         return $this->storage->url($url);
     }
 
