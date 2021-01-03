@@ -10,34 +10,11 @@ $(function () {
             var thiz = this;
             
             $('.lake-form-media-input').each(function(i, cont) {
-                var mediaCont = $(cont).parents('.lake-form-media');
-                var value = $(cont).val();
-                
-                var name = mediaCont.data('name');
-                
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                
-                var options = mediaCont.data('options');
-                options = $.extend({}, options);
-                
-                var limit = options.limit;
-                
-                var valueArr = [];
-                if (value) {
-                    if (limit > 1) {
-                        valueArr = thiz.isJSON(value);
-                    } else {
-                        if (value != '[]' && value != '') {
-                            valueArr.push(value)
-                        }
-                    }
-                    thiz.refreshPreview(name, valueArr, options);
-                } else {
-                    mediaModalCont
-                        .find('.lake-form-media-img-show')
-                        .hide();
-                }
-                
+                thiz.refreshInputPreview(cont);
+            });
+            
+            $('body').on('change', '.lake-form-media-input', function() {
+                thiz.refreshInputPreview(this);
             });
             
             // 拖拽排序
@@ -582,6 +559,37 @@ $(function () {
             });
         },
         
+        // 刷新表单预览
+        refreshInputPreview: function(cont) {
+            var mediaCont = $(cont).parents('.lake-form-media');
+            var value = $(cont).val();
+            
+            var name = mediaCont.data('name');
+            
+            var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+            
+            var options = mediaCont.data('options');
+            options = $.extend({}, options);
+            
+            var limit = options.limit;
+            
+            var valueArr = [];
+            if (value) {
+                if (limit > 1) {
+                    valueArr = this.isJSON(value);
+                } else {
+                    if (value != '[]' && value != '') {
+                        valueArr.push(value)
+                    }
+                }
+                this.refreshPreview(name, valueArr, options);
+            } else {
+                mediaModalCont
+                    .find('.lake-form-media-img-show')
+                    .hide();
+            }
+        },
+        
         // 刷新表单数据
         refreshInputString: function(name) {
             var mediaCont = $('.lake-form-media-'+name);
@@ -619,7 +627,11 @@ $(function () {
             }
             
             for (var i = 0; i < urlList.length; i++) {
-                var src = rootpath + urlList[i];
+                var src = urlList[i];
+                if (! this.isUrl(src)) {
+                    src = rootpath + urlList[i];
+                }
+                
                 var html = '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-3 lake-form-media-preview-item" data-src="'+urlList[i]+'">';
                     html += '<div class="thumbnail lake-form-media-row-col">';
                 
@@ -663,6 +675,16 @@ $(function () {
                 }
             }
             return [];  
+        },
+    
+        isUrl: function(url) {
+            if (url.substr(0,7).toLowerCase() == "http://" 
+                || url.substr(0,8).toLowerCase() == "https://"
+            ) {
+                return true;
+            }
+            
+            return false;
         },
         
         getFileDisplay: function (src) {
