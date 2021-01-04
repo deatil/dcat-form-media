@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.7
+ * LakeFormMedia-field.js v1.0.8
  *
  * @create 2020-11-28
  * @author deatil
@@ -351,7 +351,7 @@ $(function () {
                     urlList = newUrlList;
                     
                     urlList_json = JSON.stringify( urlList );
-                    if(urlList_json == '[]'){
+                    if (urlList_json == '[]') {
                         $('#LakeFormMediaModel'+name).modal('hide');
                         return null;
                     }
@@ -678,8 +678,9 @@ $(function () {
         },
     
         isUrl: function(url) {
-            if (url.substr(0,7).toLowerCase() == "http://" 
-                || url.substr(0,8).toLowerCase() == "https://"
+            if (url.substr(0, 7).toLowerCase() == "http://" 
+                || url.substr(0, 8).toLowerCase() == "https://"
+                || url.substr(0, 2).toLowerCase() == "//"
             ) {
                 return true;
             }
