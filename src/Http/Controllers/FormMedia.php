@@ -20,8 +20,11 @@ class FormMedia extends Controller
         
         $manager = (new MediaManager())
             ->setPath($path);
+            
+        $type = (string) request()->input('type', 'image');
+        $order = (string) request()->input('order', 'time');
         
-        $files = $manager->ls();
+        $files = $manager->ls($type, $order);
         $list = collect($files)
             ->slice(($currentPage - 1) * $perPage, $perPage)
             ->values();

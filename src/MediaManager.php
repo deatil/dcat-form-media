@@ -69,18 +69,38 @@ class MediaManager
         return $this;
     }
 
-    public function ls()
+    public function ls($type = 'image', $order = 'time')
     {
         $files = $this->storage->files($this->path);
-
+        
         $directories = $this->storage->directories($this->path);
-
-        return $this->formatDirectories($directories)
-            ->merge($this->formatFiles($files))
-            ->sortByDesc(function ($item) {
-                return $item['time'];
+        
+        $manager = $this;
+        $files = $this->formatFiles($files)
+            ->map(function($item) use($type, $manager) {
+                $fileType = $manager->detectFileType($item['name']);
+                if ($type == $fileType) {
+                    return $item;
+                }
             })
-            ->all();
+            ->filter(function($item) {
+                return ! empty($item);
+            });
+        
+        $list = $this->formatDirectories($directories)
+            ->merge($files);
+        
+        if ($order == 'name') {
+            $list = $list->sort(function ($item) {
+                    return $item['name'];
+                });
+        } else {
+            $list = $list->sortByDesc(function ($item) {
+                    return $item['time'];
+                });
+        }
+            
+        return $list->all();
     }
 
     /**

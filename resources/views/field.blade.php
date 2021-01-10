@@ -12,6 +12,7 @@
         </div>
 
         @include('admin::form.error')
+        
         <div class="input-group">
             
             <input type="text" 
@@ -33,6 +34,7 @@
             </div>
 
         </div><!-- /input-group -->
+        
         @include('admin::form.help-block')
     </div>
     
@@ -42,7 +44,9 @@
             <div class="modal-content"  style="width: 100%">
               <div class="modal-header">
                 <h4 class="modal-title" id="LakeFormMediaModalLabel">选择图片</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" 
+                    data-dismiss="modal" 
+                    aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -51,7 +55,13 @@
                         <i class="fa fa-upload"></i>&nbsp;&nbsp;上传
                         <input type="file"  class="hidden file-upload lake-form-media-upload" multiple="" />
                     </label>
-
+                    
+                    <label class="btn btn-light lake-form-media-modal-order" 
+                        data-order="time"
+                        title="点击切换排序">
+                        <i class="fa fa-calendar-times-o"></i>
+                    </label>
+                    
                     <div class="input-group pull-right lake-form-media-create-folder-label" style="width: 250px;">
                         <input type="text" class="form-control lake-form-media-dir-input" value="">
                         <div class="input-group-btn input-group-append">

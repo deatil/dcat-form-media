@@ -96,6 +96,34 @@ $(function () {
                 thiz.getdata(name, path, options);
             })
             
+            // 点击排序切换
+            $('body').on('click', ".lake-form-media-modal-order", function() {
+                var order = $(this).data('order');
+                
+                if (order == 'name') {
+                    $(this).data('order', 'time');
+                    
+                    $(this).find('.fa')
+                        .removeClass('fa-sort-alpha-asc')
+                        .addClass('fa-calendar-times-o');
+                } else {
+                    $(this).data('order', 'name');
+                    
+                    $(this).find('.fa')
+                        .removeClass('fa-calendar-times-o')
+                        .addClass('fa-sort-alpha-asc');
+                }
+                
+                var mediaCont = $(this).parents('.lake-form-media');
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                var name = mediaCont.data('name');
+                var path = mediaModalNavOlCont.data('current-path');
+                var options = mediaCont.data('options');
+                
+                thiz.getdata(name, path, options)
+            });
+            
             // 点击文件夹
             $('body').on('click', ".lake-form-media-dir-op", function() {
                 var mediaCont = $(this).parents('.lake-form-media');
@@ -443,6 +471,7 @@ $(function () {
         getdata: function(name, path = '/', options = []) {
             var mediaCont = $('.lake-form-media-' + name);
             
+            var type = options.type;
             var limit = options.limit;
             var remove = options.remove;
             var rootpath = options.rootpath;
@@ -452,9 +481,11 @@ $(function () {
             var mediaModalTableCont = mediaModalCont.find('.lake-form-media-body-table');
             var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
             var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
+            var mediaModalOrderCont = mediaModalCont.find('.lake-form-media-modal-order');
             
             var inputCont = mediaCont.find('.lake-form-media-input');
             
+            var order = mediaModalOrderCont.data('order');
             var currentPath = mediaModalNavOlCont.data('current-path');
             var currentPage = mediaModalPageCont.data('current-page');
             var pageSize = mediaModalPageCont.data('page-size');
@@ -464,6 +495,8 @@ $(function () {
             $.ajax({
                 url: options.get_files_url 
                     + "?path="+path
+                    + "&type="+type
+                    + "&order="+order
                     + "&page="+currentPage
                     + "&pageSize="+pageSize,
                 method: 'GET',

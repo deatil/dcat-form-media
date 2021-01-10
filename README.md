@@ -10,7 +10,7 @@
 ![form-array](https://user-images.githubusercontent.com/24578855/100456207-f24caa80-30fa-11eb-86a3-a8e3d2102655.jpg)
 
 ### 弹出选择框
-![form-modal](https://user-images.githubusercontent.com/24578855/100266422-c14e6780-2f8c-11eb-8a14-c8c1855eedb6.jpg)
+![form-modal](https://user-images.githubusercontent.com/24578855/104125985-1277b680-5395-11eb-835b-c20e7c7585f9.jpg)
 
 
 ## 环境
