@@ -78,10 +78,16 @@ class MediaManager
         $manager = $this;
         $files = $this->formatFiles($files)
             ->map(function($item) use($type, $manager) {
+                if ($type == 'blend') {
+                    return $item;
+                }
+                
                 $fileType = $manager->detectFileType($item['name']);
                 if ($type == $fileType) {
                     return $item;
                 }
+                
+                return null;
             })
             ->filter(function($item) {
                 return ! empty($item);
