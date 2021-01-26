@@ -674,10 +674,10 @@ $(function () {
                 
                 html += '<div class="caption">';
                 if (remove) {
-                    html += '<a type="button" class="btn btn-default file-delete-multiple lake-form-media-img-show-item-delete" data-url="'+urlList[i]+'" title="移除"><i class="fa fa-times"></i></a>';
+                    html += '<span class="btn btn-default file-delete-multiple lake-form-media-img-show-item-delete" data-url="'+urlList[i]+'" title="移除"><i class="fa fa-trash-o"></i></span>';
                 }
                 if (limit > 1) {
-                    html += '<a href="javascript:;" type="button" class="btn btn-default js-dragsort" title="拖动"><i class="fa fa-arrows"></i></a>';
+                    html += '<span class="btn btn-default lake-form-media-img-show-item-dragsort js-dragsort" title="拖动"><i class="fa fa-arrows"></i></span>';
                 }
                 html += '</div>';
                 

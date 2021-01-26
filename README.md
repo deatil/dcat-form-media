@@ -4,7 +4,7 @@
 ## 预览
 
 ### 表单
-![form](https://user-images.githubusercontent.com/24578855/100266414-beec0d80-2f8c-11eb-9a5c-37f450e3be22.jpg)
+![form](https://user-images.githubusercontent.com/24578855/105875109-5aa30400-6038-11eb-9b5c-1c833e0c6b92.jpg)
 
 ### 动态表单
 ![form-array](https://user-images.githubusercontent.com/24578855/100456207-f24caa80-30fa-11eb-86a3-a8e3d2102655.jpg)
