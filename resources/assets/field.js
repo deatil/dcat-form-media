@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.8
+ * LakeFormMedia-field.js v1.0.9
  *
  * @create 2020-11-28
  * @author deatil
@@ -466,6 +466,29 @@ $(function () {
                 
                 return 1;
             });
+            
+            // 图片/视频预览
+            $("body").on('click', ".lake-form-media-img-show-item-preview", function() {
+                var type = $(this).data('type');
+                var url = $(this).data('url');
+                
+                var preview = '';
+                if (type == 'image') {
+                    preview = '<img height="100%" src="' + url + '" />';
+                } else if (type == 'audio' || type == 'video') {
+                    preview = '<video height="100%" controls src="' + url + '"></video>';
+                }
+                
+                layer.open({
+                    type: 1,
+                    area: ['auto', '85%'],
+                    title: '预览',
+                    end: function(index, layero) {
+                        return false;
+                    },
+                    content: '<div style="display: flex;align-items: center;justify-content: center;text-align: justify;height: 100%;">'+preview+'</div>',
+                });
+            });
         },
         
         getdata: function(name, path = '/', options = []) {
@@ -672,7 +695,12 @@ $(function () {
                 html += this.getFileDisplay(src);
                 html += '</div>';
                 
+                var suffix = this.getFileSuffix(src);
+                
                 html += '<div class="caption">';
+                if (suffix == 'image' || suffix == 'video') {
+                    html += '<span class="btn btn-default lake-form-media-img-show-item-preview" data-type="'+suffix+'" data-url="'+src+'" title="预览"><i class="fa fa-search-plus"></i></span>';
+                }
                 if (remove) {
                     html += '<span class="btn btn-default file-delete-multiple lake-form-media-img-show-item-delete" data-url="'+urlList[i]+'" title="移除"><i class="fa fa-trash-o"></i></span>';
                 }
@@ -721,7 +749,7 @@ $(function () {
             return false;
         },
         
-        getFileDisplay: function (src) {
+        getFileSuffix: function (src) {
             try {
                 var srcArr = src.split('.');
                 var suffix = srcArr[srcArr.length - 1];
@@ -734,6 +762,12 @@ $(function () {
             } else {
                 var type = '';
             }
+            
+            return type;
+        },
+        
+        getFileDisplay: function (src) {
+            var type = this.getFileSuffix(src);
             
             var html = '';
             if (type === 'image') {

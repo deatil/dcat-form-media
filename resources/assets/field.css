@@ -45,6 +45,12 @@
     border: 0px !important;
     color: #8f98a7 !important;
 }
+.lake-form-media .lake-form-media-row-col .caption .btn.lake-form-media-img-show-item-preview i {
+    color: #abafb5;
+}
+.lake-form-media .lake-form-media-row-col .caption .btn.lake-form-media-img-show-item-preview:hover i {
+    color: #292e35;
+}
 .lake-form-media .lake-form-media-row-col .caption .btn.lake-form-media-img-show-item-delete i {
     color: #f76687;
 }
@@ -53,11 +59,10 @@
     font-weight: bold;
 }
 .lake-form-media .lake-form-media-row-col .caption .btn.lake-form-media-img-show-item-dragsort i {
-    color: #8f98a7;
+    color: #abafb5;
 }
 .lake-form-media .lake-form-media-row-col .caption .btn.lake-form-media-img-show-item-dragsort:hover i {
     color: #292e35;
-    font-weight: bold;
 }
 
 .lake-form-media-modal .lake-form-media-body-table .files>li {
