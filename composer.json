@@ -1,5 +1,6 @@
 {
     "name": "lake/form-media",
+    "alias": "form-media",
     "description": "Dcat-admin image/video input extension.",
     "type": "library",
     "keywords": [
