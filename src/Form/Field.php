@@ -211,15 +211,15 @@ class Field extends BaseField
         $remove = ($this->remove == true) ? 1 : 0;
         
         if (empty($this->uploadUrl)) {
-            $this->uploadUrl = route('admin.lake-form-media.upload');
+            $this->uploadUrl = admin_route('admin.lake-form-media.upload');
         }
         
         if (empty($this->listUrl)) {
-            $this->listUrl = route('admin.lake-form-media.get-files');
+            $this->listUrl = admin_route('admin.lake-form-media.get-files');
         }
         
         if (empty($this->createFolderUrl)) {
-            $this->createFolderUrl = route('admin.lake-form-media.create-folder');
+            $this->createFolderUrl = admin_route('admin.lake-form-media.create-folder');
         }
         
         if ($this->disableUpload) {
