@@ -4,6 +4,7 @@ namespace Lake\FormMedia\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 
+use FormMediaServiceProvider;
 use Lake\FormMedia\MediaManager;
 
 class FormMedia extends Controller
@@ -39,7 +40,7 @@ class FormMedia extends Controller
             'nav' => $manager->navigation()  // 导航
         ];
         
-        return $this->renderJson('获取成功', 200, $data);
+        return $this->renderJson(FormMediaServiceProvider::trans('form-media.get_success'), 200, $data);
     }
 
     /**
@@ -59,19 +60,19 @@ class FormMedia extends Controller
         
         if ($type != 'blend') {
             if (! $manager->checkType($files, $type)) {
-                return $this->renderJson('上传文件格式不被允许', -1);
+                return $this->renderJson(FormMediaServiceProvider::trans('form-media.upload_file_ext_error'), -1);
             }
         }
         
         try {
             if ($manager->upload($files)) {
-                return $this->renderJson('上传成功', 200);
+                return $this->renderJson(FormMediaServiceProvider::trans('form-media.upload_success'), 200);
             }
         } catch (\Exception $e) {
-            return $this->renderJson('上传失败', -1);
+            return $this->renderJson(FormMediaServiceProvider::trans('form-media.upload_error'), -1);
         }
         
-        return $this->renderJson('上传失败', -1);
+        return $this->renderJson(FormMediaServiceProvider::trans('form-media.upload_error'), -1);
     }
 
     /**
@@ -87,13 +88,13 @@ class FormMedia extends Controller
 
         try {
             if ($manager->createFolder($name)) {
-                return $this->renderJson('创建成功', 200);
+                return $this->renderJson(FormMediaServiceProvider::trans('form-media.create_success'), 200);
             }
         } catch (\Exception $e) {
-            return $this->renderJson('创建失败', -1);
+            return $this->renderJson(FormMediaServiceProvider::trans('form-media.create_error'), -1);
         }
         
-        return $this->renderJson('创建失败', -1);
+        return $this->renderJson(FormMediaServiceProvider::trans('form-media.create_error'), -1);
     }
     
     /**

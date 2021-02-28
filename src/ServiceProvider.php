@@ -22,6 +22,9 @@ class ServiceProvider extends BaseServiceProvider
     public function init()
     {
         parent::init();
+        
+        // 设置别名
+        class_alias(__CLASS__, 'FormMediaServiceProvider');
 
         // 加载路由
         $this->app->booted(function () {
