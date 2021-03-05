@@ -29,7 +29,7 @@
                     data-title="{{ $label }}" 
                     data-token="{{ csrf_token() }}">
                     <i class="fa fa-folder-open"></i>&nbsp;  
-                    <span class="hidden-xs">{{ FormMediaServiceProvider::trans('form-media.select') }}</span>
+                    <span class="hidden-xs">{{ LakeFormMedia::trans('form-media.select') }}</span>
                 </div>
             </div>
 
@@ -43,7 +43,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content"  style="width: 100%">
               <div class="modal-header">
-                <h4 class="modal-title" id="LakeFormMediaModalLabel">{{ FormMediaServiceProvider::trans('form-media.check_image') }}</h4>
+                <h4 class="modal-title" id="LakeFormMediaModalLabel">{{ LakeFormMedia::trans('form-media.check_image') }}</h4>
                 <button type="button" class="close" 
                     data-dismiss="modal" 
                     aria-label="Close">
@@ -52,13 +52,13 @@
               </div>
               <div class="mailbox-controls with-border lake-form-media-actions-label" style="margin-left: 10px;">
                     <label class="btn btn-primary lake-form-media-upload-label">
-                        <i class="fa fa-upload"></i>&nbsp;&nbsp;{{ FormMediaServiceProvider::trans('form-media.upload') }}
+                        <i class="fa fa-upload"></i>&nbsp;&nbsp;{{ LakeFormMedia::trans('form-media.upload') }}
                         <input type="file" class="hidden file-upload lake-form-media-upload" multiple="" />
                     </label>
                     
                     <label class="btn btn-light lake-form-media-modal-order" 
                         data-order="time"
-                        title="{{ FormMediaServiceProvider::trans('form-media.change_sort') }}">
+                        title="{{ LakeFormMedia::trans('form-media.change_sort') }}">
                         <i class="fa fa-calendar-times-o"></i>
                     </label>
                     
@@ -66,7 +66,7 @@
                         <input type="text" class="form-control lake-form-media-dir-input" value="">
                         <div class="input-group-btn input-group-append">
                             <button type="button" class="btn btn-primary lake-form-media-dir-button">
-                                <i class="fa fa-folder"></i>&nbsp;&nbsp;{{ FormMediaServiceProvider::trans('form-media.create') }}
+                                <i class="fa fa-folder"></i>&nbsp;&nbsp;{{ LakeFormMedia::trans('form-media.create') }}
                             </button>
                         </div>
                     </div>
@@ -84,8 +84,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ FormMediaServiceProvider::trans('form-media.close') }}</button>
-                    <button type="button" class="btn btn-primary lake-form-media-submit">{{ FormMediaServiceProvider::trans('form-media.save') }}</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ LakeFormMedia::trans('form-media.close') }}</button>
+                    <button type="button" class="btn btn-primary lake-form-media-submit">{{ LakeFormMedia::trans('form-media.save') }}</button>
                 </div>
                 
                 <!-- 分页 -->
@@ -94,8 +94,8 @@
                     data-page-size="{{ $options['pageSize'] }}"
                     data-total-page="0"
                 >
-                    <button type="button" class="btn btn-primary hidden lake-form-media-modal-prev-page">{{ FormMediaServiceProvider::trans('form-media.prev') }}</button>
-                    <button type="button" class="btn btn-primary hidden lake-form-media-modal-next-page">{{ FormMediaServiceProvider::trans('form-media.next') }}</button>
+                    <button type="button" class="btn btn-primary hidden lake-form-media-modal-prev-page">{{ LakeFormMedia::trans('form-media.prev') }}</button>
+                    <button type="button" class="btn btn-primary hidden lake-form-media-modal-next-page">{{ LakeFormMedia::trans('form-media.next') }}</button>
                 </div>
             </div>
         </div>

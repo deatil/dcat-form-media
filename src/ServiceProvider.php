@@ -24,7 +24,9 @@ class ServiceProvider extends BaseServiceProvider
         parent::init();
         
         // 设置别名
-        class_alias(__CLASS__, 'FormMediaServiceProvider');
+        if (! class_exists('LakeFormMedia')) {
+            class_alias(__CLASS__, 'LakeFormMedia');
+        }
 
         // 加载路由
         $this->app->booted(function () {
