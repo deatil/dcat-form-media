@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.9
+ * LakeFormMedia-field.js v1.0.10
  *
  * @create 2020-11-28
  * @author deatil
@@ -8,10 +8,6 @@ $(function () {
     var LakeFormMedia = {
         init: function() {
             var thiz = this;
-            
-            $('.lake-form-media-input').each(function(i, cont) {
-                thiz.refreshInputPreview(cont);
-            });
             
             // 刷新预览
             $('body')
@@ -920,4 +916,5 @@ $(function () {
     }
     
     LakeFormMedia.init();
+    window.LakeFormMedia = LakeFormMedia;
 });

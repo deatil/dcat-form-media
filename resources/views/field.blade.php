@@ -101,3 +101,11 @@
         </div>
     </div>
 </div>
+
+<script>
+$(function() {
+    $('.lake-form-media-{{ str_replace(['[', ']'], ['-', ''], $name) }} .lake-form-media-input').each(function(i, cont) {
+        LakeFormMedia.refreshInputPreview(cont);
+    });
+});
+</script>
