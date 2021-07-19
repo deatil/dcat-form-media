@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.10
+ * LakeFormMedia-field.js v1.0.12
  *
  * @create 2020-11-28
  * @author deatil
@@ -10,514 +10,492 @@ $(function () {
             var thiz = this;
             
             // 刷新预览
-            $('body')
-                .off('change', '.lake-form-media-input')
-                .on('change', '.lake-form-media-input', function() {
-                    thiz.refreshInputPreview(this);
-                });
+            this.onEvent('change', '.lake-form-media-input', function() {
+                thiz.refreshInputPreview(this);
+            });
             
             // 拖拽排序
-            $('body')
-                .off('mouseenter', '.js-dragsort')
-                .on('mouseenter', '.js-dragsort', function() {
-                    var showRowCont = $(this).parents(".lake-form-media-img-show-row");
-                    if (showRowCont.hasClass('bind-dragsort')) {
-                        return ;
-                    }
-                    
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    showRowCont.dragsort({
-                        itemSelector: 'div.lake-form-media-preview-item',
-                        dragSelector: ".js-dragsort",
-                        dragEnd: function () {
-                            thiz.refreshInputString(name);
-                        },
-                        placeHolderTemplate: $('<div class="lake-form-media-preview-item" />'),
-                        scrollSpeed: 15
-                    });
-                    showRowCont.addClass('bind-dragsort')
+            this.onEvent('mouseenter', '.js-dragsort', function() {
+                var showRowCont = $(this).parents(".lake-form-media-img-show-row");
+                if (showRowCont.hasClass('bind-dragsort')) {
+                    return ;
+                }
+                
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                showRowCont.dragsort({
+                    itemSelector: 'div.lake-form-media-preview-item',
+                    dragSelector: ".js-dragsort",
+                    dragEnd: function () {
+                        thiz.refreshInputString(name);
+                    },
+                    placeHolderTemplate: $('<div class="lake-form-media-preview-item" />'),
+                    scrollSpeed: 15
                 });
+                showRowCont.addClass('bind-dragsort')
+            });
             
             // 删除
-            $('body')
-                .off("click", ".lake-form-media-img-show-item-delete")
-                .on("click", ".lake-form-media-img-show-item-delete", function(){
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var itemurl = $(this).data('url');
-                    
-                    var mediaShowCont = mediaCont.find('.lake-form-media-img-show');
-                    
-                    mediaCont.find('.lake-form-media-preview-item[data-src="' + itemurl + '"]').remove();
-                    thiz.refreshInputString(name);
-                    
-                    if (mediaShowCont.find('.lake-form-media-preview-item').length < 1) {
-                        mediaShowCont.hide();
-                    }
-                    
-                    return 1;
-                });
+            this.onEvent("click", ".lake-form-media-img-show-item-delete", function(){
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var itemurl = $(this).data('url');
+                
+                var mediaShowCont = mediaCont.find('.lake-form-media-img-show');
+                
+                mediaCont.find('.lake-form-media-preview-item[data-src="' + itemurl + '"]').remove();
+                thiz.refreshInputString(name);
+                
+                if (mediaShowCont.find('.lake-form-media-preview-item').length < 1) {
+                    mediaShowCont.hide();
+                }
+                
+                return 1;
+            });
             
             // 弹出选择器
-            $('body')
-                .off('click', '.lake-form-media-btn-file')
-                .on('click', '.lake-form-media-btn-file', function (event) {
-                    var modal = $(this)
-                    
-                    var title = modal.data('title')
-                    
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var options = mediaCont.data('options');
-                    options = $.extend({}, options);
-                    
-                    var path = options.path;
-                    var uploadUrl = options.upload_url;
-                    var createFolderUrl = options.create_folder_url;
-                    
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
-                    mediaModalPageCont.data('current-page', 1);
-                    
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    mediaModalNavOlCont.data('current-path', path);
-                    
-                    if (uploadUrl.length <= 0) {
-                        mediaModalCont.find('.lake-form-media-upload-label').addClass('hidden');
-                    }
-                    if (createFolderUrl.length <= 0) {
-                        mediaModalCont.find('.lake-form-media-create-folder-label').addClass('hidden');
-                    }
-                    if (uploadUrl.length <= 0 && createFolderUrl.length <= 0) {
-                        mediaModalCont.find('.lake-form-media-actions-label').addClass('hidden');
-                    }
-                    
-                    mediaModalCont.find('.modal-title').text('请选择' + title)
-                    
-                    thiz.getdata(name, path, options);
-                });
+            this.onEvent('click', '.lake-form-media-btn-file', function (event) {
+                var modal = $(this)
+                
+                var title = modal.data('title')
+                
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var options = mediaCont.data('options');
+                options = $.extend({}, options);
+                
+                var path = options.path;
+                var uploadUrl = options.upload_url;
+                var createFolderUrl = options.create_folder_url;
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
+                mediaModalPageCont.data('current-page', 1);
+                
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                mediaModalNavOlCont.data('current-path', path);
+                
+                if (uploadUrl.length <= 0) {
+                    mediaModalCont.find('.lake-form-media-upload-label').addClass('hidden');
+                }
+                if (createFolderUrl.length <= 0) {
+                    mediaModalCont.find('.lake-form-media-create-folder-label').addClass('hidden');
+                }
+                if (uploadUrl.length <= 0 && createFolderUrl.length <= 0) {
+                    mediaModalCont.find('.lake-form-media-actions-label').addClass('hidden');
+                }
+                
+                mediaModalCont.find('.modal-title').text('请选择' + title)
+                
+                thiz.getdata(name, path, options);
+            });
             
             // 点击排序切换
-            $('body')
-                .off('click', ".lake-form-media-modal-order")
-                .on('click', ".lake-form-media-modal-order", function() {
-                    var order = $(this).data('order');
+            this.onEvent('click', ".lake-form-media-modal-order", function() {
+                var order = $(this).data('order');
+                
+                if (order == 'name') {
+                    $(this).data('order', 'time');
                     
-                    if (order == 'name') {
-                        $(this).data('order', 'time');
-                        
-                        $(this).find('.fa')
-                            .removeClass('fa-sort-alpha-asc')
-                            .addClass('fa-calendar-times-o');
-                    } else {
-                        $(this).data('order', 'name');
-                        
-                        $(this).find('.fa')
-                            .removeClass('fa-calendar-times-o')
-                            .addClass('fa-sort-alpha-asc');
-                    }
+                    $(this).find('.fa')
+                        .removeClass('fa-sort-alpha-asc')
+                        .addClass('fa-calendar-times-o');
+                } else {
+                    $(this).data('order', 'name');
                     
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    var name = mediaCont.data('name');
-                    var path = mediaModalNavOlCont.data('current-path');
-                    var options = mediaCont.data('options');
-                    
-                    thiz.getdata(name, path, options)
-                });
+                    $(this).find('.fa')
+                        .removeClass('fa-calendar-times-o')
+                        .addClass('fa-sort-alpha-asc');
+                }
+                
+                var mediaCont = $(this).parents('.lake-form-media');
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                var name = mediaCont.data('name');
+                var path = mediaModalNavOlCont.data('current-path');
+                var options = mediaCont.data('options');
+                
+                thiz.getdata(name, path, options)
+            });
             
             // 点击文件夹
-            $('body')
-                .off('click', ".lake-form-media-dir-op")
-                .on('click', ".lake-form-media-dir-op", function() {
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var path = $(this).data('path');
-                    
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
-                    mediaModalPageCont.data('current-page', 1);
-                    
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    mediaModalNavOlCont.data('current-path', path);
-                    
-                    var options = mediaCont.data('options');
-                    
-                    thiz.getdata(name, path, options)
-                });
+            this.onEvent('click', ".lake-form-media-dir-op", function() {
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var path = $(this).data('path');
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
+                mediaModalPageCont.data('current-page', 1);
+                
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                mediaModalNavOlCont.data('current-path', path);
+                
+                var options = mediaCont.data('options');
+                
+                thiz.getdata(name, path, options)
+            });
             
             // 点击nav
-            $('body')
-                .off("click", ".lake-form-media-nav-li")
-                .on("click", ".lake-form-media-nav-li", function(){
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var path = $(this).data('path');
-                    
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
-                    mediaModalPageCont.data('current-page', 1);
-                    
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    mediaModalNavOlCont.data('current-path', path);
-                    
-                    var options = mediaCont.data('options');
-                    
-                    thiz.getdata(name, path, options)
-                });
+            this.onEvent("click", ".lake-form-media-nav-li", function(){
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var path = $(this).data('path');
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
+                mediaModalPageCont.data('current-page', 1);
+                
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                mediaModalNavOlCont.data('current-path', path);
+                
+                var options = mediaCont.data('options');
+                
+                thiz.getdata(name, path, options)
+            });
             
             // 分页-上一页
-            $('body')
-                .off("click", '.lake-form-media-modal-prev-page')
-                .on("click", '.lake-form-media-modal-prev-page', function() {
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
-                    var currentPage = mediaModalPageCont.data('current-page');
-                    
-                    currentPage = parseInt(currentPage);
-                    if (currentPage > 1) {
-                        currentPage -= 1;
-                        mediaModalPageCont.data('current-page', currentPage);
-                    } else {
-                        mediaModalPageCont.data('current-page', 1);
-                    }
-                    
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    var path = mediaModalNavOlCont.data('current-path');
-                    
-                    var options = mediaCont.data('options');
-                    
-                    thiz.getdata(name, path, options)
-                });
+            this.onEvent("click", '.lake-form-media-modal-prev-page', function() {
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
+                var currentPage = mediaModalPageCont.data('current-page');
+                
+                currentPage = parseInt(currentPage);
+                if (currentPage > 1) {
+                    currentPage -= 1;
+                    mediaModalPageCont.data('current-page', currentPage);
+                } else {
+                    mediaModalPageCont.data('current-page', 1);
+                }
+                
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                var path = mediaModalNavOlCont.data('current-path');
+                
+                var options = mediaCont.data('options');
+                
+                thiz.getdata(name, path, options)
+            });
             
             // 分页-下一页
-            $('body')
-                .off("click", '.lake-form-media-modal-next-page')
-                .on("click", '.lake-form-media-modal-next-page', function() {
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
-                    var currentPage = mediaModalPageCont.data('current-page');
-                    var totalPage = mediaModalPageCont.data('total-page');
-                    
-                    currentPage = parseInt(currentPage);
-                    totalPage = parseInt(totalPage);
-                    if (currentPage < totalPage) {
-                        currentPage += 1;
-                        mediaModalPageCont.data('current-page', currentPage);
-                    } else {
-                        mediaModalPageCont.data('current-page', totalPage);
-                    }
-                    
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    var path = mediaModalNavOlCont.data('current-path');
-                    
-                    var options = mediaCont.data('options');
-                    
-                    thiz.getdata(name, path, options)
-                });
+            this.onEvent("click", '.lake-form-media-modal-next-page', function() {
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
+                var currentPage = mediaModalPageCont.data('current-page');
+                var totalPage = mediaModalPageCont.data('total-page');
+                
+                currentPage = parseInt(currentPage);
+                totalPage = parseInt(totalPage);
+                if (currentPage < totalPage) {
+                    currentPage += 1;
+                    mediaModalPageCont.data('current-page', currentPage);
+                } else {
+                    mediaModalPageCont.data('current-page', totalPage);
+                }
+                
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                var path = mediaModalNavOlCont.data('current-path');
+                
+                var options = mediaCont.data('options');
+                
+                thiz.getdata(name, path, options)
+            });
             
             // 页码提示
-            $('.lake-form-media-modal-prev-page,.lake-form-media-modal-next-page')
-                .off('mouseover')
-                .off('mouseleave')
-                .on('mouseover', function () {
-                    var pageCont = $(this).parents('.lake-form-media-modal-page');
-                    
-                    var currentPage = pageCont.data('current-page');
-                    var totalPage = pageCont.data('total-page');
-                    var pageSize = pageCont.data('page-size');
-                    var title = '第'+currentPage+'页 / 共'+totalPage+'页，每页'+pageSize+'条';
-                    var idx = layer.tips(title, this, {
-                      tips: [1, '#586cb1'],
-                      time: 0,
-                      maxWidth: 210,
-                    });
-                    
-                    $(this).attr('layer-idx', idx);
-                })
-                .on('mouseleave', function () {
-                    layer.close($(this).attr('layer-idx'));
-                    
-                    $(this).attr('layer-idx', '');
+            this.onEvent('mouseover', '.lake-form-media-modal-prev-page,.lake-form-media-modal-next-page', function () {
+                var pageCont = $(this).parents('.lake-form-media-modal-page');
+                
+                var currentPage = pageCont.data('current-page');
+                var totalPage = pageCont.data('total-page');
+                var pageSize = pageCont.data('page-size');
+                var title = '第'+currentPage+'页 / 共'+totalPage+'页，每页'+pageSize+'条';
+                var idx = layer.tips(title, this, {
+                  tips: [1, '#586cb1'],
+                  time: 0,
+                  maxWidth: 210,
                 });
+                
+                $(this).attr('layer-idx', idx);
+            });
+            this.onEvent('mouseleave', '.lake-form-media-modal-prev-page,.lake-form-media-modal-next-page', function () {
+                layer.close($(this).attr('layer-idx'));
+                
+                $(this).attr('layer-idx', '');
+            });
             
             // 新建文件夹
-            $('body')
-                .off('click', ".lake-form-media-dir-button")
-                .on('click', ".lake-form-media-dir-button", function(res){
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    var currentPath = mediaModalNavOlCont.data('current-path');
-                    
-                    var options = mediaCont.data('options');
-                    
-                    var obj = mediaModalCont.find(".lake-form-media-dir-input");
-                    var dir = obj.val();
-                    
-                    var form = new FormData();
-                    form.append("name", dir);
-                    form.append("dir", currentPath);
-                    form.append("_token", Dcat.token);
-                    $.ajax({
-                        type: 'post',
-                        url: options.create_folder_url,
-                        data: form,
-                        processData: false,
-                        contentType : false,
-                        success: function(data){
-                            if (data['code'] == 200) {
-                                toastr.success(data['msg']);
-                                obj.val('');
-                                thiz.getdata(name, currentPath, options)
-                            } else {
-                                toastr.error(data['msg']);
-                            }
-                        },
-                        error: function(XmlHttpRequest, textStatus, errorThrown){
-                            toastr.error('创建失败');
+            this.onEvent('click', ".lake-form-media-dir-button", function(res){
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                var currentPath = mediaModalNavOlCont.data('current-path');
+                
+                var options = mediaCont.data('options');
+                
+                var obj = mediaModalCont.find(".lake-form-media-dir-input");
+                var dir = obj.val();
+                
+                var form = new FormData();
+                form.append("name", dir);
+                form.append("dir", currentPath);
+                form.append("_token", Dcat.token);
+                $.ajax({
+                    type: 'post',
+                    url: options.create_folder_url,
+                    data: form,
+                    processData: false,
+                    contentType : false,
+                    success: function(data){
+                        if (data['code'] == 200) {
+                            toastr.success(data['msg']);
+                            obj.val('');
+                            thiz.getdata(name, currentPath, options)
+                        } else {
+                            toastr.error(data['msg']);
                         }
-                    });
+                    },
+                    error: function(XmlHttpRequest, textStatus, errorThrown){
+                        toastr.error('创建失败');
+                    }
                 });
+            });
 
             // 上传图片
-            $('body')
-                .off('change', '.lake-form-media-upload')
-                .on('change', '.lake-form-media-upload', function() {
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    
-                    var currentPath = mediaModalNavOlCont.data('current-path');
-                    var options = mediaCont.data('options');
-                    
-                    var files = $(this).prop('files');
-                    var form = new FormData();
-                    for (var i = 0; i < files.length; i++) {
-                        form.append("files[]", files[i]);
-                    }
-                   
-                    form.append("path", currentPath);
-                    form.append("type", options.type);
-                    form.append("nametype", options.nametype);
-                    form.append("_token", Dcat.token);
-                    $.ajax({
-                        type: 'post', 
-                        url: options.upload_url,
-                        data: form,
-                        processData: false,
-                        contentType : false,
-                        success: function(data){
-                            if (data['code'] == 200) {
-                                toastr.success(data['msg']);
-                                thiz.getdata(name, currentPath, options)
-                            } else {
-                                toastr.error(data['msg']);
-                            }
-                        },
-                        error: function(XmlHttpRequest, textStatus, errorThrown){
-                            toastr.error('上传失败');
+            this.onEvent('change', '.lake-form-media-upload', function() {
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                
+                var currentPath = mediaModalNavOlCont.data('current-path');
+                var options = mediaCont.data('options');
+                
+                var files = $(this).prop('files');
+                var form = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                    form.append("files[]", files[i]);
+                }
+               
+                form.append("path", currentPath);
+                form.append("type", options.type);
+                form.append("nametype", options.nametype);
+                form.append("_token", Dcat.token);
+                $.ajax({
+                    type: 'post', 
+                    url: options.upload_url,
+                    data: form,
+                    processData: false,
+                    contentType : false,
+                    success: function(data){
+                        if (data['code'] == 200) {
+                            toastr.success(data['msg']);
+                            thiz.getdata(name, currentPath, options)
+                        } else {
+                            toastr.error(data['msg']);
                         }
-                    });
+                    },
+                    error: function(XmlHttpRequest, textStatus, errorThrown){
+                        toastr.error('上传失败');
+                    }
                 });
+            });
             
             // 提交
-            $('body')
-                .off('click', '.lake-form-media-submit')
-                .on('click', '.lake-form-media-submit', function(res){
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    
-                    var currentPath = mediaModalNavOlCont.data('current-path');
-                    var options = mediaCont.data('options');
-                    
-                    var inputCont = mediaCont.find('.lake-form-media-input');
-                    
-                    var limit = options.limit;
-                    var type = options.type
-                    
-                    // 列表
-                    var urlList = [];
-                    var urlListStr = inputCont.val();
-                    if (urlListStr == '[]') {
-                        urlListStr = '';
-                    }
-                    
-                    if (urlListStr) {
-                        if (limit == 1) {
-                            // 去掉预览
-                            thiz.refreshPreview(name, [], options)
-                        } else {
-                            urlList = thiz.isJSON( urlListStr );
-                        }
-                    }
-                    
-                    if (type == 'blend') {
-                        select_true_list = mediaModalCont
-                            .find('.lake-form-media-selected');
-                    } else {
-                        select_true_list = mediaModalCont
-                            .find('.lake-form-media-selected[data-type="'+type+'"]');
-                    }
-                    
-                    for (var i = 0; i < select_true_list.length; i++) {
-                        urlList.push($(select_true_list[i]).data('url'));
-                    }
-                    
-                    urlList = thiz.unique(urlList);
-                    
+            this.onEvent('click', '.lake-form-media-submit', function(res){
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                
+                var currentPath = mediaModalNavOlCont.data('current-path');
+                var options = mediaCont.data('options');
+                
+                var inputCont = mediaCont.find('.lake-form-media-input');
+                
+                var limit = options.limit;
+                var type = options.type
+                
+                // 列表
+                var urlList = [];
+                var urlListStr = inputCont.val();
+                if (urlListStr == '[]') {
+                    urlListStr = '';
+                }
+                
+                if (urlListStr) {
                     if (limit == 1) {
-                        inputCont.val(urlList[0]);
-                        inputCont.attr("value", urlList[0]);
+                        // 去掉预览
+                        thiz.refreshPreview(name, [], options)
                     } else {
-                        // 提交限制数量
-                        var newUrlList = [];
-                        
-                        if (urlList.length < limit) {
-                            limit = urlList.length;
-                        }
-                        
-                        for (var i = 0; i < limit; i++) {
-                            newUrlList.push(urlList[i]);
-                        }
-                        urlList = newUrlList;
-                        
-                        urlList_json = JSON.stringify( urlList );
-                        if (urlList_json == '[]') {
-                            $('#LakeFormMediaModel'+name).modal('hide');
-                            return null;
-                        }
-                        inputCont.val(urlList_json);
-                        inputCont.attr("value", urlList_json);
+                        urlList = thiz.isJSON( urlListStr );
+                    }
+                }
+                
+                if (type == 'blend') {
+                    select_true_list = mediaModalCont
+                        .find('.lake-form-media-selected');
+                } else {
+                    select_true_list = mediaModalCont
+                        .find('.lake-form-media-selected[data-type="'+type+'"]');
+                }
+                
+                for (var i = 0; i < select_true_list.length; i++) {
+                    urlList.push($(select_true_list[i]).data('url'));
+                }
+                
+                urlList = thiz.unique(urlList);
+                
+                if (limit == 1) {
+                    inputCont.val(urlList[0]);
+                    inputCont.attr("value", urlList[0]);
+                } else {
+                    // 提交限制数量
+                    var newUrlList = [];
+                    
+                    if (urlList.length < limit) {
+                        limit = urlList.length;
                     }
                     
-                    thiz.refreshPreview(name, urlList, options)
-                    $('#LakeFormMediaModel'+name).modal('hide');
-                });
+                    for (var i = 0; i < limit; i++) {
+                        newUrlList.push(urlList[i]);
+                    }
+                    urlList = newUrlList;
+                    
+                    urlList_json = JSON.stringify( urlList );
+                    if (urlList_json == '[]') {
+                        $('#LakeFormMediaModel'+name).modal('hide');
+                        return null;
+                    }
+                    inputCont.val(urlList_json);
+                    inputCont.attr("value", urlList_json);
+                }
+                
+                thiz.refreshPreview(name, urlList, options)
+                $('#LakeFormMediaModel'+name).modal('hide');
+            });
             
             // 选中点击
-            $('body')
-                .off("click", ".lake-form-media-field-item-op")
-                .on("click", ".lake-form-media-field-item-op", function(){
-                    var itemType = $(this).data('type');
-                    
-                    var mediaCont = $(this).parents('.lake-form-media');
-                    var name = mediaCont.data('name');
-                    
-                    var mediaModalCont = mediaCont.find('.lake-form-media-modal');
-                    var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
-                    
-                    var currentPath = mediaModalNavOlCont.data('current-path');
-                    var options = mediaCont.data('options');
-                    
-                    var inputCont = mediaCont.find('.lake-form-media-input');
-                    
-                    var type = options.type;
-                    var limit = options.limit;
-                    
-                    if (type != 'blend') {
-                        if (type != itemType) {
-                            return false;
-                        }
+            this.onEvent("click", ".lake-form-media-field-item-op", function(){
+                var itemType = $(this).data('type');
+                
+                var mediaCont = $(this).parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
+                
+                var currentPath = mediaModalNavOlCont.data('current-path');
+                var options = mediaCont.data('options');
+                
+                var inputCont = mediaCont.find('.lake-form-media-input');
+                
+                var type = options.type;
+                var limit = options.limit;
+                
+                if (type != 'blend') {
+                    if (type != itemType) {
+                        return false;
                     }
+                }
 
-                    // 现有多少张
-                    var nowNumVal = inputCont.val();
-                    if (nowNumVal == '[]') {
-                        nowNumVal = '';
-                    }
-                    var nowNumArr = [];
-                    if (nowNumVal) {
-                        if (limit == 1) {
-                            nowNumArr.push(nowNumVal)
-                        } else {
-                            nowNumArr = thiz.isJSON( nowNumVal );
-                        }
-                    }
-                    
-                    var noNeedSelectArr = [];
-                    var imgItem = mediaModalCont
-                        .find('.lake-form-media-field-item[data-type="'+itemType+'"]');
-                    for (var i = 0; i < imgItem.length; i++) {
-                        var itemUrl = $(imgItem[i]).data('url');
-                        if ($.inArray(itemUrl, nowNumArr) != -1) {
-                            noNeedSelectArr.push(itemUrl);
-                        }
-                    }
-                    var selectedItem = mediaModalCont.find('.lake-form-media-selected');
-                    
-                    var selectNum = nowNumArr.length - noNeedSelectArr.length + selectedItem.length;
-                    
-                    var tag = $(this).hasClass('lake-form-media-selected');
-
-                    if (tag) {
-                        // 取消选中
-                        $(this).removeClass('lake-form-media-selected');
+                // 现有多少张
+                var nowNumVal = inputCont.val();
+                if (nowNumVal == '[]') {
+                    nowNumVal = '';
+                }
+                var nowNumArr = [];
+                if (nowNumVal) {
+                    if (limit == 1) {
+                        nowNumArr.push(nowNumVal)
                     } else {
-                        // 选中
-                        if (limit == 1) {
-                            // 取消之前选中的
-                            mediaModalCont
-                                .find('.lake-form-media-selected')
-                                .removeClass('lake-form-media-selected')
-                        } else {
-                            if (selectNum > limit) {
-                                toastr.error('选择图片不能超过 '+limit+' 张');
-                                return 1;
-                            }
+                        nowNumArr = thiz.isJSON( nowNumVal );
+                    }
+                }
+                
+                var noNeedSelectArr = [];
+                var imgItem = mediaModalCont
+                    .find('.lake-form-media-field-item[data-type="'+itemType+'"]');
+                for (var i = 0; i < imgItem.length; i++) {
+                    var itemUrl = $(imgItem[i]).data('url');
+                    if ($.inArray(itemUrl, nowNumArr) != -1) {
+                        noNeedSelectArr.push(itemUrl);
+                    }
+                }
+                var selectedItem = mediaModalCont.find('.lake-form-media-selected');
+                
+                var selectNum = nowNumArr.length - noNeedSelectArr.length + selectedItem.length;
+                
+                var tag = $(this).hasClass('lake-form-media-selected');
+
+                if (tag) {
+                    // 取消选中
+                    $(this).removeClass('lake-form-media-selected');
+                } else {
+                    // 选中
+                    if (limit == 1) {
+                        // 取消之前选中的
+                        mediaModalCont
+                            .find('.lake-form-media-selected')
+                            .removeClass('lake-form-media-selected')
+                    } else {
+                        if (selectNum > limit) {
+                            toastr.error('选择图片不能超过 '+limit+' 张');
+                            return 1;
                         }
-                        
-                        $(this).addClass('lake-form-media-selected');
                     }
                     
-                    return 1;
-                });
+                    $(this).addClass('lake-form-media-selected');
+                }
+                
+                return 1;
+            });
             
             // 图片/视频预览
-            $("body")
-                .off('click', ".lake-form-media-img-show-item-preview")
-                .on('click', ".lake-form-media-img-show-item-preview", function() {
-                    var type = $(this).data('type');
-                    var url = $(this).data('url');
-                    
-                    var preview = '';
-                    if (type == 'image') {
-                        preview = '<img height="100%" src="' + url + '" />';
-                    } else if (type == 'audio' || type == 'video') {
-                        preview = '<video height="100%" controls src="' + url + '"></video>';
-                    }
-                    
-                    layer.open({
-                        type: 1,
-                        area: ['auto', '85%'],
-                        title: '预览',
-                        end: function(index, layero) {
-                            return false;
-                        },
-                        content: '<div style="display: flex;align-items: center;justify-content: center;text-align: justify;height: 100%;">'+preview+'</div>',
-                    });
+            this.onEvent('click', ".lake-form-media-img-show-item-preview", function() {
+                var type = $(this).data('type');
+                var url = $(this).data('url');
+                
+                var preview = '';
+                var height = '85%';
+                if (type == 'image') {
+                    preview = '<img height="100%" src="' + url + '" />';
+                } else if (type == 'video') {
+                    preview = '<video height="100%" controls src="' + url + '"></video>';
+                } else if (type == 'audio') {
+                    height = 'auto';
+                    preview = '<audio controls src="' + url + '"></audio>';
+                }
+                
+                layer.open({
+                    type: 1,
+                    area: ['auto', height],
+                    title: '预览',
+                    end: function(index, layero) {
+                        return false;
+                    },
+                    content: '<div style="display: flex;align-items: center;justify-content: center;text-align: justify;height: 100%;">'+preview+'</div>',
                 });
+            });
+        },
+        
+        onEvent: function(bind, elements, callback) {
+            return $("body").off(bind, elements)
+                .on(bind, elements, callback);
         },
         
         getdata: function(name, path = '/', options = []) {
@@ -727,7 +705,7 @@ $(function () {
                 var suffix = this.getFileSuffix(src);
                 
                 html += '<div class="caption">';
-                if (suffix == 'image' || suffix == 'video') {
+                if (suffix == 'image' || suffix == 'video' || suffix == 'audio') {
                     html += '<span class="btn btn-default lake-form-media-img-show-item-preview" data-type="'+suffix+'" data-url="'+src+'" title="预览"><i class="fa fa-search-plus"></i></span>';
                 }
                 if (remove) {
