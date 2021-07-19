@@ -86,7 +86,7 @@ pageSize(string)： 弹出层列表每页显示数量
 limit(int)      ： 限制条数
 remove(boolean) :  是否有删除按钮
 
-photo 、 photos 、 video  的 参数默认值不一样
+photo 、 photos 、 video 的参数默认值不一样
 
 photo  默认 limit = 1  remove = false
 
