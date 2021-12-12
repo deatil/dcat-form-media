@@ -17,4 +17,5 @@ return [
     'upload_error' => '上传失败',
     'create_success' => '创建成功',
     'create_error' => '创建失败',
+    'create_dirname_empty' => '文件夹名称不能为空',
 ];

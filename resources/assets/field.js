@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.12
+ * LakeFormMedia-field.js v1.0.13
  *
  * @create 2020-11-28
  * @author deatil
@@ -38,19 +38,29 @@ $(function () {
             
             // 删除
             this.onEvent("click", ".lake-form-media-img-show-item-delete", function(){
-                var mediaCont = $(this).parents('.lake-form-media');
-                var name = mediaCont.data('name');
+                var $this = $(this);
                 
-                var itemurl = $(this).data('url');
-                
-                var mediaShowCont = mediaCont.find('.lake-form-media-img-show');
-                
-                mediaCont.find('.lake-form-media-preview-item[data-src="' + itemurl + '"]').remove();
-                thiz.refreshInputString(name);
-                
-                if (mediaShowCont.find('.lake-form-media-preview-item').length < 1) {
-                    mediaShowCont.hide();
-                }
+                layer.confirm("确认要移除当前数据吗？", {
+                    icon: 3,
+                    title: "系统提示",
+                }, function(index) {
+                    var mediaCont = $this.parents('.lake-form-media');
+                    var name = mediaCont.data('name');
+                    
+                    var itemurl = $this.data('url');
+                    
+                    var mediaShowCont = mediaCont.find('.lake-form-media-img-show');
+                    
+                    mediaCont.find('.lake-form-media-preview-item[data-src="' + itemurl + '"]').remove();
+                    thiz.refreshInputString(name);
+                    
+                    if (mediaShowCont.find('.lake-form-media-preview-item').length < 1) {
+                        mediaShowCont.hide();
+                    }
+                    
+                    // 关闭提示框
+                    layer.close(index);
+                });
                 
                 return 1;
             });
@@ -159,7 +169,7 @@ $(function () {
                 thiz.getdata(name, path, options)
             });
             
-            // 分页-上一页
+            // 分页 - 上一页
             this.onEvent("click", '.lake-form-media-modal-prev-page', function() {
                 var mediaCont = $(this).parents('.lake-form-media');
                 var name = mediaCont.data('name');
@@ -184,7 +194,7 @@ $(function () {
                 thiz.getdata(name, path, options)
             });
             
-            // 分页-下一页
+            // 分页 - 下一页
             this.onEvent("click", '.lake-form-media-modal-next-page', function() {
                 var mediaCont = $(this).parents('.lake-form-media');
                 var name = mediaCont.data('name');
@@ -247,6 +257,11 @@ $(function () {
                 
                 var obj = mediaModalCont.find(".lake-form-media-dir-input");
                 var dir = obj.val();
+                
+                if (dir == "") {
+                    toastr.error('文件夹名称不能为空');
+                    return false;
+                }
                 
                 var form = new FormData();
                 form.append("name", dir);
@@ -454,7 +469,7 @@ $(function () {
                             .removeClass('lake-form-media-selected')
                     } else {
                         if (selectNum > limit) {
-                            toastr.error('选择图片不能超过 '+limit+' 张');
+                            toastr.error('选择数量不能超过 '+limit+' 条');
                             return 1;
                         }
                     }
@@ -505,7 +520,7 @@ $(function () {
             var limit = options.limit;
             var remove = options.remove;
             var rootpath = options.rootpath;
-            var pageSize = options.pageSize;
+            var pageSize = options.pagesize;
             
             var mediaModalCont = mediaCont.find('.lake-form-media-modal');
             var mediaModalTableCont = mediaModalCont.find('.lake-form-media-body-table');
@@ -522,13 +537,20 @@ $(function () {
             
             var thiz = this;
             
+            var baseUrl = options.get_files_url;
+            if (baseUrl.indexOf("?") == -1) {
+                baseUrl = baseUrl + "?";
+            } else {
+                baseUrl = baseUrl + "&";
+            }
+            
             $.ajax({
-                url: options.get_files_url 
-                    + "?path="+path
-                    + "&type="+type
-                    + "&order="+order
-                    + "&page="+currentPage
-                    + "&pageSize="+pageSize,
+                url: baseUrl 
+                    + "path=" + path
+                    + "&type=" + type
+                    + "&order=" + order
+                    + "&page=" + currentPage
+                    + "&pageSize=" + pageSize,
                 method: 'GET',
                 datatype:'json',
                 async: true,
@@ -550,7 +572,7 @@ $(function () {
                                 htmltemp +=     '</div>';
                                 htmltemp += '</div>';
                                 mediaModalTableCont.append(htmltemp);
-                            }else{
+                            } else {
                                 var htmltemp = '';
                                 htmltemp += '<div class="col-xs-4 col-md-3">';
                                 
@@ -571,7 +593,7 @@ $(function () {
                         mediaModalTableCont.append(htmltemp);
                     }
                     
-                    mediaModalNavOlCont.html('<li class="breadcrumb-item lake-form-media-nav-li" data-path="/""><a href="javascript:;"><i class="fa fa-th-large"></i> </a></li>');
+                    mediaModalNavOlCont.html('<li class="breadcrumb-item lake-form-media-nav-li" data-path="/"><a href="javascript:;"><i class="fa fa-th-large"></i> </a></li>');
                     mediaModalNavOlCont.data('current-path', '/');
                     for (var i = 0; i < nav.length; i++) {
                         mediaModalNavOlCont.append('<li class="breadcrumb-item"><a class="lake-form-media-nav-li" href="javascript:;" data-path="'+nav[i]['url']+'"> '+nav[i]['name']+'</a></li>');
@@ -615,6 +637,9 @@ $(function () {
                         mediaModalPageCont.find('.lake-form-media-modal-next-page').addClass('hidden');
                     }
 
+                },
+                error: function(XmlHttpRequest, textStatus, errorThrown){
+                    toastr.error('数据获取失败');
                 },
                 cache: false,
                 contentType: false,
@@ -677,6 +702,7 @@ $(function () {
             var limit = options.limit;
             var remove = options.remove;
             var rootpath = options.rootpath;
+            var showtitle = options.showtitle;
             
             var mediaCont = $('.lake-form-media-'+name);
             var imgShowCont = mediaCont.find('.lake-form-media-img-show');
@@ -698,11 +724,18 @@ $(function () {
                 var html = '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-3 lake-form-media-preview-item" data-src="'+urlList[i]+'">';
                     html += '<div class="thumbnail lake-form-media-row-col">';
                 
-                html += '<div class="lake-form-media-row-img">';
+                html += '<div class="lake-form-media-row-img" title="' + urlList[i] + '">';
                 html += this.getFileDisplay(src);
                 html += '</div>';
                 
                 var suffix = this.getFileSuffix(src);
+                
+                // 文件名
+                if (showtitle) {
+                    html += '<div class="row-title" title="' + urlList[i] + '">';
+                    html += urlList[i];
+                    html += '</div>';
+                }
                 
                 html += '<div class="caption">';
                 if (suffix == 'image' || suffix == 'video' || suffix == 'audio') {
@@ -773,6 +806,17 @@ $(function () {
             return type;
         },
         
+        getFileExt: function (filename) {
+            try {
+                var srcArr = filename.split('.');
+                var ext = srcArr[srcArr.length - 1];
+            } catch(err) {
+                var ext = '';
+            }
+            
+            return ext;
+        },
+
         getFileDisplay: function (src) {
             var type = this.getFileSuffix(src);
             

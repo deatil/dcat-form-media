@@ -7,7 +7,7 @@
 ![form](https://user-images.githubusercontent.com/24578855/105875109-5aa30400-6038-11eb-9b5c-1c833e0c6b92.jpg)
 
 ### 动态表单
-![form-array](https://user-images.githubusercontent.com/24578855/100456207-f24caa80-30fa-11eb-86a3-a8e3d2102655.jpg)
+![form-array](https://user-images.githubusercontent.com/24578855/145700810-e648aa6e-4753-42a4-9fef-d5f397536ba3.jpg)
 
 ### 弹出选择框
 ![form-modal](https://user-images.githubusercontent.com/24578855/104125985-1277b680-5395-11eb-835b-c20e7c7585f9.jpg)
@@ -82,7 +82,7 @@ $form->video('video','视频')
 ```
 path(string)    ： 快速定位目录，默认为根目录
 nametype(string)： 文件重命名方式 uniqid|datetime，默认 uniqid
-pageSize(string)： 弹出层列表每页显示数量
+pageSize(int)   ： 弹出层列表每页显示数量
 limit(int)      ： 限制条数
 remove(boolean) :  是否有删除按钮
 

@@ -75,6 +75,9 @@
                 <div class="modal-body pre-scrollable" >
                     <!-- 页面导航 -->
                     <ol class="breadcrumb lake-form-media-nav-ol" data-current-path="/" style="margin-bottom: 10px;">
+                        <li class="breadcrumb-item lake-form-media-nav-li">
+                            加载中...
+                        </li>
                     </ol>
                     
                     <!-- 图片 -->
@@ -91,7 +94,7 @@
                 <!-- 分页 -->
                 <div class="lake-form-media-modal-page"
                     data-current-page="1"
-                    data-page-size="{{ $options['pageSize'] }}"
+                    data-page-size="{{ $options['pagesize'] }}"
                     data-total-page="0"
                 >
                     <button type="button" class="btn btn-primary hidden lake-form-media-modal-prev-page">{{ LakeFormMedia::trans('form-media.prev') }}</button>

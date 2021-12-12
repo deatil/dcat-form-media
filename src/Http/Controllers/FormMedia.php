@@ -68,9 +68,7 @@ class FormMedia extends Controller
             if ($manager->upload($files)) {
                 return $this->renderJson(LakeFormMedia::trans('form-media.upload_success'), 200);
             }
-        } catch (\Exception $e) {
-            return $this->renderJson(LakeFormMedia::trans('form-media.upload_error'), -1);
-        }
+        } catch (\Exception $e) {}
         
         return $this->renderJson(LakeFormMedia::trans('form-media.upload_error'), -1);
     }
@@ -82,6 +80,10 @@ class FormMedia extends Controller
     {
         $dir = request()->input('dir');
         $name = request()->input('name');
+        
+        if (empty($dir)) {
+            return $this->renderJson(LakeFormMedia::trans('form-media.create_dirname_empty'), -1);
+        }
 
         $manager = (new MediaManager())
             ->setPath($dir);
@@ -90,9 +92,7 @@ class FormMedia extends Controller
             if ($manager->createFolder($name)) {
                 return $this->renderJson(LakeFormMedia::trans('form-media.create_success'), 200);
             }
-        } catch (\Exception $e) {
-            return $this->renderJson(LakeFormMedia::trans('form-media.create_error'), -1);
-        }
+        } catch (\Exception $e) {}
         
         return $this->renderJson(LakeFormMedia::trans('form-media.create_error'), -1);
     }

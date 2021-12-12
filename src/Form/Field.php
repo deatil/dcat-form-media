@@ -34,6 +34,8 @@ class Field extends BaseField
     
     protected $disableUpload = false;
     protected $disableCreateFolder = false;
+    
+    protected $enableShowTitle = false;
 
     protected $path = '';
     protected $limit = 1;
@@ -46,7 +48,6 @@ class Field extends BaseField
      * 设置上传链接
      *
      * @param string $uploadUrl
-     *
      * @return $this
      */
     public function uploadUrl($uploadUrl = null)
@@ -60,7 +61,6 @@ class Field extends BaseField
      * 设置数据列表链接
      *
      * @param string $listUrl
-     *
      * @return $this
      */
     public function listUrl($listUrl = null)
@@ -74,7 +74,6 @@ class Field extends BaseField
      * 设置新建文件夹链接
      *
      * @param string $createFolderUrl
-     *
      * @return $this
      */
     public function createFolderUrl($createFolderUrl = null)
@@ -109,13 +108,24 @@ class Field extends BaseField
     }
 
     /**
+     * 显示标题
+     *
+     * @return $this
+     */
+    public function enableShowTitle()
+    {
+        $this->enableShowTitle = true;
+
+        return $this;
+    }
+
+    /**
      * 设置类型
      *
      * 类型包括：blend、image、xls、word、ppt、pdf、code、zip、text、audio、video
      * 其中 blend 为全部类型
      *
      * @param string $type
-     *
      * @return $this
      */
     public function type($type = 'image')
@@ -129,7 +139,6 @@ class Field extends BaseField
      * 设置当前可用目录
      *
      * @param string $path
-     *
      * @return $this
      */
     public function path($path = '')
@@ -143,7 +152,6 @@ class Field extends BaseField
      * 设置限制数量.
      *
      * @param int $limit
-     *
      * @return $this
      */
     public function limit($limit = 1)
@@ -157,7 +165,6 @@ class Field extends BaseField
      * 移除
      *
      * @param boolen $remove
-     *
      * @return $this
      */
     public function remove($remove = false)
@@ -171,7 +178,6 @@ class Field extends BaseField
      * 设置上传保存文件名类型
      *
      * @param string $type uniqid|datetime
-     *
      * @return $this
      */
     public function nametype($type = 'uniqid')
@@ -187,10 +193,33 @@ class Field extends BaseField
     }
 
     /**
+     * 唯一 ID 命名
+     *
+     * @return $this
+     */
+    public function uniqidName()
+    {
+        $this->nametype("uniqid");
+        
+        return $this;
+    }
+
+    /**
+     * 时间格式命名
+     *
+     * @return $this
+     */
+    public function datetimeName()
+    {
+        $this->nametype("datetime");
+        
+        return $this;
+    }
+
+    /**
      * 设置每页数量
      *
      * @param int $pageSize
-     *
      * @return $this
      */
     public function pageSize($pageSize = 120)
@@ -200,6 +229,11 @@ class Field extends BaseField
         return $this;
     }
 
+    /**
+     * 渲染
+     *
+     * @return mixed
+     */
     public function render()
     {
         $path = $this->path;
@@ -228,6 +262,8 @@ class Field extends BaseField
         if ($this->disableCreateFolder) {
             $this->createFolderUrl = '';
         }
+        
+        $showTitle = ($this->enableShowTitle == true) ? 1 : 0;
 
         $this->addVariables([
             'options' => [
@@ -235,9 +271,11 @@ class Field extends BaseField
                 'limit' => $limit,
                 'type' => $type,
                 'nametype' => $nametype,
-                'pageSize' => $pageSize,
+                'pagesize' => $pageSize,
                 'rootpath' => $rootpath,
                 'remove' => $remove,
+                
+                'showtitle' => $showTitle,
                 
                 'get_files_url' => $this->listUrl,
                 'upload_url' => $this->uploadUrl,
