@@ -17,9 +17,11 @@
             
             <input type="text" 
                 name="{{$name}}" 
+                value="{{ old($column, $value)?(is_array(old($column, $value))?json_encode(old($column, $value)):old($column, $value)):'' }}" 
                 class="form-control lake-form-media-input {{$class}}"  
-                placeholder="{{ $placeholder }} " {!! $attributes !!} 
-                value="{{ old($column, $value)?(is_array(old($column, $value))?json_encode(old($column, $value)):old($column, $value)):'' }}" />
+                placeholder="{{ $placeholder }}" 
+                @if(!$options['remove']) readonly="readonly" @endif
+                {!! $attributes !!} />
 
             <div class="input-group-btn input-group-append">
                 <div tabindex="500" 
@@ -27,7 +29,8 @@
                     data-toggle="modal" 
                     data-target="#LakeFormMediaModel{{ str_replace(['[', ']'], ['-', ''], $name) }}" 
                     data-title="{{ $label }}" 
-                    data-token="{{ csrf_token() }}">
+                    data-token="{{ csrf_token() }}"
+                >
                     <i class="fa fa-folder-open"></i>&nbsp;  
                     <span class="hidden-xs">{{ LakeFormMedia::trans('form-media.select') }}</span>
                 </div>
@@ -44,9 +47,11 @@
             <div class="modal-content"  style="width: 100%">
               <div class="modal-header">
                 <h4 class="modal-title" id="LakeFormMediaModalLabel">{{ LakeFormMedia::trans('form-media.check_image') }}</h4>
-                <button type="button" class="close" 
+                <button type="button" 
+                    class="close" 
                     data-dismiss="modal" 
-                    aria-label="Close">
+                    aria-label="Close"
+                >
                     <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -58,7 +63,8 @@
                     
                     <label class="btn btn-light lake-form-media-modal-order" 
                         data-order="time"
-                        title="{{ LakeFormMedia::trans('form-media.change_sort') }}">
+                        title="{{ LakeFormMedia::trans('form-media.change_sort') }}"
+                    >
                         <i class="fa fa-calendar-times-o"></i>
                     </label>
                     

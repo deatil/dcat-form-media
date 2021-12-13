@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.13
+ * LakeFormMedia-field.js v1.0.15
  *
  * @create 2020-11-28
  * @author deatil
@@ -40,14 +40,14 @@ $(function () {
             this.onEvent("click", ".lake-form-media-img-show-item-delete", function(){
                 var $this = $(this);
                 
-                layer.confirm("确认要移除当前数据吗？", {
+                var itemurl = $this.data('url');
+
+                layer.confirm(thiz.lang("remove_tip", itemurl), {
                     icon: 3,
-                    title: "系统提示",
+                    title: thiz.lang("system_tip"),
                 }, function(index) {
                     var mediaCont = $this.parents('.lake-form-media');
                     var name = mediaCont.data('name');
-                    
-                    var itemurl = $this.data('url');
                     
                     var mediaShowCont = mediaCont.find('.lake-form-media-img-show');
                     
@@ -94,11 +94,8 @@ $(function () {
                 if (createFolderUrl.length <= 0) {
                     mediaModalCont.find('.lake-form-media-create-folder-label').addClass('hidden');
                 }
-                if (uploadUrl.length <= 0 && createFolderUrl.length <= 0) {
-                    mediaModalCont.find('.lake-form-media-actions-label').addClass('hidden');
-                }
                 
-                mediaModalCont.find('.modal-title').text('请选择' + title)
+                mediaModalCont.find('.modal-title').text(thiz.lang("select_type", title))
                 
                 thiz.getdata(name, path, options);
             });
@@ -228,7 +225,7 @@ $(function () {
                 var currentPage = pageCont.data('current-page');
                 var totalPage = pageCont.data('total-page');
                 var pageSize = pageCont.data('page-size');
-                var title = '第'+currentPage+'页 / 共'+totalPage+'页，每页'+pageSize+'条';
+                var title = thiz.lang("page_render", currentPage, totalPage, pageSize);
                 var idx = layer.tips(title, this, {
                   tips: [1, '#586cb1'],
                   time: 0,
@@ -259,10 +256,10 @@ $(function () {
                 var dir = obj.val();
                 
                 if (dir == "") {
-                    toastr.error('文件夹名称不能为空');
+                    toastr.error(thiz.lang("dir_not_empty"));
                     return false;
                 }
-                
+
                 var form = new FormData();
                 form.append("name", dir);
                 form.append("dir", currentPath);
@@ -283,7 +280,7 @@ $(function () {
                         }
                     },
                     error: function(XmlHttpRequest, textStatus, errorThrown){
-                        toastr.error('创建失败');
+                        toastr.error(thiz.lang("create_dir_error"));
                     }
                 });
             });
@@ -324,7 +321,7 @@ $(function () {
                         }
                     },
                     error: function(XmlHttpRequest, textStatus, errorThrown){
-                        toastr.error('上传失败');
+                        toastr.error(thiz.lang("upload_error"));
                     }
                 });
             });
@@ -468,8 +465,8 @@ $(function () {
                             .find('.lake-form-media-selected')
                             .removeClass('lake-form-media-selected')
                     } else {
-                        if (selectNum > limit) {
-                            toastr.error('选择数量不能超过 '+limit+' 条');
+                        if (selectNum >= limit) {
+                            toastr.error(thiz.lang("selected_error", limit));
                             return 1;
                         }
                     }
@@ -499,7 +496,7 @@ $(function () {
                 layer.open({
                     type: 1,
                     area: ['auto', height],
-                    title: '预览',
+                    title: thiz.lang("preview_title"),
                     end: function(index, layero) {
                         return false;
                     },
@@ -639,7 +636,7 @@ $(function () {
 
                 },
                 error: function(XmlHttpRequest, textStatus, errorThrown){
-                    toastr.error('数据获取失败');
+                    toastr.error(thiz.lang("getdata_error"));
                 },
                 cache: false,
                 contentType: false,
@@ -699,6 +696,8 @@ $(function () {
         
         // 刷新/显示 预览
         refreshPreview: function(name, urlList, options = []) {
+            var thiz = this;
+            
             var limit = options.limit;
             var remove = options.remove;
             var rootpath = options.rootpath;
@@ -739,13 +738,13 @@ $(function () {
                 
                 html += '<div class="caption">';
                 if (suffix == 'image' || suffix == 'video' || suffix == 'audio') {
-                    html += '<span class="btn btn-default lake-form-media-img-show-item-preview" data-type="'+suffix+'" data-url="'+src+'" title="预览"><i class="fa fa-search-plus"></i></span>';
+                    html += '<span class="btn btn-default lake-form-media-img-show-item-preview" data-type="'+suffix+'" data-url="'+src+'" title="' + thiz.lang("preview") + '"><i class="fa fa-search-plus"></i></span>';
                 }
                 if (remove) {
-                    html += '<span class="btn btn-default file-delete-multiple lake-form-media-img-show-item-delete" data-url="'+urlList[i]+'" title="移除"><i class="fa fa-trash-o"></i></span>';
+                    html += '<span class="btn btn-default file-delete-multiple lake-form-media-img-show-item-delete" data-url="'+urlList[i]+'" title="' + thiz.lang("remove") + '"><i class="fa fa-trash-o"></i></span>';
                 }
                 if (limit > 1) {
-                    html += '<span class="btn btn-default lake-form-media-img-show-item-dragsort js-dragsort" title="拖动"><i class="fa fa-arrows"></i></span>';
+                    html += '<span class="btn btn-default lake-form-media-img-show-item-dragsort js-dragsort" title="' + thiz.lang("dragsort") + '"><i class="fa fa-arrows"></i></span>';
                 }
                 html += '</div>';
                 
@@ -894,6 +893,10 @@ $(function () {
             var args = arguments,
                 string = args[0],
                 i = 1;
+            
+            // 语言包
+            var Lang = window.LakeFormMediaLang;
+            
             string = string.toLowerCase();
             if (typeof Lang !== 'undefined' && typeof Lang[string] !== 'undefined') {
                 if (typeof Lang[string] == 'object') {
@@ -914,6 +917,7 @@ $(function () {
             } else {
                 string = args[0];
             }
+            
             return string.replace(/%((%)|s|d)/g, function (m) {
                 // m is the matched format, e.g. %s, %d
                 var val = null;
@@ -938,5 +942,6 @@ $(function () {
     }
     
     LakeFormMedia.init();
+    
     window.LakeFormMedia = LakeFormMedia;
 });
