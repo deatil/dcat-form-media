@@ -42,7 +42,9 @@ $(function () {
                 
                 var itemurl = $this.data('url');
 
-                layer.confirm(thiz.lang("remove_tip", itemurl), {
+                layer.confirm(thiz.lang("remove_tip", {
+                    data: itemurl,
+                }), {
                     icon: 3,
                     title: thiz.lang("system_tip"),
                 }, function(index) {
@@ -95,7 +97,9 @@ $(function () {
                     mediaModalCont.find('.lake-form-media-create-folder-label').addClass('hidden');
                 }
                 
-                mediaModalCont.find('.modal-title').text(thiz.lang("select_type", title))
+                mediaModalCont.find('.modal-title').text(thiz.lang("select_type", {
+                    "title": title,
+                }))
                 
                 thiz.getdata(name, path, options);
             });
@@ -225,7 +229,11 @@ $(function () {
                 var currentPage = pageCont.data('current-page');
                 var totalPage = pageCont.data('total-page');
                 var pageSize = pageCont.data('page-size');
-                var title = thiz.lang("page_render", currentPage, totalPage, pageSize);
+                var title = thiz.lang("page_render", {
+                    page: currentPage,
+                    total: totalPage,
+                    perpage: pageSize,
+                });
                 var idx = layer.tips(title, this, {
                   tips: [1, '#586cb1'],
                   time: 0,
@@ -466,7 +474,9 @@ $(function () {
                             .removeClass('lake-form-media-selected')
                     } else {
                         if (selectNum >= limit) {
-                            toastr.error(thiz.lang("selected_error", limit));
+                            toastr.error(thiz.lang("selected_error", {
+                                num: limit,
+                            }));
                             return 1;
                         }
                     }
@@ -888,11 +898,24 @@ $(function () {
             return false;
         },
         
+        // 判断是否是 object
+        isObj: function(object){
+            return object && typeof (object) == 'object' 
+                && Object.prototype.toString.call(object).toLowerCase() == "[object object]";
+        },
+        
+        // 判断是否是 array
+        isArray: function(object){
+            return Object.prototype.toString.call(o) === '[object Array]';  
+        },
+        
         // 翻译
         lang: function () {
             var args = arguments,
                 string = args[0],
                 i = 1;
+            
+            var thiz = this;
             
             // 语言包
             var Lang = window.LakeFormMediaLang;
@@ -902,30 +925,38 @@ $(function () {
                 if (typeof Lang[string] == 'object') {
                     return Lang[string];
                 }
+                
                 string = Lang[string];
             } else if (string.indexOf('.') !== -1 && false) {
                 var arr = string.split('.');
                 var current = Lang[arr[0]];
+                
                 for (var i = 1; i < arr.length; i++) {
                     current = typeof current[arr[i]] != 'undefined' ? current[arr[i]] : '';
-                    if (typeof current != 'object')
+                    if (typeof current != 'object') {
                         break;
+                    }
                 }
-                if (typeof current == 'object')
+                
+                if (typeof current == 'object') {
                     return current;
+                }
+                
                 string = current;
             } else {
                 string = args[0];
             }
             
-            return string.replace(/%((%)|s|d)/g, function (m) {
-                // m is the matched format, e.g. %s, %d
+            // 原始按序替换
+            string = string.replace(/%((%)|s|d)/g, function (m) {
+                // m 是匹配到的格式, e.g. %s, %d
                 var val = null;
+                
                 if (m[2]) {
                     val = m[2];
                 } else {
                     val = args[i];
-                    // A switch statement so that the formatter can be extended. Default is %s
+                    // 默认是 %s
                     switch (m) {
                         case '%d':
                             val = parseFloat(val);
@@ -936,8 +967,42 @@ $(function () {
                     }
                     i++;
                 }
+                
                 return val;
             });
+            
+            // 键值翻译
+            string = string.replace(/:((:)|[a-zA-Z0-9\-\_]+)/g, function (m) {
+                if (args.length < 2) {
+                    return m;
+                }
+                
+                // 默认
+                var val = null;
+                
+                // 翻译数据
+                var data = args[1];
+                
+                // 对象判断
+                if (! thiz.isObj(data)) {
+                    return m;
+                }
+                
+                // 键值
+                var key = m.substr(1);
+                
+                // 键值判断
+                if (! (key in data)) {
+                    return m;
+                }
+                
+                // 设置值
+                val = data[key];
+
+                return val;
+            });
+            
+            return string;
         },
     }
     
