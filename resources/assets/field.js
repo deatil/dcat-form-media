@@ -798,6 +798,22 @@ $(function () {
             return false;
         },
         
+        // 判断是否是 object
+        isObj: function(object) {
+            return object 
+                && typeof (object) == 'object' 
+                && Object.prototype
+                    .toString.call(object)
+                    .toLowerCase() == "[object object]";
+        },
+        
+        // 判断是否是 array
+        isArray: function(object) {
+            return Object.prototype
+                .toString.call(object)
+                .toLowerCase() === '[object array]';
+        },
+        
         getFileSuffix: function (src) {
             try {
                 var srcArr = src.split('.');
@@ -854,30 +870,49 @@ $(function () {
         getFileType: function (suffix) {
             // 匹配图片
             var image = [
-                'bmp', 'cgm', 'djv', 'djvu', 'gif', 'ico', 'ief', 'jp2', 'jpe', 'jpeg', 'jpg', 'mac', 'pbm', 'pct', 'pgm', 'pic', 'pict',
-                'png', 'pnm', 'pnt', 'pntg', 'ppm', 'qti', 'qtif', 'ras', 'rgb', 'svg', 'tif', 'tiff', 'wbmp', 'xbm', 'xpm', 'xwd'
+                'jpeg', 'jpg', 'bmp', 'png', 'svg', 'wbmp', 'pic', 
+                'cgm', 'djv', 'djvu', 'gif', 'ico', 'ief', 'jp2', 
+                'jpe', 'mac', 'pbm', 'pct', 'pgm', 'pict', 'pnm', 
+                'pnt', 'pntg', 'ppm', 'qti', 'qtif', 'ras', 'rgb', 
+                'tif', 'tiff', 'xbm', 'xpm', 'xwd'
             ];
 
             // 匹配音频
-            var audio = ['mp3', 'wav', 'flac', '3pg', 'aa', 'aac', 'ape', 'au', 'm4a', 'mpc', 'ogg'];
+            var audio = [
+                'mp3', 'wav', 'flac', '3pg', 'aa', 'aac', 'ape', 
+                'au', 'm4a', 'mpc', 'ogg'
+            ];
 
             // 匹配视频
-            var video = ['mp4', 'rmvb', 'flv', 'mkv', 'avi', 'wmv', 'rm', 'asf', 'mpeg'];
+            var video = [
+                'mkv', 'avi', 'mp4', 'rmvb', 'rm', 
+                'flv', 'wmv', 'asf', 'mpeg', 'mov'
+            ];
 
             // 匹配文稿
             var word = [
-                'doc', 'dot', 'docx', 'dotx', 'docm', 'dotm', 'xls', 'xlt', 'xla', 'xlsx', 'xltx', 'xlsm', 'xltm', 'xlam', 'xlsb',
-                'pdf', 'ppt', 'pot', 'pps', 'ppa', 'pptx', 'potx', 'ppsx', 'ppam', 'pptm', 'potm', 'ppsm'
+                'doc', 'dot', 'docx', 'dotx', 'docm', 'dotm', 'xls', 
+                'xlt', 'xla', 'xlsx', 'xltx', 'xlsm', 'xltm', 'xlam', 
+                'xlsb', 'pdf', 'ppt', 'pot', 'pps', 'ppa', 'pptx', 
+                'potx', 'ppsx', 'ppam', 'pptm', 'potm', 'ppsm'
             ];
 
             // 匹配代码
-            var code = ['php', 'js', 'java', 'python', 'ruby', 'go', 'c', 'cpp', 'sql', 'm', 'h', 'json', 'html', 'aspx'];
+            var code = [
+                'html', 'htm', 'js', 'css', 'vue', 'json', 
+                'php', 'java', 'go', 'py', 'ruby', 'rb', 
+                'aspx', 'asp', 'c', 'cpp', 'sql', 'm', 'h', 
+            ];
 
             // 匹配压缩包
-            var zip = ['zip', 'tar', 'gz', 'rar', 'rpm'];
+            var zip = [
+                'zip', 'tar', 'gz', 'rar', 'rpm'
+            ];
 
             // 匹配文本
-            var text = ['txt', 'pac', 'log', 'md'];
+            var text = [
+                'txt', 'pac', 'log', 'md'
+            ];
             
             var list = {
                 'image': image,
@@ -896,17 +931,6 @@ $(function () {
             };
             
             return false;
-        },
-        
-        // 判断是否是 object
-        isObj: function(object){
-            return object && typeof (object) == 'object' 
-                && Object.prototype.toString.call(object).toLowerCase() == "[object object]";
-        },
-        
-        // 判断是否是 array
-        isArray: function(object){
-            return Object.prototype.toString.call(o) === '[object Array]';  
         },
         
         // 翻译
@@ -932,7 +956,9 @@ $(function () {
                 var current = Lang[arr[0]];
                 
                 for (var i = 1; i < arr.length; i++) {
-                    current = typeof current[arr[i]] != 'undefined' ? current[arr[i]] : '';
+                    current = typeof current[arr[i]] != 'undefined' 
+                        ? current[arr[i]] 
+                        : '';
                     if (typeof current != 'object') {
                         break;
                     }
@@ -972,9 +998,13 @@ $(function () {
             });
             
             // 键值翻译
-            string = string.replace(/:((:)|[a-zA-Z0-9\-\_]+)/g, function (m) {
+            string = string.replace(/:([a-zA-Z0-9:\-\_]+)/g, function (m) {
                 if (args.length < 2) {
                     return m;
+                }
+                
+                if (m[1] && m[1] == ":") {
+                    return m.substr(1);
                 }
                 
                 // 默认

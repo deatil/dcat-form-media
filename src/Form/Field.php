@@ -30,12 +30,14 @@ class Field extends BaseField
     protected $uploadUrl = '';
     protected $listUrl = '';
     protected $createFolderUrl = '';
-    protected $type = '';
-    
+    protected $rootpath = '';
+
     protected $disableUpload = false;
     protected $disableCreateFolder = false;
     
     protected $enableShowTitle = false;
+    
+    protected $type = '';
 
     protected $path = '';
     protected $limit = 1;
@@ -79,6 +81,19 @@ class Field extends BaseField
     public function createFolderUrl($createFolderUrl = null)
     {
         $this->createFolderUrl = $createFolderUrl;
+
+        return $this;
+    }
+
+    /**
+     * 设置预览前缀
+     *
+     * @param string $rootpath
+     * @return $this
+     */
+    public function rootpath($rootpath = null)
+    {
+        $this->rootpath = $rootpath;
 
         return $this;
     }
@@ -241,8 +256,13 @@ class Field extends BaseField
         $type = $this->type;
         $nametype = $this->nametype;
         $pageSize = $this->pageSize;
-        $rootpath = (new MediaManager())->buildUrl('');
         $remove = ($this->remove == true) ? 1 : 0;
+        
+        if (! empty($this->rootpath)) {
+            $rootpath = $this->rootpath;
+        } else {
+            $rootpath = (new MediaManager())->buildUrl('');
+        }
         
         if (empty($this->uploadUrl)) {
             $this->uploadUrl = admin_route('admin.lake-form-media.upload');
@@ -269,14 +289,15 @@ class Field extends BaseField
             'options' => [
                 'path' => $path,
                 'limit' => $limit,
+                'remove' => $remove,
                 'type' => $type,
+                
                 'nametype' => $nametype,
                 'pagesize' => $pageSize,
-                'rootpath' => $rootpath,
-                'remove' => $remove,
                 
                 'showtitle' => $showTitle,
                 
+                'rootpath' => $rootpath,
                 'get_files_url' => $this->listUrl,
                 'upload_url' => $this->uploadUrl,
                 'create_folder_url' => $this->createFolderUrl,
