@@ -69,9 +69,27 @@ $(function () {
             
             // 弹出选择器
             this.onEvent('click', '.lake-form-media-btn-file', function (event) {
-                var modal = $(this)
+                event.preventDefault();
+                event.stopPropagation();
                 
-                var title = modal.data('title')
+                var modal = $(this);
+                
+                var modalId = modal.data("target");
+                
+                $("#" + modalId).remove();
+                $("#" + modalId + "Body")
+                    .clone(true, true)
+                    .find(".modal")
+                    .attr("id", modalId)
+                    .appendTo('body');
+                
+                $("#" + modalId).modal({
+                    show: true,
+                    backdrop: 'static', 
+                    keyboard: false
+                });
+                
+                var title = modal.data('title');
                 
                 var mediaCont = $(this).parents('.lake-form-media');
                 var name = mediaCont.data('name');
@@ -99,9 +117,15 @@ $(function () {
                 
                 mediaModalCont.find('.modal-title').text(thiz.lang("select_type", {
                     "title": title,
-                }))
+                }));
                 
                 thiz.getdata(name, path, options);
+            });
+            
+            // 关闭弹出的选择器
+            this.onEvent('click', '.lake-form-media-close', function (event) {
+                var modalId = $(this).data("modal");
+                $("#" + modalId).modal("hide");
             });
             
             // 点击排序切换
@@ -122,8 +146,10 @@ $(function () {
                         .addClass('fa-sort-alpha-asc');
                 }
                 
-                var mediaCont = $(this).parents('.lake-form-media');
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalCont = $(this).parents('.lake-form-media-modal');
+                var mediaId = mediaModalCont.data('media');
+                var mediaCont = $("." + mediaId);
+                
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 var name = mediaCont.data('name');
                 var path = mediaModalNavOlCont.data('current-path');
@@ -134,12 +160,13 @@ $(function () {
             
             // 点击文件夹
             this.onEvent('click', ".lake-form-media-dir-op", function() {
-                var mediaCont = $(this).parents('.lake-form-media');
-                var name = mediaCont.data('name');
+                var mediaModalCont = $(this).parents('.lake-form-media-modal');
+                var mediaId = mediaModalCont.data('media');
+                var mediaCont = $("." + mediaId);
                 
+                var name = mediaCont.data('name');
                 var path = $(this).data('path');
                 
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 mediaModalPageCont.data('current-page', 1);
                 
@@ -153,12 +180,13 @@ $(function () {
             
             // 点击nav
             this.onEvent("click", ".lake-form-media-nav-li", function(){
-                var mediaCont = $(this).parents('.lake-form-media');
-                var name = mediaCont.data('name');
+                var mediaModalCont = $(this).parents('.lake-form-media-modal');
+                var mediaId = mediaModalCont.data('media');
+                var mediaCont = $("." + mediaId);
                 
+                var name = mediaCont.data('name');
                 var path = $(this).data('path');
                 
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 mediaModalPageCont.data('current-page', 1);
                 
@@ -172,10 +200,12 @@ $(function () {
             
             // 分页 - 上一页
             this.onEvent("click", '.lake-form-media-modal-prev-page', function() {
-                var mediaCont = $(this).parents('.lake-form-media');
+                var mediaModalCont = $(this).parents('.lake-form-media-modal');
+                var mediaId = mediaModalCont.data('media');
+                var mediaCont = $("." + mediaId);
+                
                 var name = mediaCont.data('name');
                 
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 var currentPage = mediaModalPageCont.data('current-page');
                 
@@ -197,10 +227,12 @@ $(function () {
             
             // 分页 - 下一页
             this.onEvent("click", '.lake-form-media-modal-next-page', function() {
-                var mediaCont = $(this).parents('.lake-form-media');
+                var mediaModalCont = $(this).parents('.lake-form-media-modal');
+                var mediaId = mediaModalCont.data('media');
+                var mediaCont = $("." + mediaId);
+                
                 var name = mediaCont.data('name');
                 
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 var currentPage = mediaModalPageCont.data('current-page');
                 var totalPage = mediaModalPageCont.data('total-page');
@@ -250,10 +282,11 @@ $(function () {
             
             // 新建文件夹
             this.onEvent('click', ".lake-form-media-dir-button", function(res){
-                var mediaCont = $(this).parents('.lake-form-media');
-                var name = mediaCont.data('name');
+                var mediaModalCont = $(this).parents('.lake-form-media-modal');
+                var mediaId = mediaModalCont.data('media');
+                var mediaCont = $("." + mediaId);
                 
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var name = mediaCont.data('name');
                 
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 var currentPath = mediaModalNavOlCont.data('current-path');
@@ -295,10 +328,11 @@ $(function () {
 
             // 上传图片
             this.onEvent('change', '.lake-form-media-upload', function() {
-                var mediaCont = $(this).parents('.lake-form-media');
-                var name = mediaCont.data('name');
+                var mediaModalCont = $(this).parents('.lake-form-media-modal');
+                var mediaId = mediaModalCont.data('media');
+                var mediaCont = $("." + mediaId);
                 
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var name = mediaCont.data('name');
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 
                 var currentPath = mediaModalNavOlCont.data('current-path');
@@ -336,10 +370,11 @@ $(function () {
             
             // 提交
             this.onEvent('click', '.lake-form-media-submit', function(res){
-                var mediaCont = $(this).parents('.lake-form-media');
-                var name = mediaCont.data('name');
+                var mediaModalCont = $(this).parents('.lake-form-media-modal');
+                var mediaId = mediaModalCont.data('media');
+                var mediaCont = $("." + mediaId);
                 
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var name = mediaCont.data('name');
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 
                 var currentPath = mediaModalNavOlCont.data('current-path');
@@ -411,12 +446,13 @@ $(function () {
             
             // 选中点击
             this.onEvent("click", ".lake-form-media-field-item-op", function(){
+                var mediaModalCont = $(this).parents('.lake-form-media-modal');
+                var mediaId = mediaModalCont.data('media');
+                var mediaCont = $("." + mediaId);
+                
                 var itemType = $(this).data('type');
                 
-                var mediaCont = $(this).parents('.lake-form-media');
                 var name = mediaCont.data('name');
-                
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
                 var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
                 
                 var currentPath = mediaModalNavOlCont.data('current-path');
@@ -529,7 +565,7 @@ $(function () {
             var rootpath = options.rootpath;
             var pageSize = options.pagesize;
             
-            var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+            var mediaModalCont = $('#LakeFormMediaModel' + name);
             var mediaModalTableCont = mediaModalCont.find('.lake-form-media-body-table');
             var mediaModalNavOlCont = mediaModalCont.find('.lake-form-media-nav-ol');
             var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
@@ -657,11 +693,11 @@ $(function () {
         // 刷新表单预览
         refreshInputPreview: function(cont) {
             var mediaCont = $(cont).parents('.lake-form-media');
-            var value = $(cont).val();
-            
             var name = mediaCont.data('name');
             
-            var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+            var mediaModalCont = $('#LakeFormMediaModel' + name);
+            
+            var value = $(cont).val();
             
             var options = mediaCont.data('options');
             options = $.extend({}, options);
@@ -669,16 +705,18 @@ $(function () {
             var limit = options.limit;
             
             var valueArr = [];
-            if (value) {
-                if (limit > 1) {
+            if (limit > 1) {
+                if (value != "") {
                     valueArr = this.isJSON(value);
-                } else {
-                    if (value != '[]' && value != '') {
-                        valueArr.push(value)
-                    }
                 }
-                this.refreshPreview(name, valueArr, options);
             } else {
+                if (value != '[]' && value != '') {
+                    valueArr.push(value)
+                }
+            }
+            this.refreshPreview(name, valueArr, options);
+            
+            if (value == "") {
                 mediaModalCont
                     .find('.lake-form-media-img-show')
                     .hide();
@@ -730,7 +768,7 @@ $(function () {
                     src = rootpath + urlList[i];
                 }
                 
-                var html = '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-3 lake-form-media-preview-item" data-src="'+urlList[i]+'">';
+                var html = '<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3 lake-form-media-preview-item" data-src="'+urlList[i]+'">';
                     html += '<div class="thumbnail lake-form-media-row-col">';
                 
                 html += '<div class="lake-form-media-row-img" title="' + urlList[i] + '">';
@@ -1040,3 +1078,4 @@ $(function () {
     
     window.LakeFormMedia = LakeFormMedia;
 });
+
