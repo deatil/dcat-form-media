@@ -40,20 +40,38 @@ $(function () {
             this.onEvent("click", ".lake-form-media-img-show-item-delete", function(){
                 var $this = $(this);
                 
+                var mediaCont = $this.parents('.lake-form-media');
+                var name = mediaCont.data('name');
+                
+                var mediaShowCont = mediaCont.find('.lake-form-media-img-show');
+                
+                var options = mediaCont.data('options');
+                
+                var limit = options.limit;
+                
+                // 可多选时
+                var multiplechoice = options.multiplechoice
+                
                 var itemurl = $this.data('url');
-
+                
                 layer.confirm(thiz.lang("remove_tip", {
                     data: itemurl,
                 }), {
                     icon: 3,
                     title: thiz.lang("system_tip"),
                 }, function(index) {
-                    var mediaCont = $this.parents('.lake-form-media');
-                    var name = mediaCont.data('name');
+
+                    // 多选时
+                    if (multiplechoice && limit > 1) {
+                        var itemIndex = mediaCont
+                            .find('.lake-form-media-preview-item')
+                            .index($this.parents('.lake-form-media-preview-item'));
+                        
+                        mediaCont.find('.lake-form-media-preview-item').eq(itemIndex).remove();
+                    } else {
+                        mediaCont.find('.lake-form-media-preview-item[data-src="' + itemurl + '"]').remove();
+                    }
                     
-                    var mediaShowCont = mediaCont.find('.lake-form-media-img-show');
-                    
-                    mediaCont.find('.lake-form-media-preview-item[data-src="' + itemurl + '"]').remove();
                     thiz.refreshInputString(name);
                     
                     if (mediaShowCont.find('.lake-form-media-preview-item').length < 1) {
@@ -385,6 +403,9 @@ $(function () {
                 var limit = options.limit;
                 var type = options.type
                 
+                // 可多选时
+                var multiplechoice = options.multiplechoice
+                
                 // 列表
                 var urlList = [];
                 var urlListStr = inputCont.val();
@@ -399,6 +420,12 @@ $(function () {
                     } else {
                         urlList = thiz.isJSON( urlListStr );
                     }
+                }
+                
+                // 多选时
+                if (multiplechoice && limit > 1) {
+                    $('.lake-form-media-close').trigger("click");
+                    return false;
                 }
                 
                 if (type == 'blend') {
@@ -431,13 +458,13 @@ $(function () {
                     }
                     urlList = newUrlList;
                     
-                    urlList_json = JSON.stringify( urlList );
-                    if (urlList_json == '[]') {
+                    urlListJson = JSON.stringify( urlList );
+                    if (urlListJson == '[]') {
                         $('#LakeFormMediaModel'+name).modal('hide');
                         return null;
                     }
-                    inputCont.val(urlList_json);
-                    inputCont.attr("value", urlList_json);
+                    inputCont.val(urlListJson);
+                    inputCont.attr("value", urlListJson);
                 }
                 
                 thiz.refreshPreview(name, urlList, options)
@@ -463,6 +490,9 @@ $(function () {
                 var type = options.type;
                 var limit = options.limit;
                 
+                // 可多选时
+                var multiplechoice = options.multiplechoice
+                
                 if (type != 'blend') {
                     if (type != itemType) {
                         return false;
@@ -481,6 +511,32 @@ $(function () {
                     } else {
                         nowNumArr = thiz.isJSON( nowNumVal );
                     }
+                }
+                
+                // 多选时
+                if (multiplechoice && limit > 1) {
+                    // 添加当前选中
+                    nowNumArr.push($(this).data('url'));
+                    
+                    if (nowNumArr.length > limit) {
+                        toastr.error(thiz.lang("selected_error", {
+                            num: limit,
+                        }));
+                        return 1;
+                    }
+                    
+                    urlListJson = JSON.stringify(nowNumArr);
+                    if (urlListJson == '[]') {
+                        $('#LakeFormMediaModel'+name).modal('hide');
+                        return null;
+                    }
+                    inputCont.val(urlListJson);
+                    inputCont.attr("value", urlListJson);
+                
+                    thiz.refreshPreview(name, nowNumArr, options)
+                    $('#LakeFormMediaModel'+name).modal('hide');
+                    
+                    return false;
                 }
                 
                 var noNeedSelectArr = [];
@@ -750,6 +806,7 @@ $(function () {
             var remove = options.remove;
             var rootpath = options.rootpath;
             var showtitle = options.showtitle;
+            var showicon = options.showicon;
             
             var mediaCont = $('.lake-form-media-'+name);
             var imgShowCont = mediaCont.find('.lake-form-media-img-show');
@@ -776,10 +833,18 @@ $(function () {
                 html += '</div>';
                 
                 var suffix = this.getFileSuffix(src);
+                var showType = this.getFileShowType(src);
+                
+                // 显示类型
+                if (showicon) {
+                    html += '<span class="row-icon" title="' + urlList[i] + '">';
+                    html += showType;
+                    html += '</span>';
+                }
                 
                 // 文件名
                 if (showtitle) {
-                    html += '<div class="row-title" title="' + urlList[i] + '">';
+                    html += '<div class="row-title">';
                     html += urlList[i];
                     html += '</div>';
                 }
@@ -905,6 +970,31 @@ $(function () {
             return html;
         },
         
+        getFileShowType: function (src) {
+            var type = this.getFileSuffix(src);
+            
+            var html = '';
+            if (type === 'image') {
+                html += '<i class="fa fa-file-image-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'video') {
+                html += '<i class="fa fa-file-video-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'audio') {
+                html += '<i class="fa fa-file-audio-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'word') {
+                html += '<i class="fa fa-file-word-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'code') {
+                html += '<i class="fa fa-file-code-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'zip') {
+                html += '<i class="fa fa-file-zip-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'text') {
+                html += '<i class="fa fa-file-text-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else {
+                html += '<i class="fa fa-file fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            }
+            
+            return html;
+        },
+        
         getFileType: function (suffix) {
             // 匹配图片
             var image = [
@@ -968,7 +1058,7 @@ $(function () {
                 }
             };
             
-            return false;
+            return "outher";
         },
         
         // 翻译

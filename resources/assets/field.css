@@ -1,10 +1,12 @@
-
 .lake-form-media .lake-form-media-img-show {
     border-radius: 5px;
     border: 1px solid #e9ecec;
     padding: 8px;
     width: 100%;
     margin-bottom: 5px;
+}
+.lake-form-media .lake-form-media-preview-item {
+    margin: 3px 0;
 }
 .lake-form-media .lake-form-media-row-col {
     overflow: hidden;
@@ -34,6 +36,15 @@
     height: 100%;
     font-size: 65px;
     padding-top: 20px;
+}
+.lake-form-media .lake-form-media-row-col .row-icon {
+    position: absolute;
+    top: 5px;
+    left: 6px;
+}
+.lake-form-media .lake-form-media-row-col .row-icon .fa {
+    color: #9ab13cf5;
+    font-size: 13px;
 }
 .lake-form-media .lake-form-media-row-col .row-title {
     text-align: center;

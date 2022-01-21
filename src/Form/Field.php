@@ -36,6 +36,8 @@ class Field extends BaseField
     protected $disableCreateFolder = false;
     
     protected $enableShowTitle = false;
+    protected $enableMultipleChoice = false;
+    protected $showIcon = false;
     
     protected $type = '';
 
@@ -130,6 +132,30 @@ class Field extends BaseField
     public function enableShowTitle()
     {
         $this->enableShowTitle = true;
+
+        return $this;
+    }
+
+    /**
+     * 可多选
+     *
+     * @return $this
+     */
+    public function enableMultipleChoice()
+    {
+        $this->enableMultipleChoice = true;
+
+        return $this;
+    }
+
+    /**
+     * 显示图标
+     *
+     * @return $this
+     */
+    public function showIcon()
+    {
+        $this->showIcon = true;
 
         return $this;
     }
@@ -284,6 +310,8 @@ class Field extends BaseField
         }
         
         $showTitle = ($this->enableShowTitle == true) ? 1 : 0;
+        $multipleChoice = ($this->enableMultipleChoice == true) ? 1 : 0;
+        $showIcon = ($this->showIcon == true) ? 1 : 0;
 
         $this->addVariables([
             'options' => [
@@ -296,6 +324,8 @@ class Field extends BaseField
                 'pagesize' => $pageSize,
                 
                 'showtitle' => $showTitle,
+                'multiplechoice' => $multipleChoice,
+                'showicon' => $showIcon,
                 
                 'rootpath' => $rootpath,
                 'get_files_url' => $this->listUrl,
