@@ -837,14 +837,14 @@ $(function () {
                 
                 // 显示类型
                 if (showicon) {
-                    html += '<span class="row-icon" title="' + urlList[i] + '">';
+                    html += '<span class="row-icon">';
                     html += showType;
                     html += '</span>';
                 }
                 
                 // 文件名
                 if (showtitle) {
-                    html += '<div class="row-title">';
+                    html += '<div class="row-title" title="' + urlList[i] + '">';
                     html += urlList[i];
                     html += '</div>';
                 }
