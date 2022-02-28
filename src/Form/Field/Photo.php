@@ -13,6 +13,8 @@ use Lake\FormMedia\Form\Field;
 class Photo extends Field
 {
     protected $limit = 1;
+    
     protected $remove = false;
+    
     protected $type = 'image';
 }

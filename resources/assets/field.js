@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.15
+ * LakeFormMedia-field.js v1.0.16
  *
  * @create 2020-11-28
  * @author deatil
@@ -176,6 +176,15 @@ $(function () {
                 thiz.getdata(name, path, options)
             });
             
+            // 双击复制文件名
+            this.onEvent("dblclick", '.lake-form-media-row-col .row-title', function() {
+                var data = $(this).text();
+                
+                thiz.copyData(data);
+                
+                return false;
+            });
+            
             // 点击文件夹
             this.onEvent('click', ".lake-form-media-dir-op", function() {
                 var mediaModalCont = $(this).parents('.lake-form-media-modal');
@@ -196,7 +205,7 @@ $(function () {
                 thiz.getdata(name, path, options)
             });
             
-            // 点击nav
+            // 点击 nav
             this.onEvent("click", ".lake-form-media-nav-li", function(){
                 var mediaModalCont = $(this).parents('.lake-form-media-modal');
                 var mediaId = mediaModalCont.data('media');
@@ -322,6 +331,7 @@ $(function () {
                 var form = new FormData();
                 form.append("name", dir);
                 form.append("dir", currentPath);
+                form.append("disk", options.disk);
                 form.append("_token", Dcat.token);
                 $.ajax({
                     type: 'post',
@@ -357,6 +367,7 @@ $(function () {
                 var options = mediaCont.data('options');
                 
                 var files = $(this).prop('files');
+                
                 var form = new FormData();
                 for (var i = 0; i < files.length; i++) {
                     form.append("files[]", files[i]);
@@ -364,6 +375,7 @@ $(function () {
                
                 form.append("path", currentPath);
                 form.append("type", options.type);
+                form.append("disk", options.disk);
                 form.append("nametype", options.nametype);
                 form.append("_token", Dcat.token);
                 $.ajax({
@@ -616,6 +628,7 @@ $(function () {
             var mediaCont = $('.lake-form-media-' + name);
             
             var type = options.type;
+            var disk = options.disk;
             var limit = options.limit;
             var remove = options.remove;
             var rootpath = options.rootpath;
@@ -647,6 +660,7 @@ $(function () {
                 url: baseUrl 
                     + "path=" + path
                     + "&type=" + type
+                    + "&disk=" + disk
                     + "&order=" + order
                     + "&page=" + currentPage
                     + "&pageSize=" + pageSize,
@@ -688,7 +702,7 @@ $(function () {
                         }
                         
                     } else {
-                        var htmltemp = '<div class="col-12"><div class="lake-form-media-empty">空</div></div>';
+                        var htmltemp = '<div class="col-12"><div class="lake-form-media-empty">' + thiz.lang("empty") + '</div></div>';
                         mediaModalTableCont.append(htmltemp);
                     }
                     
@@ -1059,6 +1073,30 @@ $(function () {
             };
             
             return "outher";
+        },
+        
+        // 复制
+        copyData: function(data) {
+            let target = document.createElement('div');
+            target.id = 'tempTarget';
+            target.style.opacity = '0';
+            target.innerText = data;
+            document.body.appendChild(target);
+
+            try {
+                let range = document.createRange();
+                range.selectNode(target);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+
+                layer.msg(this.lang("copy_success"));
+            } catch (e) {
+                layer.msg(this.lang("copy_error"));
+            }
+
+            target.parentElement.removeChild(target);
         },
         
         // 翻译

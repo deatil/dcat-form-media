@@ -40,6 +40,7 @@ class Field extends BaseField
     protected $showIcon = false;
     
     protected $type = '';
+    protected $disk = '';
 
     protected $path = '';
     protected $limit = 1;
@@ -177,6 +178,19 @@ class Field extends BaseField
     }
 
     /**
+     * 设置驱动磁盘
+     *
+     * @param string $disk
+     * @return $this
+     */
+    public function disk($disk = '')
+    {
+        $this->disk = $disk;
+
+        return $this;
+    }
+
+    /**
      * 设置当前可用目录
      *
      * @param string $path
@@ -280,6 +294,7 @@ class Field extends BaseField
         $path = $this->path;
         $limit = $this->limit;
         $type = $this->type;
+        $disk = $this->disk;
         $nametype = $this->nametype;
         $pageSize = $this->pageSize;
         $remove = ($this->remove == true) ? 1 : 0;
@@ -287,7 +302,15 @@ class Field extends BaseField
         if (! empty($this->rootpath)) {
             $rootpath = $this->rootpath;
         } else {
-            $rootpath = (new MediaManager())->buildUrl('');
+            if (! empty($disk)) {
+                $rootpath = (new MediaManager())
+                    ->withDisk($disk)
+                    ->buildUrl('');
+            } else {
+                $rootpath = (new MediaManager())
+                    ->useDefaultDisk()
+                    ->buildUrl('');
+            }
         }
         
         if (empty($this->uploadUrl)) {
@@ -319,6 +342,7 @@ class Field extends BaseField
                 'limit' => $limit,
                 'remove' => $remove,
                 'type' => $type,
+                'disk' => $disk,
                 
                 'nametype' => $nametype,
                 'pagesize' => $pageSize,

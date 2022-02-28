@@ -20,8 +20,15 @@ class FormMedia extends Controller
         $perPage = (int) request()->input('pageSize', 120);
         
         $manager = (new MediaManager())
+            ->useDefaultDisk()
             ->setPath($path);
-            
+        
+        // 驱动磁盘
+        $disk = request()->input('disk', '');
+        if (! empty($disk)) {
+            $manager = $manager->withDisk($disk);
+        }
+        
         $type = (string) request()->input('type', 'image');
         $order = (string) request()->input('order', 'time');
         
@@ -55,8 +62,15 @@ class FormMedia extends Controller
         $nametype = request()->get('nametype', 'uniqid');
         
         $manager = (new MediaManager())
+            ->useDefaultDisk()
             ->setPath($path)
             ->setNametype($nametype);
+        
+        // 驱动磁盘
+        $disk = request()->input('disk', '');
+        if (! empty($disk)) {
+            $manager = $manager->withDisk($disk);
+        }
         
         if ($type != 'blend') {
             if (! $manager->checkType($files, $type)) {
@@ -86,7 +100,14 @@ class FormMedia extends Controller
         }
 
         $manager = (new MediaManager())
+            ->useDefaultDisk()
             ->setPath($dir);
+        
+        // 驱动磁盘
+        $disk = request()->input('disk', '');
+        if (! empty($disk)) {
+            $manager = $manager->withDisk($disk);
+        }
 
         try {
             if ($manager->createFolder($name)) {

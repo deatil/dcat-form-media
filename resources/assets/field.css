@@ -41,9 +41,11 @@
     position: absolute;
     top: 5px;
     left: 6px;
+    background: #fff;
+    border-radius: .15rem;
 }
 .lake-form-media .lake-form-media-row-col .row-icon .fa {
-    color: #9ab13cf5;
+    color: #abafb5;
     font-size: 13px;
 }
 .lake-form-media .lake-form-media-row-col .row-title {

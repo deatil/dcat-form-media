@@ -10,9 +10,11 @@ use Lake\FormMedia\Form\Field;
  * @create 2020-11-30
  * @author deatil
  */
-class File extends Field
+class Files extends Field
 {
     protected $limit = 5;
+    
     protected $remove = true;
+    
     protected $type = 'blend';
 }

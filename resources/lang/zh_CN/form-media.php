@@ -20,6 +20,7 @@ return [
     'create_dirname_empty' => '文件夹名称不能为空',
     
     // js 使用语言包部分
+    'js_empty' => '空',
     'js_system_tip' => '系统提示',
     'js_remove_tip' => '确认要移除当前数据 [:data] 吗？',
     'js_select_type' => '请选择:title',
@@ -33,4 +34,6 @@ return [
     'js_preview' => '预览',
     'js_remove' => '移除',
     'js_dragsort' => '拖动',
+    'js_copy_success' => '复制成功',
+    'js_copy_error' => '复制失败',
 ];

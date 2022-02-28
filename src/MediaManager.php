@@ -44,20 +44,23 @@ class MediaManager
     ];
 
     /**
-     * MediaManager constructor.
-     *
-     * @param string $path
+     * 默认驱动
      */
-    public function __construct()
-    {
-        $this->initStorage();
-    }
-
-    private function initStorage()
+    public function useDefaultDisk()
     {
         $disk = config('admin.upload.disk');
 
+        return $this->withDisk($disk);
+    }
+
+    /**
+     * 使用驱动
+     */
+    public function withDisk($disk)
+    {
         $this->storage = Storage::disk($disk);
+        
+        return $this;
     }
     
     /**

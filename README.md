@@ -85,6 +85,7 @@ nametype(string)： 文件重命名方式 uniqid|datetime，默认 uniqid
 pageSize(int)   ： 弹出层列表每页显示数量
 limit(int)      ： 限制条数
 remove(boolean) :  是否有删除按钮
+disk(string)    :  文件存储的磁盘，具体信息可以查看 `config/filesystems.php`
 
 photo 、 photos 、 video 的参数默认值不一样
 

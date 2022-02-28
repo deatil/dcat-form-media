@@ -42,13 +42,14 @@ class ServiceProvider extends BaseServiceProvider
             Form::extend('photos', Field\Photos::class);
             Form::extend('video', Field\Video::class);
             Form::extend('audio', Field\Audio::class);
-            Form::extend('files', Field\File::class);
+            Form::extend('files', Field\Files::class);
         });
 
         // 加载语言包
         Admin::booting(function () {
             $script = "
             window.LakeFormMediaLang = {
+                'empty': '" . static::trans('form-media.js_empty') . "',
                 'system_tip': '" . static::trans('form-media.js_system_tip') . "',
                 'remove_tip': '" . static::trans('form-media.js_remove_tip') . "',
                 'select_type': '" . static::trans('form-media.js_select_type') . "',
@@ -62,6 +63,8 @@ class ServiceProvider extends BaseServiceProvider
                 'preview': '" . static::trans('form-media.js_preview') . "',
                 'remove': '" . static::trans('form-media.js_remove') . "',
                 'dragsort': '" . static::trans('form-media.js_dragsort') . "',
+                'copy_success': '" . static::trans('form-media.js_copy_success') . "',
+                'copy_error': '" . static::trans('form-media.js_copy_error') . "',
             };
             ";
             Admin::script($script);

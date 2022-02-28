@@ -13,6 +13,8 @@ use Lake\FormMedia\Form\Field;
 class Audio extends Field
 {
     protected $limit = 1;
+    
     protected $remove = true;
+    
     protected $type = 'audio';
 }
