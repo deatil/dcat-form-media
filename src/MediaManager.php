@@ -42,11 +42,19 @@ class MediaManager
         'audio' => 'mp3|wav|flac|3pg|aa|aac|ape|au|m4a|mpc|ogg',
         'video' => 'mkv|rmvb|flv|mp4|avi|wmv|rm|asf|mpeg',
     ];
+    
+    /**
+     * 创建
+     */
+    public static function create()
+    {
+        return new static();
+    }
 
     /**
      * 默认驱动
      */
-    public function useDefaultDisk()
+    public function defaultDisk()
     {
         $disk = config('admin.upload.disk');
 

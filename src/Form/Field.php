@@ -303,12 +303,12 @@ class Field extends BaseField
             $rootpath = $this->rootpath;
         } else {
             if (! empty($disk)) {
-                $rootpath = (new MediaManager())
+                $rootpath = MediaManager::create()
                     ->withDisk($disk)
                     ->buildUrl('');
             } else {
-                $rootpath = (new MediaManager())
-                    ->useDefaultDisk()
+                $rootpath = MediaManager::create()
+                    ->defaultDisk()
                     ->buildUrl('');
             }
         }

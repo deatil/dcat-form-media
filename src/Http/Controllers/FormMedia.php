@@ -19,8 +19,8 @@ class FormMedia extends Controller
         $currentPage = (int) request()->input('page', 1);
         $perPage = (int) request()->input('pageSize', 120);
         
-        $manager = (new MediaManager())
-            ->useDefaultDisk()
+        $manager = MediaManager::create()
+            ->defaultDisk()
             ->setPath($path);
         
         // 驱动磁盘
@@ -61,8 +61,8 @@ class FormMedia extends Controller
         $type = request()->get('type');
         $nametype = request()->get('nametype', 'uniqid');
         
-        $manager = (new MediaManager())
-            ->useDefaultDisk()
+        $manager = MediaManager::create()
+            ->defaultDisk()
             ->setPath($path)
             ->setNametype($nametype);
         
@@ -99,8 +99,8 @@ class FormMedia extends Controller
             return $this->renderJson(LakeFormMedia::trans('form-media.create_dirname_empty'), -1);
         }
 
-        $manager = (new MediaManager())
-            ->useDefaultDisk()
+        $manager = MediaManager::create()
+            ->defaultDisk()
             ->setPath($dir);
         
         // 驱动磁盘
