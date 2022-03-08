@@ -232,15 +232,13 @@ class Field extends BaseField
     /**
      * 设置上传保存文件名类型
      *
-     * @param string $type uniqid|datetime
+     * @param string $type uniqid|datetime|sequence|original
      * @return $this
      */
     public function nametype($type = 'uniqid')
     {
-        if ($type == 'datetime') {
-            $type = 'datetime';
-        } else {
-            $type = 'uniqid';
+        if (! in_array($type, ['uniqid', 'datetime', 'sequence', 'original'])) {
+            $type = 'original';
         }
         
         $this->nametype = $type;
@@ -267,6 +265,30 @@ class Field extends BaseField
     public function datetimeName()
     {
         $this->nametype("datetime");
+        
+        return $this;
+    }
+
+    /**
+     * sequence 格式命名
+     *
+     * @return $this
+     */
+    public function sequenceName()
+    {
+        $this->nametype("sequence");
+        
+        return $this;
+    }
+
+    /**
+     * 原始名称命名
+     *
+     * @return $this
+     */
+    public function originalName()
+    {
+        $this->nametype("original");
         
         return $this;
     }

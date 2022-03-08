@@ -80,6 +80,9 @@ class MediaManager
         return $this;
     }
 
+    /**
+     * 列出数据
+     */
     public function ls($type = 'image', $order = 'time')
     {
         $files = $this->storage->files($this->path);
@@ -121,7 +124,7 @@ class MediaManager
     }
 
     /**
-     * Get full path for a giving fiel path.
+     * 获取完整路径
      *
      * @param string $path
      *
@@ -149,6 +152,9 @@ class MediaManager
         return response('', 404);
     }
 
+    /**
+     * 删除
+     */
     public function delete($path)
     {
         $paths = is_array($path) ? $path : func_get_args();
@@ -166,12 +172,17 @@ class MediaManager
         return true;
     }
 
+    /**
+     * 移动
+     */
     public function move($new)
     {
         return $this->storage->move($this->path, $new);
     }
 
     /**
+     * 上传
+     *
      * @param UploadedFile[] $files
      * @param string         $dir
      *
@@ -180,7 +191,11 @@ class MediaManager
     public function upload($files = [])
     {
         foreach ($files as $file) {
-            $this->storage->putFileAs($this->path, $file, $this->getPutFileName($file));
+            $this->storage->putFileAs(
+                $this->path, 
+                $file, 
+                $this->getPutFileName($file)
+            );
         }
 
         return true;
@@ -191,6 +206,10 @@ class MediaManager
      */
     public function checkType($files = [], $type = null)
     {
+        if (empty($files)) {
+            return false;
+        }
+        
         foreach ($files as $file) {
             $fileExtension = $file->getClientOriginalExtension();
             $fileType = $this->detectFileType('file.'.$fileExtension);
@@ -202,29 +221,42 @@ class MediaManager
         return true;
     }
     
+    /**
+     * 设置命名方式
+     */
     public function setNametype($type = 'uniqid')
     {
         $this->nametype = $type;
+        
         return $this;
     }
     
+    /**
+     * 获取最后的命名
+     */
     public function getPutFileName($file)
     {
-        if ($this->nametype == 'datetime') {
-            return $this->generateDatetimeName($file);
-        } else {
-            return $this->generateUniqueName($file);
+        switch ($this->nametype) {
+            case 'datetime':
+                return $this->generateDatetimeName($file);
+                break;
+            
+            case 'sequence':
+                return $this->generateSequenceName($file);
+                break;
+            
+            // 原始命名
+            case 'original':
+                return $this->generateClientName($file);
+                break;
+            
+            case 'uniqid':
+            default:
+                return $this->generateUniqueName($file);
+                break;
         }
     }
-    
-    /**
-     * uniqid文件名
-     */
-    public function generateUniqueName($file)
-    {
-        return md5(uniqid().microtime()).'.'.$file->getClientOriginalExtension();
-    }
-    
+
     /**
      * 时间文件名
      */
@@ -232,19 +264,59 @@ class MediaManager
     {
         return date('YmdHis').mt_rand(10000, 99999).'.'.$file->getClientOriginalExtension();
     }
+
+    /**
+     * uniqid文件名
+     */
+    public function generateUniqueName($file)
+    {
+        return md5(uniqid().microtime()).'.'.$file->getClientOriginalExtension();
+    }
+
+    /**
+     * sequence 命名
+     */
+    public function generateSequenceName($file)
+    {
+        $index = 1;
+        $original = $file->getClientOriginalName();
+        $extension = $file->getClientOriginalExtension();
+        $new = sprintf('%s_%s.%s', $original, $index, $extension);
+
+        while ($this->storage->exists($this->formatPath($this->path, $new))) {
+            $index++;
+            $new = sprintf('%s_%s.%s', $original, $index, $extension);
+        }
+
+        return $new;
+    }
     
+    /**
+     * 原始命名
+     */
+    public function generateClientName($file)
+    {
+        return $file->getClientOriginalName() . '.' . $file->getClientOriginalExtension();
+    }
+
+    /**
+     * 创建文件夹
+     */
     public function createFolder($name)
     {
-        $path = rtrim($this->path, '/').'/'.trim($name, '/');
+        $path = $this->formatPath($this->path, $name);
 
         return $this->storage->makeDirectory($path);
     }
 
-    public function exists()
+    /**
+     * 是否存在
+     */
+    public function exists($name)
     {
-        $path = $this->getFullPath($this->path);
+        $path = $this->formatPath($this->path, $name);
 
-        return file_exists($path);
+        return $this->storage->exists($path);
     }
 
     /**
@@ -437,4 +509,13 @@ class MediaManager
             return '';
         }
     }
+    
+    /**
+     * 格式化路径
+     */
+    public function formatPath($path, $name)
+    {
+        return rtrim($path, '/') . '/' . trim($name, '/');
+    }
+
 }
