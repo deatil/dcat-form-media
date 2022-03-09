@@ -132,10 +132,7 @@ class MediaManager
      */
     protected function getFullPath($path)
     {
-        return $this->storage
-            ->getDriver()
-            ->getAdapter()
-            ->applyPathPrefix($path);
+        return $this->storage->path($path);
     }
 
     /**
@@ -190,6 +187,10 @@ class MediaManager
      */
     public function upload($files = [])
     {
+        if (empty($files)) {
+            return false;
+        }
+        
         foreach ($files as $file) {
             $this->storage->putFileAs(
                 $this->path, 

@@ -238,7 +238,7 @@ class Field extends BaseField
     public function nametype($type = 'uniqid')
     {
         if (! in_array($type, ['uniqid', 'datetime', 'sequence', 'original'])) {
-            $type = 'original';
+            $type = 'uniqid';
         }
         
         $this->nametype = $type;
