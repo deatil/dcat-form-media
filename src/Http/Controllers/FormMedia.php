@@ -61,6 +61,9 @@ class FormMedia extends Controller
         $type = request()->get('type');
         $nametype = request()->get('nametype', 'uniqid');
         
+        // 裁剪
+        $resize = request()->get('resize', '');
+        
         $manager = MediaManager::create()
             ->defaultDisk()
             ->setPath($path)
@@ -76,6 +79,25 @@ class FormMedia extends Controller
             if (! $manager->checkType($files, $type)) {
                 return $this->renderJson(LakeFormMedia::trans('form-media.upload_file_ext_error'), -1);
             }
+        }
+        
+        // 图片裁剪操作
+        $resizes = explode(",", $resize);
+        if (
+            $type == 'image'
+            && !empty($resize) 
+            && count($resizes) == 2
+        ) {
+            try {
+                foreach ($files as $file) {
+                    $manager->prepareFile([
+                        [
+                            'method' => 'resize',
+                            'arguments' => $resizes,
+                        ],
+                    ], $file);
+                }
+            } catch (\Exception $e) {}
         }
         
         try {

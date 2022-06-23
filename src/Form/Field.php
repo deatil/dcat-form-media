@@ -39,6 +39,8 @@ class Field extends BaseField
     protected $enableMultipleChoice = false;
     protected $showIcon = false;
     
+    protected $resize = [];
+    
     protected $type = '';
     protected $disk = '';
 
@@ -157,6 +159,18 @@ class Field extends BaseField
     public function showIcon()
     {
         $this->showIcon = true;
+
+        return $this;
+    }
+
+    /**
+     * 图片裁剪
+     *
+     * @return $this
+     */
+    public function resize($width, $height)
+    {
+        $this->resize = [$width, $height];
 
         return $this;
     }
@@ -357,6 +371,8 @@ class Field extends BaseField
         $showTitle = ($this->enableShowTitle == true) ? 1 : 0;
         $multipleChoice = ($this->enableMultipleChoice == true) ? 1 : 0;
         $showIcon = ($this->showIcon == true) ? 1 : 0;
+        
+        $resize = $this->resize;
 
         $this->addVariables([
             'options' => [
@@ -372,6 +388,8 @@ class Field extends BaseField
                 'showtitle' => $showTitle,
                 'multiplechoice' => $multipleChoice,
                 'showicon' => $showIcon,
+                
+                'resize' => implode(',', $resize),
                 
                 'rootpath' => $rootpath,
                 'get_files_url' => $this->listUrl,

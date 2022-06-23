@@ -2,7 +2,12 @@
 
 namespace Lake\FormMedia;
 
+use Intervention\Image\Constraint;
+use Intervention\Image\Facades\Image as InterventionImage;
+use Intervention\Image\ImageManagerStatic;
+
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +31,11 @@ class MediaManager
      * @var \Illuminate\Filesystem\FilesystemAdapter
      */
     protected $storage;
+
+    /**
+     * @var string 权限
+     */
+    protected $storagePermission = '';
 
     /**
      * @var array
@@ -138,9 +148,9 @@ class MediaManager
     /**
      * 下载
      */
-    public function download()
+    public function download($file)
     {
-        $fullPath = $this->getFullPath($this->path);
+        $fullPath = $this->getFullPath($file);
 
         if (File::isFile($fullPath)) {
             return response()->download($fullPath);
@@ -486,6 +496,121 @@ class MediaManager
         return false;
     }
 
+    /**
+     * 提前完成裁剪等操作
+     *
+     * @param array  $methods<method, arguments> arguments = []
+     * @param UploadedFile $file
+     */
+    public function prepareFile($methods, UploadedFile $file)
+    {
+        $this->callInterventionMethods($methods, $file->getRealPath(), $file->getMimeType());
+    }
+    
+    /**
+     * 执行裁剪等操作
+     *
+     * @param array  $methods<method, arguments> arguments = []
+     * @param string $target
+     * @param string $mime
+     *
+     * @return mixed
+     */
+    public function callInterventionMethods($methods, $target, $mime)
+    {
+        if (! empty($methods)) {
+            $image = ImageManagerStatic::make($target);
+
+            $mime = $mime ?: finfo_file(finfo_open(FILEINFO_MIME_TYPE), $target);
+
+            // 常用方法
+            // $call['method'] = resize(320, 240)
+            // $call['method'] = insert('public/watermark.png')
+            // $call['method'] = rotate(-45);
+            foreach ($methods as $call) {
+                call_user_func_array(
+                    [$image, $call['method']],
+                    $call['arguments']
+                )->save($target, null, $mime);
+            }
+        }
+
+        return $target;
+    }
+
+    /**
+     * 删除缩略图
+     *
+     * @param array $thumbnails
+     * @param string|array $file
+     *
+     * @return void.
+     */
+    public function destroyThumbnail($thumbnails, $file = null)
+    {
+        if (! $file) {
+            return;
+        }
+
+        if (is_array($file)) {
+            foreach ($file as $f) {
+                $this->destroyThumbnail($f);
+            }
+
+            return;
+        }
+
+        foreach ($thumbnails as $name => $_) {
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+            $path = Str::replaceLast('.'.$ext, '', $file);
+
+            $path = $path.'-'.$name.'.'.$ext;
+
+            if ($this->storage->exists($path)) {
+                $this->storage->delete($path);
+            }
+        }
+    }
+
+    /**
+     * 上传并删除缩略图
+     *
+     * @param array $thumbnails
+     * @param UploadedFile $file
+     *
+     * @return $this
+     */
+    public function uploadAndDeleteOriginalThumbnail($thumbnails, UploadedFile $file)
+    {
+        foreach ($thumbnails as $name => $size) {
+            $ext = pathinfo($this->name, PATHINFO_EXTENSION);
+
+            $path = Str::replaceLast('.'.$ext, '', $this->name);
+
+            $path = $path.'-'.$name.'.'.$ext;
+
+            /** @var \Intervention\Image\Image $image */
+            $image = InterventionImage::make($file);
+
+            $action = $size[2] ?? 'resize';
+            $image->$action($size[0], $size[1], function (Constraint $constraint) {
+                $constraint->aspectRatio();
+            });
+
+            if (! is_null($this->storagePermission)) {
+                $this->storage->put($this->formatPath($this->path, $path), $image->encode(), $this->storagePermission);
+            } else {
+                $this->storage->put($this->formatPath($this->path, $path), $image->encode());
+            }
+        }
+
+        $this->destroyThumbnail($thumbnails);
+
+        return $this;
+    }
+
+    // 获取文件大小
     public function getFilesize($file)
     {
         try {
