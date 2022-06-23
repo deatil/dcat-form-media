@@ -377,6 +377,7 @@ $(function () {
                 form.append("type", options.type);
                 form.append("disk", options.disk);
                 form.append("nametype", options.nametype);
+                form.append("resize", options.resize);
                 form.append("_token", Dcat.token);
                 $.ajax({
                     type: 'post', 
