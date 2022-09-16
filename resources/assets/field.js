@@ -416,6 +416,9 @@ $(function () {
                 var limit = options.limit;
                 var type = options.type
                 
+                var rootpath = options.rootpath
+                var saveFullUrl = options.saveFullUrl
+                
                 // 可多选时
                 var multiplechoice = options.multiplechoice
                 
@@ -450,7 +453,13 @@ $(function () {
                 }
                 
                 for (var i = 0; i < select_true_list.length; i++) {
-                    urlList.push($(select_true_list[i]).data('url'));
+                    var url = $(select_true_list[i]).data('url');
+                    
+                    if (saveFullUrl == 1) {
+                        url = rootpath + url
+                    }
+                    
+                    urlList.push(url);
                 }
                 
                 urlList = thiz.unique(urlList);
@@ -632,7 +641,6 @@ $(function () {
             var disk = options.disk;
             var limit = options.limit;
             var remove = options.remove;
-            var rootpath = options.rootpath;
             var pageSize = options.pagesize;
             
             var mediaModalCont = $('#LakeFormMediaModel' + name);
@@ -823,6 +831,8 @@ $(function () {
             var showtitle = options.showtitle;
             var showicon = options.showicon;
             
+            var saveFullUrl = options.saveFullUrl;
+            
             var mediaCont = $('.lake-form-media-'+name);
             var imgShowCont = mediaCont.find('.lake-form-media-img-show');
             var imgShowRowCont = mediaCont.find('.lake-form-media-img-show-row');
@@ -837,7 +847,9 @@ $(function () {
             for (var i = 0; i < urlList.length; i++) {
                 var src = urlList[i];
                 if (! this.isUrl(src)) {
-                    src = rootpath + urlList[i];
+                    if (saveFullUrl != 1) {
+                        src = rootpath + urlList[i];
+                    }
                 }
                 
                 var html = '<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3 lake-form-media-preview-item" data-src="'+urlList[i]+'">';

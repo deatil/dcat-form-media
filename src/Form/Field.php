@@ -41,6 +41,8 @@ class Field extends BaseField
     
     protected $resize = [];
     
+    protected $saveFullUrl = false;
+    
     protected $type = '';
     protected $disk = '';
 
@@ -106,11 +108,12 @@ class Field extends BaseField
     /**
      * 禁止上传
      *
+     * @param boolen $value
      * @return $this
      */
-    public function disableUpload()
+    public function disableUpload(bool $value = true)
     {
-        $this->disableUpload = true;
+        $this->disableUpload = $value;
 
         return $this;
     }
@@ -118,11 +121,12 @@ class Field extends BaseField
     /**
      * 禁止创建文件夹
      *
+     * @param boolen $value
      * @return $this
      */
-    public function disableCreateFolder()
+    public function disableCreateFolder(bool $value = true)
     {
-        $this->disableCreateFolder = true;
+        $this->disableCreateFolder = $value;
 
         return $this;
     }
@@ -130,11 +134,12 @@ class Field extends BaseField
     /**
      * 显示标题
      *
+     * @param boolen $value
      * @return $this
      */
-    public function enableShowTitle()
+    public function enableShowTitle(bool $value = true)
     {
-        $this->enableShowTitle = true;
+        $this->enableShowTitle = $value;
 
         return $this;
     }
@@ -142,11 +147,12 @@ class Field extends BaseField
     /**
      * 可多选
      *
+     * @param boolen $value
      * @return $this
      */
-    public function enableMultipleChoice()
+    public function enableMultipleChoice(bool $value = true)
     {
-        $this->enableMultipleChoice = true;
+        $this->enableMultipleChoice = $value;
 
         return $this;
     }
@@ -154,11 +160,12 @@ class Field extends BaseField
     /**
      * 显示图标
      *
+     * @param boolen $value
      * @return $this
      */
-    public function showIcon()
+    public function showIcon(bool $value = true)
     {
-        $this->showIcon = true;
+        $this->showIcon = $value;
 
         return $this;
     }
@@ -171,6 +178,19 @@ class Field extends BaseField
     public function resize($width, $height)
     {
         $this->resize = [$width, $height];
+
+        return $this;
+    }
+
+    /**
+     * 保存完整链接
+     *
+     * @param boolen $value
+     * @return $this
+     */
+    public function saveFullUrl(bool $value = true)
+    {
+        $this->saveFullUrl = $value;
 
         return $this;
     }
@@ -233,12 +253,12 @@ class Field extends BaseField
     /**
      * 移除
      *
-     * @param boolen $remove
+     * @param boolen $value
      * @return $this
      */
-    public function remove($remove = false)
+    public function remove(bool $value = true)
     {
-        $this->remove = $remove;
+        $this->remove = $value;
         
         return $this;
     }
@@ -335,6 +355,7 @@ class Field extends BaseField
         $pageSize = $this->pageSize;
         $remove = ($this->remove == true) ? 1 : 0;
         
+        $rootpath = "";
         if (! empty($this->rootpath)) {
             $rootpath = $this->rootpath;
         } else {
@@ -373,6 +394,8 @@ class Field extends BaseField
         $showIcon = ($this->showIcon == true) ? 1 : 0;
         
         $resize = $this->resize;
+        
+        $saveFullUrl = ($this->saveFullUrl == true) ? 1 : 0;
 
         $this->addVariables([
             'options' => [
@@ -390,6 +413,8 @@ class Field extends BaseField
                 'showicon' => $showIcon,
                 
                 'resize' => implode(',', $resize),
+                
+                'saveFullUrl' => $saveFullUrl,
                 
                 'rootpath' => $rootpath,
                 'get_files_url' => $this->listUrl,
