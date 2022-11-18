@@ -315,7 +315,12 @@ class MediaManager
 
         while ($this->storage->exists($this->formatPath($this->path, $new))) {
             $index++;
-            $new = sprintf('%s_%s.%s', $original, $index, $extension);
+            
+            if (! empty($extension)) {
+                $new = sprintf('%s_%s.%s', $original, $index, $extension);
+            } else {
+                $new = sprintf('%s_%s', $original, $index);
+            }
         }
 
         return $new;
