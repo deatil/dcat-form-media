@@ -984,7 +984,8 @@ $(function () {
             if (type === 'image') {
                 html += '<img width="100%" src="' + src + '" alt="'+src+'"/>';
             } else if (type === 'video') {
-                html += '<video width="100%" height="100%" src="' + src + '"></video>';
+                // html += '<video width="100%" height="100%" src="' + src + '"></video>';
+                html += '<i class="fa fa-file-video-o fa-fw lake-form-media-preview-fa"></i>';
             } else if (type === 'audio') {
                 html += '<i class="fa fa-file-audio-o fa-fw lake-form-media-preview-fa"></i>';
             } else if (type === 'word') {
