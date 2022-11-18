@@ -116,9 +116,12 @@ class Demo extends Model
 }
 ```
 
-## 特别鸣谢
 
-感谢 `yelphp` 提供的原始代码
-```
-yelphp/narwhalformmedia
-```
+## 开源协议
+
+*  本扩展遵循 `MIT` 开源协议发布，在保留本扩展版权的情况下提供个人及商业免费使用。 
+
+
+## 版权
+
+*  该系统所属版权归 deatil(https://github.com/deatil) 所有。
