@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.16
+ * LakeFormMedia-field.js v1.0.17
  *
  * @create 2020-11-28
  * @author deatil
@@ -61,8 +61,8 @@ $(function () {
                     title: thiz.lang("system_tip"),
                 }, function(index) {
 
-                    // 多选时
-                    if (multiplechoice && limit > 1) {
+                    // 不是多选时
+                    if (multiplechoice != 1 && limit > 1) {
                         var itemIndex = mediaCont
                             .find('.lake-form-media-preview-item')
                             .index($this.parents('.lake-form-media-preview-item'));
@@ -91,7 +91,6 @@ $(function () {
                 event.stopPropagation();
                 
                 var modal = $(this);
-                
                 var modalId = modal.data("target");
                 
                 $("#" + modalId).remove();
@@ -119,7 +118,7 @@ $(function () {
                 var uploadUrl = options.upload_url;
                 var createFolderUrl = options.create_folder_url;
                 
-                var mediaModalCont = mediaCont.find('.lake-form-media-modal');
+                var mediaModalCont = $("#" + modalId);
                 var mediaModalPageCont = mediaModalCont.find('.lake-form-media-modal-page');
                 mediaModalPageCont.data('current-page', 1);
                 
@@ -438,8 +437,8 @@ $(function () {
                     }
                 }
                 
-                // 多选时
-                if (multiplechoice && limit > 1) {
+                // 不是多选时
+                if (multiplechoice != 1 && limit > 1) {
                     $('.lake-form-media-close').trigger("click");
                     return false;
                 }
@@ -535,8 +534,8 @@ $(function () {
                     }
                 }
                 
-                // 多选时
-                if (multiplechoice && limit > 1) {
+                // 不是多选时
+                if (multiplechoice != 1 && limit > 1) {
                     // 添加当前选中
                     nowNumArr.push($(this).data('url'));
                     
@@ -562,8 +561,11 @@ $(function () {
                 }
                 
                 var noNeedSelectArr = [];
-                var imgItem = mediaModalCont
-                    .find('.lake-form-media-field-item[data-type="'+itemType+'"]');
+                if (type != 'blend') {
+                    var imgItem = mediaModalCont.find('.lake-form-media-field-item[data-type="'+itemType+'"]');
+                } else {
+                    var imgItem = mediaModalCont.find('.lake-form-media-field-item');
+                }
                 for (var i = 0; i < imgItem.length; i++) {
                     var itemUrl = $(imgItem[i]).data('url');
                     if ($.inArray(itemUrl, nowNumArr) != -1) {
@@ -725,8 +727,11 @@ $(function () {
                     var urlListStr = inputCont.val();
                     var urlList = [];
                     if (limit == 1) {
-                        mediaModalTableCont.find('[data-url="'+urlListStr+'"]')
-                            .addClass('lake-form-media-selected');
+                        var urlLists = thiz.isJSON(urlListStr);
+                        if (urlLists.length > 0) {
+                            mediaModalTableCont.find('[data-url="'+urlLists[0]+'"]')
+                                .addClass('lake-form-media-selected');
+                        }
                     } else {
                         urlList = thiz.isJSON( urlListStr );
                         for (var index in urlList) {
@@ -1085,7 +1090,7 @@ $(function () {
                 }
             };
             
-            return "outher";
+            return "other";
         },
         
         // 复制

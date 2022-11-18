@@ -258,7 +258,7 @@ class MediaManager
             
             // 原始命名
             case 'original':
-                return $this->generateClientName($file);
+                return $this->generateClientOriginalName($file);
                 break;
             
             case 'uniqid':
@@ -273,7 +273,14 @@ class MediaManager
      */
     public function generateDatetimeName($file)
     {
-        return date('YmdHis').mt_rand(10000, 99999).'.'.$file->getClientOriginalExtension();
+        $name = date('YmdHis').mt_rand(10000, 99999);
+        $extension = $file->getClientOriginalExtension();
+        
+        if (empty($extension)) {
+            return $name;
+        }
+        
+        return $name.'.'.$extension;
     }
 
     /**
@@ -281,7 +288,14 @@ class MediaManager
      */
     public function generateUniqueName($file)
     {
-        return md5(uniqid().microtime()).'.'.$file->getClientOriginalExtension();
+        $name = md5(uniqid().microtime());
+        $extension = $file->getClientOriginalExtension();
+        
+        if (empty($extension)) {
+            return $name;
+        }
+        
+        return $name.'.'.$extension;
     }
 
     /**
@@ -292,7 +306,12 @@ class MediaManager
         $index = 1;
         $original = $file->getClientOriginalName();
         $extension = $file->getClientOriginalExtension();
-        $new = sprintf('%s_%s.%s', $original, $index, $extension);
+        
+        if (! empty($extension)) {
+            $new = sprintf('%s_%s.%s', $original, $index, $extension);
+        } else {
+            $new = sprintf('%s_%s', $original, $index);
+        }
 
         while ($this->storage->exists($this->formatPath($this->path, $new))) {
             $index++;
@@ -305,9 +324,16 @@ class MediaManager
     /**
      * 原始命名
      */
-    public function generateClientName($file)
+    public function generateClientOriginalName($file)
     {
-        return $file->getClientOriginalName() . '.' . $file->getClientOriginalExtension();
+        $name = $file->getClientOriginalName();
+        $extension = $file->getClientOriginalExtension();
+        
+        if (empty($extension)) {
+            return $name;
+        }
+        
+        return $name.'.'.$extension;
     }
 
     /**
@@ -493,7 +519,7 @@ class MediaManager
             }
         }
 
-        return false;
+        return 'other';
     }
 
     /**

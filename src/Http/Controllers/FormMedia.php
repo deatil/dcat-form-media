@@ -104,7 +104,9 @@ class FormMedia extends Controller
             if ($manager->upload($files)) {
                 return $this->renderJson(LakeFormMedia::trans('form-media.upload_success'), 200);
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            return $this->renderJson($e->getMessage(), -1);
+        }
         
         return $this->renderJson(LakeFormMedia::trans('form-media.upload_error'), -1);
     }

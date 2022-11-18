@@ -35,8 +35,8 @@ class Field extends BaseField
     protected $disableUpload = false;
     protected $disableCreateFolder = false;
     
-    protected $enableShowTitle = false;
-    protected $enableMultipleChoice = false;
+    protected $showTitle = false;
+    protected $multipleChoice = true;
     protected $showIcon = false;
     
     protected $resize = [];
@@ -137,22 +137,22 @@ class Field extends BaseField
      * @param boolen $value
      * @return $this
      */
-    public function enableShowTitle(bool $value = true)
+    public function showTitle(bool $value = true)
     {
-        $this->enableShowTitle = $value;
+        $this->showTitle = $value;
 
         return $this;
     }
 
     /**
-     * 可多选
+     * 可多选，默认为可多选
      *
      * @param boolen $value
      * @return $this
      */
-    public function enableMultipleChoice(bool $value = true)
+    public function multipleChoice(bool $value = true)
     {
-        $this->enableMultipleChoice = $value;
+        $this->multipleChoice = $value;
 
         return $this;
     }
@@ -389,8 +389,8 @@ class Field extends BaseField
             $this->createFolderUrl = '';
         }
         
-        $showTitle = ($this->enableShowTitle == true) ? 1 : 0;
-        $multipleChoice = ($this->enableMultipleChoice == true) ? 1 : 0;
+        $showTitle = ($this->showTitle == true) ? 1 : 0;
+        $multipleChoice = ($this->multipleChoice == true) ? 1 : 0;
         $showIcon = ($this->showIcon == true) ? 1 : 0;
         
         $resize = $this->resize;
