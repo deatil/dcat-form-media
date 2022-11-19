@@ -198,7 +198,8 @@ class Field extends BaseField
     /**
      * 设置类型
      *
-     * 类型包括：blend、image、xls、word、ppt、pdf、code、zip、text、audio、video
+     * 类型包括：blend、image、xls、word、
+     *      ppt、pdf、code、zip、text、audio、video
      * 其中 blend 为全部类型
      *
      * @param string $type

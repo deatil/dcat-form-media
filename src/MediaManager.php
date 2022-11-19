@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class MediaManager.
+ * 文件管理
  */
 class MediaManager
 {
@@ -248,19 +248,22 @@ class MediaManager
     public function getPutFileName($file)
     {
         switch ($this->nametype) {
+            // 时间命名
             case 'datetime':
                 return $this->generateDatetimeName($file);
                 break;
             
+            // 原始命名，不覆盖已传同名文件
             case 'sequence':
                 return $this->generateSequenceName($file);
                 break;
             
-            // 原始命名
+            // 原始命名，将覆盖已传同名文件
             case 'original':
                 return $this->generateClientOriginalName($file);
                 break;
             
+            // 哈希命名
             case 'uniqid':
             default:
                 return $this->generateUniqueName($file);
@@ -269,7 +272,7 @@ class MediaManager
     }
 
     /**
-     * 时间文件名
+     * 时间命名
      */
     public function generateDatetimeName($file)
     {
@@ -284,7 +287,7 @@ class MediaManager
     }
 
     /**
-     * uniqid文件名
+     * 哈希命名
      */
     public function generateUniqueName($file)
     {
@@ -299,7 +302,7 @@ class MediaManager
     }
 
     /**
-     * sequence 命名
+     * 原始命名，不覆盖已传同名文件
      */
     public function generateSequenceName($file)
     {
@@ -308,6 +311,9 @@ class MediaManager
         $extension = $file->getClientOriginalExtension();
         
         if (! empty($extension)) {
+            $nameLen = strlen($original) - strlen($extension) - 1;
+            $original = substr($original, 0, $nameLen);
+
             $new = sprintf('%s_%s.%s', $original, $index, $extension);
         } else {
             $new = sprintf('%s_%s', $original, $index);
@@ -315,14 +321,19 @@ class MediaManager
 
         while ($this->storage->exists($this->formatPath($this->path, $new))) {
             $index++;
-            $new = sprintf('%s_%s.%s', $original, $index, $extension);
+            
+            if (! empty($extension)) {
+                $new = sprintf('%s_%s.%s', $original, $index, $extension);
+            } else {
+                $new = sprintf('%s_%s', $original, $index);
+            }
         }
 
         return $new;
     }
     
     /**
-     * 原始命名
+     * 原始命名，将覆盖已传同名文件
      */
     public function generateClientOriginalName($file)
     {
@@ -332,6 +343,9 @@ class MediaManager
         if (empty($extension)) {
             return $name;
         }
+        
+        $nameLen = strlen($name) - strlen($extension) - 1;
+        $name = substr($name, 0, $nameLen);
         
         return $name.'.'.$extension;
     }
