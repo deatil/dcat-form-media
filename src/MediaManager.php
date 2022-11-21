@@ -41,7 +41,7 @@ class MediaManager
      * @var array
      */
     protected $fileTypes = [
-        'image' => 'png|jpg|jpeg|ico|gif|bmp|svg|wbmp',
+        'image' => 'png|jpg|jpeg|ico|gif|bmp|svg|wbmp|avif',
         'xls'   => 'xls|xlt|xla|xlsx|xltx|xlsm|xltm|xlam|xlsb',
         'word'  => 'doc|docx|dot|dotx|docm|dotm',
         'ppt'   => 'ppt|pptx|pptm',
@@ -307,13 +307,10 @@ class MediaManager
     public function generateSequenceName($file)
     {
         $index = 1;
-        $original = $file->getClientOriginalName();
+        $original = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $file->getClientOriginalExtension();
         
         if (! empty($extension)) {
-            $nameLen = strlen($original) - strlen($extension) - 1;
-            $original = substr($original, 0, $nameLen);
-
             $new = sprintf('%s_%s.%s', $original, $index, $extension);
         } else {
             $new = sprintf('%s_%s', $original, $index);
@@ -337,15 +334,12 @@ class MediaManager
      */
     public function generateClientOriginalName($file)
     {
-        $name = $file->getClientOriginalName();
+        $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $file->getClientOriginalExtension();
         
         if (empty($extension)) {
             return $name;
         }
-        
-        $nameLen = strlen($name) - strlen($extension) - 1;
-        $name = substr($name, 0, $nameLen);
         
         return $name.'.'.$extension;
     }
