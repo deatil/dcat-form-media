@@ -1035,7 +1035,7 @@ $(function () {
                 'cgm', 'djv', 'djvu', 'gif', 'ico', 'ief', 'jp2', 
                 'jpe', 'mac', 'pbm', 'pct', 'pgm', 'pict', 'pnm', 
                 'pnt', 'pntg', 'ppm', 'qti', 'qtif', 'ras', 'rgb', 
-                'tif', 'tiff', 'xbm', 'xpm', 'xwd'
+                'tif', 'tiff', 'xbm', 'xpm', 'xwd', 'avif'
             ];
 
             // 匹配音频

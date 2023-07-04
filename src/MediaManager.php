@@ -612,7 +612,6 @@ class MediaManager
      *
      * @param array $thumbnails
      * @param UploadedFile $file
-     *
      * @return $this
      */
     public function uploadAndDeleteOriginalThumbnail($thumbnails, UploadedFile $file)
@@ -644,7 +643,9 @@ class MediaManager
         return $this;
     }
 
-    // 获取文件大小
+    /**
+     * 获取文件大小
+     */
     public function getFilesize($file)
     {
         try {
