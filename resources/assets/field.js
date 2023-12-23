@@ -1,5 +1,5 @@
 /**
- * LakeFormMedia-field.js v1.0.17
+ * LakeFormMedia-field.js v1.0.18
  *
  * @create 2020-11-28
  * @author deatil
@@ -988,14 +988,20 @@ $(function () {
                 html += '<i class="fa fa-file-video-o fa-fw lake-form-media-preview-fa"></i>';
             } else if (type === 'audio') {
                 html += '<i class="fa fa-file-audio-o fa-fw lake-form-media-preview-fa"></i>';
+            } else if (type === 'pdf') {
+                html += '<i class="fa fa-file-pdf-o fa-fw lake-form-media-preview-fa"></i>';
             } else if (type === 'word') {
                 html += '<i class="fa fa-file-word-o fa-fw lake-form-media-preview-fa"></i>';
+            } else if (type === 'ppt') {
+                html += '<i class="fa fa-file-powerpoint-o fa-fw lake-form-media-preview-fa"></i>';
+            } else if (type === 'xls') {
+                html += '<i class="fa fa-file-excel-o fa-fw lake-form-media-preview-fa"></i>';
+            } else if (type === 'text') {
+                html += '<i class="fa fa-file-text-o fa-fw lake-form-media-preview-fa"></i>';
             } else if (type === 'code') {
                 html += '<i class="fa fa-file-code-o fa-fw lake-form-media-preview-fa"></i>';
             } else if (type === 'zip') {
                 html += '<i class="fa fa-file-zip-o fa-fw lake-form-media-preview-fa"></i>';
-            } else if (type === 'text') {
-                html += '<i class="fa fa-file-text-o fa-fw lake-form-media-preview-fa"></i>';
             } else {
                 html += '<i class="fa fa-file fa-fw lake-form-media-preview-fa"></i>';
             }
@@ -1013,14 +1019,20 @@ $(function () {
                 html += '<i class="fa fa-file-video-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
             } else if (type === 'audio') {
                 html += '<i class="fa fa-file-audio-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'pdf') {
+                html += '<i class="fa fa-file-pdf-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
             } else if (type === 'word') {
                 html += '<i class="fa fa-file-word-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'ppt') {
+                html += '<i class="fa fa-file-powerpoint-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'xls') {
+                html += '<i class="fa fa-file-excel-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
+            } else if (type === 'text') {
+                html += '<i class="fa fa-file-text-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
             } else if (type === 'code') {
                 html += '<i class="fa fa-file-code-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
             } else if (type === 'zip') {
                 html += '<i class="fa fa-file-zip-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
-            } else if (type === 'text') {
-                html += '<i class="fa fa-file-text-o fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
             } else {
                 html += '<i class="fa fa-file fa-fw lake-form-media-show-icon" title="' + type + '"></i>';
             }
@@ -1038,24 +1050,43 @@ $(function () {
                 'tif', 'tiff', 'xbm', 'xpm', 'xwd', 'avif'
             ];
 
-            // 匹配音频
-            var audio = [
-                'mp3', 'wav', 'flac', '3pg', 'aa', 'aac', 'ape', 
-                'au', 'm4a', 'mpc', 'ogg'
-            ];
-
             // 匹配视频
             var video = [
                 'mkv', 'avi', 'mp4', 'rmvb', 'rm', 
                 'flv', 'wmv', 'asf', 'mpeg', 'mov'
             ];
 
-            // 匹配文稿
+            // 匹配音频
+            var audio = [
+                'mp3', 'wav', 'flac', '3pg', 'aa', 'aac', 'ape', 
+                'au', 'm4a', 'mpc', 'ogg'
+            ];
+
+            // 匹配 pdf
+            var pdf = [
+                'pdf'
+            ];
+
+            // 匹配 word
             var word = [
-                'doc', 'dot', 'docx', 'dotx', 'docm', 'dotm', 'xls', 
-                'xlt', 'xla', 'xlsx', 'xltx', 'xlsm', 'xltm', 'xlam', 
-                'xlsb', 'pdf', 'ppt', 'pot', 'pps', 'ppa', 'pptx', 
-                'potx', 'ppsx', 'ppam', 'pptm', 'potm', 'ppsm'
+                'doc', 'dot', 'docx', 'dotx', 'docm', 'dotm', 'wps'
+            ];
+
+            // 匹配 ppt
+            var ppt = [
+                'ppt', 'pptx', 'pptm', 'pot', 'pps', 'ppa', 'pptx', 
+                'potx', 'ppsx', 'ppam', 'potm', 'ppsm'
+            ];
+
+            // 匹配 ppt
+            var xls = [
+                'xls', 'xlt', 'xla', 'xlsx', 'xltx', 'xlsm', 
+                'xltm', 'xlam', 'xlsb'
+            ];
+
+            // 匹配文本
+            var text = [
+                'txt', 'pac', 'log', 'md'
             ];
 
             // 匹配代码
@@ -1063,26 +1094,25 @@ $(function () {
                 'html', 'htm', 'js', 'css', 'vue', 'json', 
                 'php', 'java', 'go', 'py', 'ruby', 'rb', 
                 'aspx', 'asp', 'c', 'cpp', 'sql', 'm', 'h', 
+                'python', 'ruby', 'rs', 'zig', 'v'
             ];
 
             // 匹配压缩包
             var zip = [
                 'zip', 'tar', 'gz', 'rar', 'rpm'
             ];
-
-            // 匹配文本
-            var text = [
-                'txt', 'pac', 'log', 'md'
-            ];
             
             var list = {
                 'image': image,
-                'audio': audio,
                 'video': video,
+                'audio': audio,
+                'pdf': pdf,
                 'word': word,
+                'ppt': ppt,
+                'xls': xls,
+                'text': text,
                 'code': code,
                 'zip': zip,
-                'text': text,
             }
             
             for (var key in list) {

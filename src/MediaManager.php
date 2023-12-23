@@ -41,16 +41,16 @@ class MediaManager
      * @var array
      */
     protected $fileTypes = [
-        'image' => 'png|jpg|jpeg|ico|gif|bmp|svg|wbmp|avif',
-        'xls'   => 'xls|xlt|xla|xlsx|xltx|xlsm|xltm|xlam|xlsb',
-        'word'  => 'doc|docx|dot|dotx|docm|dotm',
-        'ppt'   => 'ppt|pptx|pptm',
-        'pdf'   => 'pdf',
-        'code'  => 'php|js|java|python|ruby|go|c|cpp|sql|m|h|json|html|aspx',
-        'zip'   => 'zip|tar\.gz|rar|rpm',
-        'text'  => 'txt|pac|log|md',
+        'image' => 'jpeg|jpg|bmp|png|svg|wbmp|pic|cgm|djv|djvu|gif|ico|ief|jp2|jpe|mac|pbm|pct|pgm|pict|pnm|pnt|pntg|ppm|qti|qtif|ras|rgb|tif|tiff|xbm|xpm|xwd|avif',
+        'video' => 'mkv|avi|mp4|rmvb|rm|flv|wmv|asf|mpeg|mov',
         'audio' => 'mp3|wav|flac|3pg|aa|aac|ape|au|m4a|mpc|ogg',
-        'video' => 'mkv|rmvb|flv|mp4|avi|wmv|rm|asf|mpeg',
+        'pdf'   => 'pdf',
+        'word'  => 'doc|docx|dot|dotx|docm|dotm|wps',
+        'ppt'   => 'ppt|pptx|pptm|pot|pps|ppa|pptx|potx|ppsx|ppam|potm|ppsm',
+        'xls'   => 'xls|xlt|xla|xlsx|xltx|xlsm|xltm|xlam|xlsb',
+        'text'  => 'txt|pac|log|md',
+        'code'  => 'html|htm|js|css|vue|json|php|java|go|py|ruby|rb|aspx|asp|c|cpp|sql|m|h|python|ruby|rs|zig|v',
+        'zip'   => 'zip|tar|gz|tar\.gz|rar|rpm',
     ];
     
     /**
@@ -479,7 +479,7 @@ class MediaManager
                 break;
 
             case 'audio':
-                $preview = '<span class="file-icon"><i class="fa fa-file-video-o"></i></span>';
+                $preview = '<span class="file-icon"><i class="fa fa-file-audio-o"></i></span>';
                 break;
 
             case 'pdf':
