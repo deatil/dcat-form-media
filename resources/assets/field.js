@@ -1078,7 +1078,7 @@ $(function () {
                 'potx', 'ppsx', 'ppam', 'potm', 'ppsm'
             ];
 
-            // 匹配 ppt
+            // 匹配 xls
             var xls = [
                 'xls', 'xlt', 'xla', 'xlsx', 'xltx', 'xlsm', 
                 'xltm', 'xlam', 'xlsb'

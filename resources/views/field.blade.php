@@ -64,7 +64,7 @@
                   <div class="mailbox-controls with-border lake-form-media-actions-label" style="margin-left: 10px;">
                         <label class="btn btn-primary lake-form-media-upload-label">
                             <i class="fa fa-upload"></i>&nbsp;&nbsp;{{ LakeFormMedia::trans('form-media.upload') }}
-                            <input type="file" class="hidden file-upload lake-form-media-upload" multiple="" />
+                            <input type="file" class="hidden file-upload lake-form-media-upload" multiple="" accept="{{ $options['accept'] }}" />
                         </label>
                         
                         <label class="btn btn-light lake-form-media-modal-order" 

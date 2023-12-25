@@ -50,6 +50,7 @@ class Field extends BaseField
     protected $limit = 1;
     protected $remove = false;
     
+    protected $accept = '';
     protected $nametype = 'uniqid';
     protected $pageSize = 120;
 
@@ -265,6 +266,19 @@ class Field extends BaseField
     }
 
     /**
+     * 设置 input accept 属性
+     * 常用类型 * /* audio/* video/* image/*
+     *
+     * @return $this
+     */
+    public function accept(string $accept)
+    {
+        $this->accept = $accept;
+        
+        return $this;
+    }
+
+    /**
      * 设置上传保存文件名类型
      *
      * @param string $type uniqid|datetime|sequence|original
@@ -352,6 +366,7 @@ class Field extends BaseField
         $limit = $this->limit;
         $type = $this->type;
         $disk = $this->disk;
+        $accept = $this->accept;
         $nametype = $this->nametype;
         $pageSize = $this->pageSize;
         $remove = ($this->remove == true) ? 1 : 0;
@@ -400,26 +415,27 @@ class Field extends BaseField
 
         $this->addVariables([
             'options' => [
-                'path' => $path,
-                'limit' => $limit,
+                'path'   => $path,
+                'limit'  => $limit,
                 'remove' => $remove,
-                'type' => $type,
-                'disk' => $disk,
+                'type'   => $type,
+                'disk'   => $disk,
                 
+                'accept'   => $accept,
                 'nametype' => $nametype,
                 'pagesize' => $pageSize,
                 
-                'showtitle' => $showTitle,
+                'showtitle'      => $showTitle,
                 'multiplechoice' => $multipleChoice,
-                'showicon' => $showIcon,
+                'showicon'       => $showIcon,
                 
-                'resize' => implode(',', $resize),
+                'resize'      => implode(',', $resize),
                 
                 'saveFullUrl' => $saveFullUrl,
                 
-                'rootpath' => $rootpath,
-                'get_files_url' => $this->listUrl,
-                'upload_url' => $this->uploadUrl,
+                'rootpath'          => $rootpath,
+                'get_files_url'     => $this->listUrl,
+                'upload_url'        => $this->uploadUrl,
                 'create_folder_url' => $this->createFolderUrl,
             ],
         ]);

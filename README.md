@@ -82,6 +82,7 @@ $form->video('video','视频')
 ```
 path(string)         ： 快速定位目录，默认为根目录
 nametype(string)     ： 文件重命名方式 uniqid|datetime|sequence|original，默认 uniqid
+accept(string)       ： 设置 input accept 属性, 自定义，默认类型不设置
 pageSize(int)        ： 弹出层列表每页显示数量
 limit(int)           ： 限制条数
 remove(boolean)      :  是否有删除按钮
